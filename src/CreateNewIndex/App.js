@@ -1,5 +1,7 @@
 import logo from "./logo.svg";
+import HomePage from "./pages/HomePage";
 import "./App.css";
+import Navbar from "./pages/Navbar";
 
 function App() {
   return (
@@ -18,7 +20,8 @@ function App() {
           Learn React
         </a>
       </header> */}
-      {/* <HomePage /> */}
+      <HomePage />
+      <Navbar />
     </div>
   );
 }
