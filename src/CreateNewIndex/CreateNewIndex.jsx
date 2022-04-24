@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 
 function CreateNewIndex() {
-
   return (
     <div>
       <h1>Create New Index</h1>

@@ -5,6 +5,7 @@ import { BrowserRouter, Routes } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import Navbar from "./pages/Navbar";
 import HomePage from "./HomePage/HomePage";
+import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import App from "./App";
 
 import "./index.css";
@@ -15,6 +16,7 @@ ReactDOM.render(
       <Routes>
         <Route path='/*' element={<Navbar />}>
           <Route index element={<HomePage />} />
+          <Route path='create-new-index' element={<CreateNewIndex />} />
           {/* <Route path="blogs" element={<Blogs />} />
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NoPage />} /> */}

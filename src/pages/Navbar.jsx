@@ -20,7 +20,7 @@ function Navbar() {
                 <li class="nav-item">
                   {/* <a  class="nav-link"  href="/CreateNewIndex/CreateNewIndex">Create Index</a> */}
                   {/* <Link class="nav-link" to="/CreateNewIndex/CreateNewIndex">Create Index</Link> */}
-                  <Link className="Nav-link" to="/CreateNewIndex">CreateNewIndex</Link>
+                  <Link className="Nav-link" to="/CreateNewIndex">Create New Index</Link>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="#">Sign In</a>
