@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { /*BrowserRouter, */ Route } from "react-router";
 import { BrowserRouter, Routes } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
@@ -10,22 +11,27 @@ import App from "./App";
 
 import "./index.css";
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(
   <React.StrictMode>
+    <Navbar
+      pages={[
+        { name: "Create New Index", href: "/create-new-index" },
+        { name: "Create New Index1", href: "/create-new-index1" },
+        { name: "Create New Index2", href: "/create-new-index2" },
+      ]}
+      settings={[]}
+    />
     <BrowserRouter>
       <Routes>
-        <Route path='/*' element={<Navbar />}>
-          <Route index element={<HomePage />} />
-          <Route path='create-new-index' element={<CreateNewIndex />} />
-          {/* <Route path="blogs" element={<Blogs />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="*" element={<NoPage />} /> */}
-        </Route>
+        <Route index element={<HomePage />} />
+        <Route path='/create-new-index' element={<CreateNewIndex />} />
       </Routes>
     </BrowserRouter>
     {/* <App /> */}
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode> //),
+  // document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

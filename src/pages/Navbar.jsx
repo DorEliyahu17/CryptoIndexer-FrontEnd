@@ -1,57 +1,156 @@
-import React, {useEffect, useState} from "react";
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom'
 
-function Navbar() {
-// export default class Nav extends React.Component {
+// const pages = [{"name": 'Create New Index', "href": "/create-new-index"}, 'Pricing', 'Blog'];
+// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+const propTypes = {
+  pages: PropTypes.array.isRequired,
+  setting: PropTypes.array.isRequired,
+};
+
+const defaultProps = {
+  pages: [],
+  setting: [],
+};
+
+function Navbar(props) {
+  const {pages, settings} = props;
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   return (
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="#">CryptoIndexer</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Explore Indexes</a>
-                </li>
-                <li class="nav-item">
-                  {/* <a  class="nav-link"  href="/CreateNewIndex/CreateNewIndex">Create Index</a> */}
-                  {/* <Link class="nav-link" to="/CreateNewIndex/CreateNewIndex">Create Index</Link> */}
-                  <Link className="Nav-link" to="/CreateNewIndex">Create New Index</Link>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Sign In</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Sign Out</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
+    <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+          >
+            LOGO
+          </Typography>
 
-    // <nav className="Nav">
-    //   <div className="Nav__container">
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem href={page.href} key={page.name} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.name}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+          >
+            LOGO
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <Button
+                href={page.href}
+                key={page.name}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page.name}
+              </Button>
+            ))}
+          </Box>
 
-    //     <div className="Nav__right">
-    //       <ul className="Nav__item-wrapper">
-    //         <li className="Nav__item">
-    //           <Link className="Nav__link" to=/CreateNewIndex/CreateNewIndex">CreateNewIndex</Link>
-    //         </li>
-    //         <li className="Nav__item">
-    //           <Link className="Nav__link" to="/path2">Link 2</Link>
-    //         </li>
-    //         <li className="Nav__item">
-    //           <Link className="Nav__link" to="/path3">Link 3</Link>
-    //         </li>
-    //       </ul>
-    //     </div>
-    //   </div>
-    //   </nav>
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
-}
+};
 
-export default Navbar; 
+Navbar.defaultProps = defaultProps;
+Navbar.propTypes = propTypes;
+export default Navbar;
