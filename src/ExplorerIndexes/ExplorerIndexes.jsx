@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 
 
-function Sign_up() {
+function ExplorerIndexes() {
   return (
     <div>
-      <h1>Sign_up</h1>
+      <h1>ExplorerIndexes</h1>
     </div>
   );
 }
 
-export default Sign_up; 
+export default ExplorerIndexes; 

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 
 
-function Sign_in() {
+function Login() {
   return (
     <div>
-      <h1>Sign_in</h1>
+      <h1>Login</h1>
     </div>
   );
 }
 
-export default Sign_in; 
+export default Login; 
