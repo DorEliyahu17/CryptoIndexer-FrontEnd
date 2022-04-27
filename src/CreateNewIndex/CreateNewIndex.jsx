@@ -1,66 +1,24 @@
-// import React, {useEffect, useState} from "react";
-// import Button from '@mui/material/Button';
-// // import ButtonBase from '@mui/material/ButtonBase';
-// // import LoadingButton from '@mui/lab/LoadingButton';
-// import PropTypes from 'prop-types';
-
-
-
-// function CreateNewIndex() {
-//   return (
-//     <div>
-//       <h1>Create New Index</h1>
-//       <input className="form-control" type="text" placeholder="symbol" aria-label="symbol" />
-//       <input className="form-control" type="text" placeholder="percent" aria-label="percent" />
-//       <input className="form-control" type="text" placeholder="symbol" aria-label="symbol" />
-//       <input className="form-control" type="text" placeholder="percent" aria-label="percent" />
-//       <Button variant="contained" href="#">
-//         Add
-//       </Button>
-
-
-      
-//     </div>
-//   );
-// }
-
-// export default CreateNewIndex; 
-
-
+// Matan Write
 import React, {useEffect, useState, Fragment} from "react";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Stack from '@mui/material/Stack';
 import PropTypes from 'prop-types';
 
 function CreateNewIndex() {
-  const [ symbolsList, setSymbolList ] = useState([{name: '', percent: 0}, {name: '', percent: 0}]);
-
+  
+  const [listSymbolPercentLine, setlistSymbolPercentLine] =  useState([{name: '', percent: 0}, {name: '', percent: 0}]);
+  
   useEffect(() => {
-    symbolsList.map((symbol, index) => {
+    listSymbolPercentLine.map((symbol, index) => {
       console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
     });
-  }, [symbolsList])
 
-  const handleOnClickAddSymbol = () => {
-    let changedSymbolsList = symbolsList;
-    changedSymbolsList.push({name: '', percent: 0});
-    setSymbolList(changedSymbolsList);
-  };
-
-  const handleOnChangeSymbol = (event, index) => {
-    let changedSymbolsList = symbolsList;
-    changedSymbolsList[index].name = event.target.value; 
-    setSymbolList(changedSymbolsList);
-  };
-
-  const handleOnChangePercent = (event, index) => {
-    let changedSymbolsList = symbolsList;
-    changedSymbolsList[index].percent = event.target.value;
-    setSymbolList(changedSymbolsList);
-  };
-
-  const renderNewSymbolPercentLine = (boxIndex, symbolName = '', percent = 0) => (
+  }, [listSymbolPercentLine]);
+  
+  const renderSymbolPercentLine = (boxIndex, symbolName = '', percent = 0) => (
     <Box
       component="form"
       id={`box-${boxIndex}`}
@@ -70,45 +28,75 @@ function CreateNewIndex() {
       noValidate
       autoComplete="off"
     >
-      <div>
-        <TextField
-          required
-          // id="outlined-required"
-          id={`symbol-${boxIndex}`}
-          label="Symbol Name"
-          placeholder="Symbol Name"
-          // value={symbolName}
-          onChange={(event) => handleOnChangeSymbol(event, boxIndex)}
-        />
-        <TextField
-          required
-          // id="outlined-required"
-          id={`percent-${boxIndex}`}
-          label="Percent"
-          placeholder="Percent"
-          // value={percent}
-          onChange={(event) => handleOnChangePercent(event, boxIndex)}
-        />
-      </div>
+      <TextField
+        required
+        id={`symbol-${boxIndex}`}
+        label="Symbol Name"
+        placeholder="Symbol Name"
+        onChange={(event) => handleOnChangeSymbol(event, boxIndex)}
+      />
+      <TextField
+        required
+        id={`percent-${boxIndex}`}
+        label="0"
+        value={0}
+        placeholder="Percent"
+        // value= 
+        onChange={(event) => handleOnChangePercent(event, boxIndex)}
+      />
     </Box>
   );
+
+  const handleOnClickAdd = () =>{
+    // let changedlistSymbolPercentLine = listSymbolPercentLine
+    let changedlistSymbolPercentLine = listSymbolPercentLine.map((listItem) => {
+      return listItem;
+    });
+    changedlistSymbolPercentLine.push({name:'' , percent: 0})
+    setlistSymbolPercentLine(changedlistSymbolPercentLine);
+  };
+  const handleOnClickRealse = () =>{
+    let changedlistSymbolPercentLine = listSymbolPercentLine.map((listItem) => {
+      return listItem;
+    });
+    changedlistSymbolPercentLine.pop()
+    setlistSymbolPercentLine(changedlistSymbolPercentLine);
+  }
+  const handleOnChangeSymbol = (event, index) => {
+    let changedSymbolsList = listSymbolPercentLine;
+    changedSymbolsList[index].name = event.target.value; 
+    setlistSymbolPercentLine(changedSymbolsList);
+    console.log("NewSymbol.name="+listSymbolPercentLine[index].name+" Symbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
+  };
+
+  const handleOnChangePercent = (event, index) => {
+    let changedSymbolsList = listSymbolPercentLine;
+    changedSymbolsList[index].percent = event.target.value;
+    setlistSymbolPercentLine(changedSymbolsList);
+    console.log("Symbol.name="+listSymbolPercentLine[index].name+" NewSymbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
+  };
 
   return (
     <div id="create-new-index-form">
       <div id="create-new-index-symbol-list">
-        {/* {(symbolsList.length == 0) ?
-          renderNewSymbolPercentLine(0)
-        : */}
-          {symbolsList.map((symbol, index) => {
+          {listSymbolPercentLine.map((symbol, index) => {
             console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
-            return renderNewSymbolPercentLine(index, symbol.name, symbol.percent);
+            return renderSymbolPercentLine(index, symbol.name, symbol.percent);
           })}
-        {/* } */}
       </div>
-      <Button variant="contained" id="add-new-symbol" onClick={handleOnClickAddSymbol}>
-        Add
-      </Button>
+        <Button variant="contained" id="add-new-SymbolPercentLine" onClick={handleOnClickAdd}>
+          Add
+        </Button>
+         { listSymbolPercentLine.length > 2 
+        ? 
+          <Stack direction="row" spacing={2}>
+            <Button variant="outlined" startIcon={<DeleteIcon />} id="Relase-last-SymbolPercentLine" onClick={handleOnClickRealse}>
+            Relase
+            </Button>
+          </Stack>
+        : null
+         }
     </div>
-  );
-}
+  )
+};
 export default CreateNewIndex; 
