@@ -1,4 +1,3 @@
-// Matan Write
 import React, {useEffect, useState, Fragment} from "react";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -41,14 +40,12 @@ function CreateNewIndex() {
         label="0"
         value={0}
         placeholder="Percent"
-        // value= 
         onChange={(event) => handleOnChangePercent(event, boxIndex)}
       />
     </Box>
   );
 
   const handleOnClickAdd = () =>{
-    // let changedlistSymbolPercentLine = listSymbolPercentLine
     let changedlistSymbolPercentLine = listSymbolPercentLine.map((listItem) => {
       return listItem;
     });
@@ -99,4 +96,4 @@ function CreateNewIndex() {
     </div>
   )
 };
-export default CreateNewIndex; 
+export default CreateNewIndex;
