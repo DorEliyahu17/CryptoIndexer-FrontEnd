@@ -12,7 +12,7 @@ function HomePage() {
   const defaultMaterialTheme = createTheme();
 
 
-  const columns = [
+  const symbolColumns = [
     {field: 'symbol', title: 'Symbol' },
     {field: 'price', title: 'Price'},
     {field: 'daysGain', title: 'Days gain(%)'},
@@ -22,7 +22,7 @@ function HomePage() {
     {field: 'volume',title: 'Volume', type: "numeric" },
   ];
 
-  const data = [
+  const symbolData = [
     {
       "symbol":"BTC",
       "price":"$40,038.60",
@@ -42,6 +42,30 @@ function HomePage() {
       "volume":"$18,253,003,101"
       }
   ];
+
+
+  const indexColumns = [
+    {field: 'indexName', title: 'Index Name' },
+    {field: 'recommendedRating', title: 'Recommended rating'},
+    {field: 'daysGain', title: 'Days gain(%)'},
+    {field: 'usersCount',title: 'Users Count'}
+  ];
+
+  const indexData = [
+    {
+      "indexName":"index1",
+      "recommendedRating":"High",
+      "daysGain":"2.28%",
+      "usersCount":"50"
+    },
+    {
+      "symbol":"index2",
+      "recommendedRating":"Low",
+      "daysGain":"2.97%	",
+      "usersCount":"2"
+      }
+  ];
+
 
 
   const handleGetSymbolsData = () => {
@@ -64,7 +88,11 @@ function HomePage() {
     <div>
       <h1>Home Page</h1>
       <ThemeProvider theme={defaultMaterialTheme}>
-        <MaterialTable title="symbols Table" columns={columns} data={data} options={{exportButton:true}} />;
+        <MaterialTable title="Symbols Table" columns={symbolColumns} data={symbolData} options={{exportButton:true}} />;
+      </ThemeProvider>
+
+      <ThemeProvider theme={defaultMaterialTheme}>
+        <MaterialTable title="Indexes Table" columns={indexColumns} data={indexData} />;
       </ThemeProvider>
     </div>
   );
