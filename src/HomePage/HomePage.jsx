@@ -64,39 +64,8 @@ function HomePage() {
     <div>
       <h1>Home Page</h1>
       <ThemeProvider theme={defaultMaterialTheme}>
-        <MaterialTable title="symbols Table" columns={columns} data={data} />;
+        <MaterialTable title="symbols Table" columns={columns} data={data} options={{exportButton:true}} />;
       </ThemeProvider>
-
-
-
-      {/* <Table>
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Day's gain(%)</th>
-            <th>Day Low</th>
-            <th>Day High</th>
-            <th>Market Cap</th>
-            <th>Volume</th>
-          </tr>
-        </thead>
-        <tbody>
-          {SymbolsData.map(item=> {
-            return (
-              <tr key={item.symbol}>
-                <td>{item.symbol}</td>
-                <td>{item.price}</td>
-                <td>{item.daysGain}</td>
-                <td>{item.dayLow}</td>
-                <td>{item.dayHigh}</td>
-                <td>{item.marketCap}</td>
-                <td>{item.volume}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table> */}
     </div>
   );
 }
