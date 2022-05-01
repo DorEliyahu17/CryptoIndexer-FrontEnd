@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import ReactDOM from "react-dom/client";
 import PropTypes from 'prop-types';
 import { Table } from "@mui/material";
 import './HomePage.less';
@@ -6,56 +7,29 @@ import MaterialTable from "material-table";
 import { ThemeProvider, createTheme } from '@mui/material';
 import { ButtonUnstyled } from "@mui/base";
 
+import {BuyModalContainer,SellModalContainer} from "../ModalComponent/ModalComponent";
+
 //mu-icons
-// import AddBox from '@material-ui/icons/AddBox';
-// import ArrowDownward from '@material-ui/icons/ArrowDownward';
-// import Check from '@material-ui/icons/Check';
-// import ChevronLeft from '@material-ui/icons/ChevronLeft';
-// import ChevronRight from '@material-ui/icons/ChevronRight';
-// import Clear from '@material-ui/icons/Clear';
- //import DeleteOutline from '@material-ui/icons/DeleteOutline';
-// import Edit from '@material-ui/icons/Edit';
-// import FilterList from '@material-ui/icons/FilterList';
-// import FirstPage from '@material-ui/icons/FirstPage';
-// import LastPage from '@material-ui/icons/LastPage';
- import Remove from '@material-ui/icons/Remove';
-import { Delete } from "@material-ui/icons";
+
+//import Remove from '@material-ui/icons/Remove';
+//import { Delete } from "@material-ui/icons";
 import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-// import SaveAlt from '@material-ui/icons/SaveAlt';
-// import Search from '@material-ui/icons/Search';
-// import ViewColumn from '@material-ui/icons/ViewColumn';
-// import Refresh from '@material-ui/icons/Refresh';
-// import Delete from '@material-ui/icons/Delete';
+
+
+
 
 function HomePage() {
   const [example, setExample] = useState(false);
   const [SymbolsData, setSymbolsData] = useState([]);
   const defaultMaterialTheme = createTheme();
-
- //  const tableIcons = {
-  //   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  //   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  //   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-   //  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  //   DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  //   Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  //   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  //   //Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  //   //FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  //   LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  //   NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  //   PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-  //   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  //   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  //   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-  //   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  //   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-    
-  // };
+  const [showBuyDialog, setShowBuyDialog] = useState(false);
+  const [buyIndexInput, setBuyIndexInput] = useState({countToBuy: 0});
+  const [showSellDialog, setShowSellDialog] = useState(false);
+  const [sellIndexInput, setSellIndexInput] = useState({countToSell: 0});
 
   const tableRef = React.createRef();
-
+  
   const symbolColumns = [
     {field: 'symbol', title: 'Symbol' },
     {field: 'price', title: 'Price'},
@@ -65,6 +39,25 @@ function HomePage() {
     {field: 'marketCap',title: 'Market Cap'},
     {field: 'volume',title: 'Volume', type: "numeric" },
   ];
+
+
+// const symbolData = (query) => (
+//   new Promise((resolve,reject)=> {
+//     let url = "https://server/api/get/symbols?";
+//       //  url += "per_page=" + query.pageSize;
+//        // url += "&page=" + (query.page + 1);
+//        fetch(url)
+//         .then((response) => response.json())
+//         .then((result) => {
+//           resolve({
+//             data: result.data,
+//             page: result.page - 1,
+//             totalCount: result.total
+//           });
+//         });
+//   }));
+
+
 
   const symbolData = [
     {
@@ -95,7 +88,59 @@ function HomePage() {
     {field: 'usersCount',title: 'Users Count'}
   ];
 
-  const indexData = [
+
+  // const commonIndexData = (query) => (
+  //   new Promise((resolve,reject)=> {
+  //     let url = "https://server/api/get/index?";
+  //       //  url += "per_page=" + query.pageSize;
+  //        // url += "&page=" + (query.page + 1);
+  //        fetch(url)
+  //         .then((response) => response.json())
+  //         .then((result) => {
+  //           resolve({
+  //             data: result.data,
+  //             page: result.page - 1,
+  //             totalCount: result.total
+  //           });
+  //         });
+  //   }));
+
+
+  const commonIndexesData = [
+    {
+      "indexName":"index1",
+      "recommendedRating":"High",
+      "daysGain":"2.28%",
+      "usersCount":"50"
+    },
+    {
+      "indexName":"index2",
+      "recommendedRating":"Low",
+      "daysGain":"2.97%	",
+      "usersCount":"2"
+      }
+  ];
+
+
+
+  // const ownIndexData = (query) => (
+  //   new Promise((resolve,reject)=> {
+  //     let url = "https://server/api/get/index?";
+  //       //  url += "per_page=" + query.pageSize;
+  //        // url += "&page=" + (query.page + 1);
+  //        fetch(url)
+  //         .then((response) => response.json())
+  //         .then((result) => {
+  //           resolve({
+  //             data: result.data,
+  //             page: result.page - 1,
+  //             totalCount: result.total
+  //           });
+  //         });
+  //   }));
+
+
+  const ownIndexesData = [
     {
       "indexName":"index1",
       "recommendedRating":"High",
@@ -112,9 +157,14 @@ function HomePage() {
 
   const HandlePaymentRow = (event, rowData) => {
     console.log(rowData.indexName);
+    setShowBuyDialog(true);
+    console.log(buyIndexInput);
+
   }
   const HandleSellRow = (event, rowData) => {
     console.log(rowData.indexName);
+    setShowSellDialog(true);
+    console.log(buyIndexInput);
   }
 
 
@@ -126,16 +176,18 @@ function HomePage() {
 
 
 
-//  useEffect(() => {
-//   console.log("aa");
-//   handleGetSymbolsData();
-//   console.log(SymbolsData);
+ useEffect(() => {
+  console.log("aa");
+  //handleGetSymbolsData();
+  //console.log(SymbolsData);
 
-// },[])
+},[showBuyDialog]);
 
 
   return (
     <div>
+      <div>
+
       <h1>Home Page</h1>
 
       <ThemeProvider theme={defaultMaterialTheme}>
@@ -144,7 +196,7 @@ function HomePage() {
 
 
       <ThemeProvider theme={defaultMaterialTheme}>
-        <MaterialTable title="Best Indexes Table" columns={indexColumns} data={indexData} actions={[
+        <MaterialTable title="Best Indexes Table" columns={indexColumns} data={commonIndexesData} actions={[
           {
             icon:Payment,
             tooltip:'pay to buy it',
@@ -154,7 +206,7 @@ function HomePage() {
       </ThemeProvider>
 
       <ThemeProvider theme={defaultMaterialTheme}>
-        <MaterialTable title="My Own Indexes Table" columns={indexColumns} data={indexData} actions={[
+        <MaterialTable title="My Own Indexes Table" columns={indexColumns} data={ownIndexesData} actions={[
           {
             icon: HighlightOffIcon,
             tooltip:'sell this index',
@@ -164,7 +216,31 @@ function HomePage() {
       </ThemeProvider>
 
     </div>
+    {showBuyDialog && (
+        <BuyModalContainer
+//        {...props}
+        setShowBuyDialog={setShowBuyDialog}
+        buyIndexInput={buyIndexInput}
+        setBuyIndexInput={setBuyIndexInput}
+      />
+      )
+  }
+
+{showSellDialog && (
+        <SellModalContainer
+//        {...props}
+        setShowSellDialog={setShowSellDialog}
+        sellIndexInput={sellIndexInput}
+        setSellIndexInput={setSellIndexInput}
+      />
+      )
+  }
+    </div>
+
   );
 }
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<HomePage />);
 
 export default HomePage; 
