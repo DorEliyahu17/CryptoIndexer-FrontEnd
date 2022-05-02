@@ -5,19 +5,20 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
 import PropTypes from 'prop-types';
+import { unstable_composeClasses } from "@mui/material";
+import { ClassNames } from "@emotion/react";
 
 function CreateNewIndex() {
   
   const [listSymbolPercentLine, setlistSymbolPercentLine] =  useState([{name: '', percent: 0}, {name: '', percent: 0}]);
-  
+  const [disableButtomBackTest,setdisableButtomBackTest] = useState({state: true});
   useEffect(() => {
     listSymbolPercentLine.map((symbol, index) => {
       console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
     });
-
   }, [listSymbolPercentLine]);
   
-  const renderSymbolPercentLine = (boxIndex, symbolName = '', percent = 0) => (
+  const renderSymbolPercentLine = (boxIndex) => (
     <Box
       component="form"
       id={`box-${boxIndex}`}
@@ -38,8 +39,8 @@ function CreateNewIndex() {
         required
         id={`percent-${boxIndex}`}
         label="0"
-        value={0}
         placeholder="Percent"
+        type="number"
         onChange={(event) => handleOnChangePercent(event, boxIndex)}
       />
     </Box>
@@ -49,7 +50,7 @@ function CreateNewIndex() {
     let changedlistSymbolPercentLine = listSymbolPercentLine.map((listItem) => {
       return listItem;
     });
-    changedlistSymbolPercentLine.push({name:'' , percent: 0})
+    changedlistSymbolPercentLine.push({name: '', percent: 0})
     setlistSymbolPercentLine(changedlistSymbolPercentLine);
   };
   const handleOnClickRealse = () =>{
@@ -71,14 +72,30 @@ function CreateNewIndex() {
     changedSymbolsList[index].percent = event.target.value;
     setlistSymbolPercentLine(changedSymbolsList);
     console.log("Symbol.name="+listSymbolPercentLine[index].name+" NewSymbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
+    check_if_all_percent_complete()
+    
   };
+  const check_if_all_percent_complete = () => {
+    let sumPercent = 0;
+    listSymbolPercentLine.map((stock, index) => {
+      sumPercent += Number(stock.percent)
+    })
+  
+    if(sumPercent === 100) {
+      setdisableButtomBackTest({state:false})
+      console.log('sumPercent equal to 100 ' + sumPercent)}
+    else {
+      setdisableButtomBackTest({state:true})
+      console.log('sumPercent Not equal to 100 ' + sumPercent)}
+  }
 
   return (
     <div id="create-new-index-form">
       <div id="create-new-index-symbol-list">
           {listSymbolPercentLine.map((symbol, index) => {
-            console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
-            return renderSymbolPercentLine(index, symbol.name, symbol.percent);
+            console.log("Symbol.name="+symbol.name+"Symbol.percent="+symbol.percent+" LineIndex="+index);
+            console.log(disableButtomBackTest.state);
+            return renderSymbolPercentLine(index);
           })}
       </div>
         <Button variant="contained" id="add-new-SymbolPercentLine" onClick={handleOnClickAdd}>
@@ -93,7 +110,12 @@ function CreateNewIndex() {
           </Stack>
         : null
          }
+         <div> 
+         <Button disabled={disableButtomBackTest.state} variant="contained" id="BackTestButtom" /*onClick={handleOnClickAdd}*/>
+          Backtest
+        </Button> 
+         </div>
     </div>
-  )
+    )
 };
 export default CreateNewIndex;
