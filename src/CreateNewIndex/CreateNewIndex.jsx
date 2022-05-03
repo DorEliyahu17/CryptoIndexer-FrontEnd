@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
+import InputMask from "react-input-mask";
 import PropTypes from 'prop-types';
 import { unstable_composeClasses } from "@mui/material";
 import { ClassNames } from "@emotion/react";
@@ -25,24 +26,32 @@ function CreateNewIndex() {
       sx={{
         '& .MuiTextField-root': { m: 1, width: '25ch' },
       }}
-      noValidate
+      // noValidate
       autoComplete="off"
     >
-      <TextField
-        required
+      <InputMask 
+        mask="aaa" 
+        disabled={false}
+        maskChar=" "
         id={`symbol-${boxIndex}`}
-        label="Symbol Name"
-        placeholder="Symbol Name"
         onChange={(event) => handleOnChangeSymbol(event, boxIndex)}
-      />
-      <TextField
-        required
+        > 
+        {() => <TextField
+            required
+            label="Symbol Name"
+            placeholder="Symbol Name"/>}
+      </InputMask>
+      <InputMask 
+        mask="99" 
+        disabled={false}
+        maskChar=" "
         id={`percent-${boxIndex}`}
+        onChange={(event) => handleOnChangePercent(event, boxIndex)}>
+      {() => <TextField
+        required
         label="0"
-        placeholder="Percent"
-        type="number"
-        onChange={(event) => handleOnChangePercent(event, boxIndex)}
-      />
+        placeholder="Percent"/>}
+      </InputMask>
     </Box>
   );
 
@@ -73,7 +82,6 @@ function CreateNewIndex() {
     setlistSymbolPercentLine(changedSymbolsList);
     console.log("Symbol.name="+listSymbolPercentLine[index].name+" NewSymbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
     check_if_all_percent_complete()
-    
   };
   const check_if_all_percent_complete = () => {
     let sumPercent = 0;
