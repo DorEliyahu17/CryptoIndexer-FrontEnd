@@ -65,21 +65,26 @@ const Input = styled.input`
 `;
 
 
-function BuyModalContainer({ setShowBuyDialog, buyIndexInput, setBuyIndexInput }) {
-    const [localData, setLocalData] = useState(buyIndexInput);
-    const { countToBuy } = localData;
+function BuyModalContainer({ setShowBuyDialog, buyIndexInput, setBuyIndexInput, BuyIndex}) {
+    const [countToBuyModal, setcountToBuyModal]  = useState(0);
+    const initIndexName = "";
+    const initCountToBuy = 0;
+
     function close() {
         setShowBuyDialog(false);
     }
+
     function submit() {
-        setBuyIndexInput({
-        countToBuy,
-      });
+        BuyIndex(countToBuyModal).then((res) => {
+            setBuyIndexInput({
+                initIndexName,initCountToBuy
+                });
+          });
       close();
     }
     const content = new Array(1).fill(
       <p>
-            How many indexes do you want to buy? 
+            How many do you want to buy from {buyIndexInput.indexName} ?
       </p>,
     );
 
@@ -93,10 +98,10 @@ function BuyModalContainer({ setShowBuyDialog, buyIndexInput, setBuyIndexInput }
             {content}
             <label>
             countToBuy
-              <Input
-                value={countToBuy}
+              <input
+                value={countToBuyModal}
                 type="number"
-                onChange={e => setLocalData({ countToBuy: e.target.value })}
+                onChange={(e) => setcountToBuyModal(e.target.value)}
               />
             </label>
           </ModalContent>
@@ -109,21 +114,24 @@ function BuyModalContainer({ setShowBuyDialog, buyIndexInput, setBuyIndexInput }
     );
   }
 
-  function SellModalContainer({ setShowSellDialog, sellIndexInput, setSellIndexInput }) {
-    const [localData, setLocalData] = useState(sellIndexInput);
-    const { countToSell } = localData;
+  function SellModalContainer({ setShowSellDialog, sellIndexInput, setSellIndexInput, SellIndex }) {
+    const [countToSellModal, setcountToSellModal]  = useState(0);
+    const initIndexName = "";
+    const initCountToSell = 0;
     function close() {
         setShowSellDialog(false);
     }
     function submit() {
-        setSellIndexInput({
-        countToSell,
-      });
+        SellIndex(countToSellModal).then((res) => {
+            setSellIndexInput({
+                initIndexName,initCountToSell
+                });
+          });
       close();
     }
     const content = new Array(1).fill(
       <p>
-            How many indexes do you want to Sell? 
+            How many do you want to sell from {sellIndexInput.indexName} ?
       </p>,
     );
 
@@ -137,10 +145,10 @@ function BuyModalContainer({ setShowBuyDialog, buyIndexInput, setBuyIndexInput }
             {content}
             <label>
             countToSell
-              <Input
-                value={countToSell}
-                type="number"
-                onChange={e => setLocalData({ countToSell: e.target.value })}
+              <input
+                value={countToSellModal}
+                type="number" 
+                onChange={(e) => setcountToSellModal(e.target.value)}
               />
             </label>
           </ModalContent>

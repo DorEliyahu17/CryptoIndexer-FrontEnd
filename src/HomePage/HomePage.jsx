@@ -24,9 +24,9 @@ function HomePage() {
   const [SymbolsData, setSymbolsData] = useState([]);
   const defaultMaterialTheme = createTheme();
   const [showBuyDialog, setShowBuyDialog] = useState(false);
-  const [buyIndexInput, setBuyIndexInput] = useState({countToBuy: 0});
+  const [buyIndexInput, setBuyIndexInput] = useState({indexName: "", countToBuy: 0});
   const [showSellDialog, setShowSellDialog] = useState(false);
-  const [sellIndexInput, setSellIndexInput] = useState({countToSell: 0});
+  const [sellIndexInput, setSellIndexInput] = useState({indexName: "", countToSell: 0});
 
   const tableRef = React.createRef();
   
@@ -157,16 +157,36 @@ function HomePage() {
 
   const HandlePaymentRow = (event, rowData) => {
     console.log(rowData.indexName);
+    buyIndexInput.indexName = rowData.indexName;
     setShowBuyDialog(true);
-    console.log(buyIndexInput);
-
+    console.log(buyIndexInput.countToBuy);
+    //todo: send the rowData.indexName and buyIndexInput.countToBuy to BUY api
+    //buyIndexInput.countToBuy = 0;
+    //buyIndexInput.indexName = "";
   }
+
+  const BuyIndex = (countToBuy) => {
+    console.log(buyIndexInput.indexName);
+    console.log(countToBuy);
+    //todo: send the indexName and countToBuy to BUY api
+    return Promise.resolve();
+  }
+
   const HandleSellRow = (event, rowData) => {
     console.log(rowData.indexName);
+    sellIndexInput.indexName = rowData.indexName;
     setShowSellDialog(true);
-    console.log(buyIndexInput);
+    console.log(sellIndexInput.countToSell);
+    //todo: send the rowData.indexName and sellIndexInput.countToBuy to SELL api
+    //sellIndexInput.countToSell = 0;
+    //sellIndexInput.indexName = "";
   }
-
+ const SellIndex = (countToSell) => {
+  console.log(sellIndexInput.indexName);
+  console.log(countToSell);
+    //todo: send the indexName and countToSell to SELL api
+    return Promise.resolve();
+  }
 
   const handleGetSymbolsData = () => {
     //todo:
@@ -201,17 +221,22 @@ function HomePage() {
             icon:Payment,
             tooltip:'pay to buy it',
             onClick:(event, rowData) => HandlePaymentRow(event, rowData)
-        }
+          }
         ]} />;
       </ThemeProvider>
 
       <ThemeProvider theme={defaultMaterialTheme}>
         <MaterialTable title="My Own Indexes Table" columns={indexColumns} data={ownIndexesData} actions={[
-          {
+            {
+              icon:Payment,
+              tooltip:'pay to buy it',
+              onClick:(event, rowData) => HandlePaymentRow(event, rowData)
+            },
+            {
             icon: HighlightOffIcon,
             tooltip:'sell this index',
             onClick:(event, rowData) => HandleSellRow(event, rowData)
-        }
+          }
         ]} />;
       </ThemeProvider>
 
@@ -222,6 +247,7 @@ function HomePage() {
         setShowBuyDialog={setShowBuyDialog}
         buyIndexInput={buyIndexInput}
         setBuyIndexInput={setBuyIndexInput}
+        BuyIndex={BuyIndex}
       />
       )
   }
@@ -232,6 +258,7 @@ function HomePage() {
         setShowSellDialog={setShowSellDialog}
         sellIndexInput={sellIndexInput}
         setSellIndexInput={setSellIndexInput}
+        SellIndex={SellIndex}
       />
       )
   }
