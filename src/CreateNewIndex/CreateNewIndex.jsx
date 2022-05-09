@@ -11,13 +11,14 @@ import { ClassNames } from "@emotion/react";
 
 function CreateNewIndex() {
   
-  const [listSymbolPercentLine, setlistSymbolPercentLine] =  useState([{name: '', percent: 0}, {name: '', percent: 0}]);
-  const [disableButtomBackTest,setdisableButtomBackTest] = useState({state: true});
-  useEffect(() => {
-    listSymbolPercentLine.map((symbol, index) => {
-      console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
-    });
-  }, [listSymbolPercentLine]);
+  const [listSymbolPercentLine, setlistSymbolPercentLine] =  useState([{name: '', percent: 0}, {name: '', percent:0}]);
+  const [disableButtomBackTestSymbol,setdisableButtomBackTestSymbol] = useState({state: true});
+  const [disableButtomBackTestPercent,setdisableButtomBackTestPercent] = useState({state: true});
+  // useEffect(() => {
+  //   listSymbolPercentLine.map((symbol, index) => {
+  //     console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
+  //   });
+  // }, [listSymbolPercentLine]);
   
   const renderSymbolPercentLine = (boxIndex) => (
     <Box
@@ -73,36 +74,43 @@ function CreateNewIndex() {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].name = event.target.value; 
     setlistSymbolPercentLine(changedSymbolsList);
-    console.log("NewSymbol.name="+listSymbolPercentLine[index].name+" Symbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
+    // console.log("NewSymbol.name= "+listSymbolPercentLine[index].name+" Symbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
+    // console.log("event symbol is: " + event.target.value)
+    check_if_all_symbol_complete()
   };
+  const check_if_all_symbol_complete = () => {
+    listSymbolPercentLine.map((stock,index) => {
+      (stock.name !== '' && stock.name !== null) ? setdisableButtomBackTestSymbol({state:false}) : setdisableButtomBackTestSymbol({state:true});
+    })
+    console.log("disableButtomBackTestSymbol state is: " +disableButtomBackTestSymbol.state)
+  }
 
   const handleOnChangePercent = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].percent = event.target.value;
     setlistSymbolPercentLine(changedSymbolsList);
-    console.log("Symbol.name="+listSymbolPercentLine[index].name+" NewSymbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
+    // console.log("Symbol.name="+listSymbolPercentLine[index].name+" NewSymbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
     check_if_all_percent_complete()
   };
   const check_if_all_percent_complete = () => {
     let sumPercent = 0;
     listSymbolPercentLine.map((stock, index) => {
-      sumPercent += Number(stock.percent)
+      sumPercent += Number(stock.percent);
     })
-  
     if(sumPercent === 100) {
-      setdisableButtomBackTest({state:false})
-      console.log('sumPercent equal to 100 ' + sumPercent)}
+      setdisableButtomBackTestPercent({state:false})}
+      // console.log('sumPercent equal to 100 ' + sumPercent)
     else {
-      setdisableButtomBackTest({state:true})
-      console.log('sumPercent Not equal to 100 ' + sumPercent)}
-  }
+      setdisableButtomBackTestPercent({state:true})}
+      // console.log('sumPercent Not equal to 100 ' + sumPercent)
+      console.log("disableButtomBackTestPercent state is: " + disableButtomBackTestPercent.state)
+    }
 
   return (
     <div id="create-new-index-form">
       <div id="create-new-index-symbol-list">
           {listSymbolPercentLine.map((symbol, index) => {
             console.log("Symbol.name="+symbol.name+"Symbol.percent="+symbol.percent+" LineIndex="+index);
-            console.log(disableButtomBackTest.state);
             return renderSymbolPercentLine(index);
           })}
       </div>
@@ -119,7 +127,7 @@ function CreateNewIndex() {
         : null
          }
          <div> 
-         <Button disabled={disableButtomBackTest.state} variant="contained" id="BackTestButtom" /*onClick={handleOnClickAdd}*/>
+         <Button disabled={disableButtomBackTestSymbol.state||disableButtomBackTestPercent.state} variant="contained" id="BackTestButtom" /*onClick={handleOnClickAdd}*/>
           Backtest
         </Button> 
          </div>
