@@ -14,11 +14,6 @@ function CreateNewIndex() {
   const [listSymbolPercentLine, setlistSymbolPercentLine] =  useState([{name: '', percent: 0}, {name: '', percent:0}]);
   const [disableButtomBackTestSymbol,setdisableButtomBackTestSymbol] = useState({state: true});
   const [disableButtomBackTestPercent,setdisableButtomBackTestPercent] = useState({state: true});
-  // useEffect(() => {
-  //   listSymbolPercentLine.map((symbol, index) => {
-  //     console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
-  //   });
-  // }, [listSymbolPercentLine]);
   
   const renderSymbolPercentLine = (boxIndex) => (
     <Box
@@ -27,7 +22,6 @@ function CreateNewIndex() {
       sx={{
         '& .MuiTextField-root': { m: 1, width: '25ch' },
       }}
-      // noValidate
       autoComplete="off"
     >
       <InputMask 
@@ -74,8 +68,7 @@ function CreateNewIndex() {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].name = event.target.value; 
     setlistSymbolPercentLine(changedSymbolsList);
-    // console.log("NewSymbol.name= "+listSymbolPercentLine[index].name+" Symbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
-    // console.log("event symbol is: " + event.target.value)
+    console.log("NewSymbol.name= "+listSymbolPercentLine[index].name+" Symbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
     check_if_all_symbol_complete()
   };
   const check_if_all_symbol_complete = () => {
@@ -89,7 +82,7 @@ function CreateNewIndex() {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].percent = event.target.value;
     setlistSymbolPercentLine(changedSymbolsList);
-    // console.log("Symbol.name="+listSymbolPercentLine[index].name+" NewSymbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
+    console.log("Symbol.name="+listSymbolPercentLine[index].name+" NewSymbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
     check_if_all_percent_complete()
   };
   const check_if_all_percent_complete = () => {
@@ -99,11 +92,8 @@ function CreateNewIndex() {
     })
     if(sumPercent === 100) {
       setdisableButtomBackTestPercent({state:false})}
-      // console.log('sumPercent equal to 100 ' + sumPercent)
     else {
       setdisableButtomBackTestPercent({state:true})}
-      // console.log('sumPercent Not equal to 100 ' + sumPercent)
-      console.log("disableButtomBackTestPercent state is: " + disableButtomBackTestPercent.state)
     }
 
   return (
