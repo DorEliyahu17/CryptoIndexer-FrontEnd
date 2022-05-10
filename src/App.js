@@ -1,41 +1,41 @@
 import Navbar from "./Components/Navbar";
-import logo from "./logo.svg";
-
-import Button from "@mui/material/Button";
+import React from "react";
+import { Route } from "react-router";
+import { BrowserRouter, Routes } from "react-router-dom";
+import HomePage from "./HomePage/HomePage";
+import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
+import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
+import Login from "./Login/Login"
+import Register from "./Register/Register"
 
 import "./App.css";
 
 function App() {
-  // let isGay = true;
-  // let nameOfGay = "Matan";
-
-  // const handleOnClickMatanGay = (nameOfGayToBeNotGay) => {
-  //   if (nameOfGayToBeNotGay === nameOfGay) {
-  //     isGay = !isGay;
-  //   }
-  //   console.log("Is " + nameOfGay + " Gay? " + isGay);
-  // };
 
 
   return (
     <div className='App'>
-      <Navbar />
-      <Button> Hello World </Button>
-      {/* <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
-      </header> */}
-      {/* <HomePage /> */}
+      <Navbar
+        pages={[
+          { name: "Create New Index", href: "/create-new-index" },
+          { name: "Explorer Indexes", href: "/explorer-indexes" },
+          { name: "Login", href: "/login" },
+          { name: "Register", href: "/register" },
+        ]}
+        settings={[
+          { name: "Login", href: "/login" },
+          { name: "Register", href: "/register" },
+        ]}
+      />
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<HomePage />} />
+          <Route path='/create-new-index' element={<CreateNewIndex />} />
+          <Route path='/explorer-indexes' element={<ExplorerIndexes />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+        </Routes>
+      </BrowserRouter>
     </div>
 
 

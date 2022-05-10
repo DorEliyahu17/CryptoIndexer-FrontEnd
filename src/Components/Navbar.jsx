@@ -27,7 +27,7 @@ const defaultProps = {
 };
 
 function Navbar(props) {
-  const {pages, settings} = props;
+  const { pages, settings } = props;
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -55,6 +55,7 @@ function Navbar(props) {
             noWrap
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            href='/'
           >
             LOGO
           </Typography>
@@ -100,6 +101,7 @@ function Navbar(props) {
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+            href='/'
           >
             LOGO
           </Typography>
