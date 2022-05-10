@@ -1,4 +1,4 @@
-//import React, {useEffect, useState} from "react";
+
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -14,6 +14,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 
 function Copyright(props: any) {
@@ -56,7 +57,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Crate New Account
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -64,7 +65,7 @@ export default function SignIn() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Name"
               name="email"
               autoComplete="email"
               autoFocus
@@ -74,35 +75,43 @@ export default function SignIn() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Date of birth"
               type="password"
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+
+              <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Gender"
+              type="password"
+              id="password"
+              autoComplete="current-password"
             />
+              <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="New Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
-            
+              Sign UP
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
+       
             </Grid>
           </Box>
         </Box>

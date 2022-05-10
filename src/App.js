@@ -12,12 +12,15 @@ import "./App.css";
 
 function App() {
 
+
   return (
     <div className='App'>
       <Navbar
         pages={[
           { name: "Create New Index", href: "/create-new-index" },
           { name: "Explorer Indexes", href: "/explorer-indexes" },
+          { name: "Login", href: "/login" },
+          { name: "Register", href: "/register" },
         ]}
         settings={[
           { name: "Login", href: "/login" },
@@ -34,6 +37,8 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+
+
   );
 }
 
