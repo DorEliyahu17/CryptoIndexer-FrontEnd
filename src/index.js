@@ -10,6 +10,7 @@ import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
 import Login from "./Login/Login"
 import Register from "./Register/Register"
+import ForgotPassword from "./ForgotPassword/ForgotPassword"
 import App from "./App";
 
 import "./index.css";
@@ -22,6 +23,7 @@ root.render(
       pages={[
         { name: "Create New Index", href: "/create-new-index" },
         { name: "Explorer Indexes", href: "/explorer-indexes" },
+        { name: "Login", href: "/login" },
       ]}
       settings={[
         { name: "Login", href: "/login" },

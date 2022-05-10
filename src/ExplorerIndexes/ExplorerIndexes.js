@@ -1,157 +1,163 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
 import StarIcon from '@mui/icons-material/StarBorder';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Drawer, { DrawerProps } from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
-import DnsRoundedIcon from '@mui/icons-material/DnsRounded';
-import PermMediaOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActual';
-import PublicIcon from '@mui/icons-material/Public';
-import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
-import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
-import TimerIcon from '@mui/icons-material/Timer';
-import SettingsIcon from '@mui/icons-material/Settings';
-import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
 
-function Copyright(props: any) {
+function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        CryptoIndexer
+      CryptoIndexer
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
   );
 }
-const categories = [
-  {
-    id: 'Build',
-    children: [
-      {
-        id: 'Authentication',
-        icon: <PeopleIcon />,
-        active: true,
-      },
-      { id: 'Database', icon: <DnsRoundedIcon /> },
-      { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
-      { id: 'Hosting', icon: <PublicIcon /> },
-      { id: 'Functions', icon: <SettingsEthernetIcon /> },
-      {
-        id: 'Machine learning',
-        icon: <SettingsInputComponentIcon />,
-      },
-    ],
-  },
-  {
-    id: 'Quality',
-    children: [
-      { id: 'Analytics', icon: <SettingsIcon /> },
-      { id: 'Performance', icon: <TimerIcon /> },
-      { id: 'Test Lab', icon: <PhonelinkSetupIcon /> },
-    ],
-  },
-];
-
-const item = {
-  py: '2px',
-  px: 3,
-  color: 'rgba(255, 255, 255, 0.7)',
-  '&:hover, &:focus': {
-    bgcolor: 'rgba(255, 255, 255, 0.08)',
-  },
-};
-
-const itemCategory = {
-  boxShadow: '0 -1px 0 rgb(255,255,255,0.1) inset',
-  py: 1.5,
-  px: 3,
-};
 
 const tiers = [
   {
-    title: '3 rd - Tether ',
+    title: '2 nd',
     price: '0',
     description: [
-      '10 users included',
-      '2 GB of storage',
-      'Help center access',
-      'Email support',
+      'This is an example of a description written by the author of the index',
     ],
-    buttonText: 'See more details',
-    buttonVariant: 'outlined',
   },
   {
-    title: 'First Place - Bitcoin ',
+    title: '1 st',
     subheader: 'Most popular',
     price: '15+',
     description: [
-      '20 users included',
-      '10 GB of storage',
-      'Help center access',
-      'Priority email support',
+      'This is an example of a description written by the author of the index',
+    ],
+
+  },
+  {
+    title: '3 rd',
+    price: '10+',
+    description: [
+      'This is an example of a description written by the author of the index',
+    ],
+
+  },
+  {
+    title: 'Nasdaq Crypto Index',
+    price: '23+',
+    description: [
+      'This is an example of a description written by the author of the index',
     ],
     buttonText: 'See more details',
     buttonVariant: 'contained',
   },
   {
-    title: '2 nd - Ethereum ',
-    price: '30+',
+    title: 'Crypto10',
+    price: '12+',
     description: [
-      '50 users included',
-      '30 GB of storage',
-      'Help center access',
-      'Phone & email support',
+      'This is an example of a description written by the author of the index',
     ],
     buttonText: 'See more details',
-    buttonVariant: 'outlined',
+    buttonVariant: 'contained',
   },
   {
-    title: 'Noa Dikmans Indexe',
-    price: '30+',
+    title: 'Bitwise 10',
+    price: '30',
     description: [
-      '50 users included',
-      '30 GB of storage',
-      'Help center access',
-      'Phone & email support',
+      'This is an example of a description written by the author of the index',
     ],
     buttonText: 'See more details',
-    buttonVariant: 'outlined',
+    buttonVariant: 'contained',
+  },
+  {
+    title: 'CRYPTO20',
+    price: '22+',
+    description: [
+      'This is an example of a description written by the author of the index',
+    ],
+    buttonText: 'See more details',
+    buttonVariant: 'contained',
+  },
+  {
+    title: 'SPBTC',
+    price: '2.5+',
+    description: [
+      'This is an example of a description written by the author of the index',
+    ],
+    buttonText: 'See more details',
+    buttonVariant: 'contained',
+  },
+  {
+    title: 'DeFi Pulse Index',
+    price: '11+',
+    description: [
+      'This is an example of a description written by the author of the index',
+    ],
+    buttonText: 'See more details',
+    buttonVariant: 'contained',
+  },
+  {
+    title: 'SPCMC',
+    price: '7+',
+    description: [
+      'This is an example of a description written by the author of the index',
+    ],
+    buttonText: 'See more details',
+    buttonVariant: 'contained',
+  },
+  {
+    title: 'All Crypto Index',
+    price: '8+',
+    description: [
+      'This is an example of a description written by the author of the index',
+    ],
+    buttonText: 'See more details',
+    buttonVariant: 'contained',
+  },
+  {
+    title: 'Major Crypto Index',
+    price: '30+',
+    description: [
+      'This is an example of a description written by the author of the index',
+    ],
+    buttonText: 'See more details',
+    buttonVariant: 'contained',
   },
 ];
+
 const footers = [
-
-
+ 
 ];
 
-function PricingContent(props: DrawerProps) {
-    const { ...other } = props;
+function PricingContent() {
   return (
     <React.Fragment>
       <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
       <CssBaseline />
-
-
+      <AppBar
+        position="static"
+        color="default"
+        elevation={0}
+        sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+      >
+      </AppBar>
       {/* Hero unit */}
       <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>
         <Typography
@@ -161,11 +167,11 @@ function PricingContent(props: DrawerProps) {
           color="text.primary"
           gutterBottom
         >
-          community
+          Community
         </Typography>
+        
         <Typography variant="h5" align="center" color="text.secondary" component="p">
-
-        In the Community Feature check out this week's visitor indexes
+         Look in the community for indexes created by your friends..
         </Typography>
       </Container>
       {/* End hero unit */}
@@ -226,10 +232,7 @@ function PricingContent(props: DrawerProps) {
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    fullWidth
-                    //variant={tier.buttonVariant as 'outlined' | 'contained'}
-                  >
+                  <Button fullWidth variant={tier.buttonVariant}>
                     {tier.buttonText}
                   </Button>
                 </CardActions>
@@ -269,42 +272,46 @@ function PricingContent(props: DrawerProps) {
         <Copyright sx={{ mt: 5 }} />
       </Container>
       {/* End footer */}
-      <Drawer variant="permanent" {...other}>
-      <List disablePadding>
-        <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
-          Paperbase
-        </ListItem>
-        <ListItem sx={{ ...item, ...itemCategory }}>
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText>Project Overview</ListItemText>
-        </ListItem>
-        {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: '#101F33' }}>
-            <ListItem sx={{ py: 2, px: 3 }}>
-              <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
-            </ListItem>
-            {children.map(({ id: childId, icon, active }) => (
-            {children.map(({ id: childId, icon, active }) => (
-              <ListItem disablePadding key={childId}>
-                <ListItemButton selected={active} sx={item}>
-                  <ListItemIcon>{icon}</ListItemIcon>
-                  <ListItemText>{childId}</ListItemText>
-                </ListItemButton>
-              </ListItem>
-            ))}
-            <Divider sx={{ mt: 2 }} />
-          </Box>
-        ))}
-      </List>
-    </Drawer>
     </React.Fragment>
-    
   );
 }
 
 
-export default function Pricing() {
-  return <PricingContent />;
+export default function Content() {
+  return (
+    
+    <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
+      <AppBar
+        position="static"
+        color="default"
+        elevation={0}
+        sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
+      >
+        <Toolbar>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item>
+              <SearchIcon color="inherit" sx={{ display: 'block' }} />
+            </Grid>
+            <Grid item xs>
+              <TextField
+                fullWidth
+                placeholder="Search by email address, phone number, or user UID"
+                InputProps={{
+                  disableUnderline: true,
+                  sx: { fontSize: 'default' },
+                }}
+                variant="standard"
+              />
+            </Grid>
+            <Grid item>
+              <Button variant="contained" sx={{ mr: 1 }}>
+                Search
+              </Button>
+            </Grid>
+            <PricingContent />
+          </Grid>
+        </Toolbar>
+      </AppBar>
+    </Paper>
+  );
 }

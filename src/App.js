@@ -16,6 +16,7 @@ function App() {
   //   console.log("Is " + nameOfGay + " Gay? " + isGay);
   // };
 
+
   return (
     <div className='App'>
       <Navbar />
@@ -36,6 +37,8 @@ function App() {
       </header> */}
       {/* <HomePage /> */}
     </div>
+
+
   );
 }
 
