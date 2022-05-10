@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom/client";
+// import ReactDOM from "react-dom/client";
 import PropTypes from 'prop-types';
 import { Table } from "@mui/material";
-import MaterialTable from "material-table";
 import { ThemeProvider, createTheme } from '@mui/material';
 import { ButtonUnstyled } from "@mui/base";
 import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
-
-import './HomePage.less';
-
 //mu-icons
 
 //import Remove from '@material-ui/icons/Remove';
 //import { Delete } from "@material-ui/icons";
 import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import MaterialTable from "material-table";
 
-
-
+import './HomePage.less';
 
 function HomePage() {
   const [example, setExample] = useState(false);
@@ -28,7 +24,7 @@ function HomePage() {
   const [showSellDialog, setShowSellDialog] = useState(false);
   const [sellIndexInput, setSellIndexInput] = useState({ indexName: "", countToSell: 0 });
 
-  const tableRef = React.createRef();
+  // const tableRef = React.createRef();
 
   const symbolColumns = [
     { field: 'symbol', title: 'Symbol' },
@@ -207,7 +203,6 @@ function HomePage() {
   return (
     <div>
       <div>
-
         <h1>Home Page</h1>
 
         <ThemeProvider theme={defaultMaterialTheme}>
@@ -250,9 +245,7 @@ function HomePage() {
           setBuyIndexInput={setBuyIndexInput}
           BuyIndex={BuyIndex}
         />
-      )
-      }
-
+      )}
       {showSellDialog && (
         <BuyOrSellModal
           //        {...props}
@@ -262,13 +255,12 @@ function HomePage() {
           setSellIndexInput={setSellIndexInput}
           SellIndex={SellIndex}
         />
-      )
-      }
+      )}
     </div>
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<HomePage />);
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(<HomePage />);
 
 export default HomePage; 

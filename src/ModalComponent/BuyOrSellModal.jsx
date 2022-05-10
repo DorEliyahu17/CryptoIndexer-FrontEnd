@@ -5,7 +5,7 @@ import SellModalContainer from "./SellModalContainer";
 //import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 import ReactDOM from 'react-dom';
 
-import './BuyModalContainer.less'
+import './BuyOrSellModal.less'
 
 const propTypes = {
   isBuyModal: PropTypes.bool.isRequired,
