@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React,{ useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -6,10 +6,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -146,7 +143,15 @@ const footers = [
  
 ];
 
-function PricingContent() {
+function PricingContent(props) {
+  const { search } = props;
+  const [filterTiers, setFilterTiers] = useState(tiers);
+
+  useEffect(()=>{
+    const temp = tiers.filter((tier) => tier.title.toLocaleLowerCase().includes(search))
+    setFilterTiers(temp)
+  },[search])
+
   return (
     <React.Fragment>
       <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
@@ -177,7 +182,7 @@ function PricingContent() {
       {/* End hero unit */}
       <Container maxWidth="md" component="main">
         <Grid container spacing={5} alignItems="flex-end">
-          {tiers.map((tier) => (
+          {filterTiers.map((tier) => (
             // Enterprise card is full width at sm breakpoint
             <Grid
               item
@@ -278,8 +283,8 @@ function PricingContent() {
 
 
 export default function Content() {
+  const [search, setSearch] = useState('');
   return (
-    
     <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
         position="static"
@@ -300,15 +305,11 @@ export default function Content() {
                   disableUnderline: true,
                   sx: { fontSize: 'default' },
                 }}
+                onChange={(e)=> setSearch(e.target.value)}
                 variant="standard"
               />
             </Grid>
-            <Grid item>
-              <Button variant="contained" sx={{ mr: 1 }}>
-                Search
-              </Button>
-            </Grid>
-            <PricingContent />
+            <PricingContent search={search}/>
           </Grid>
         </Toolbar>
       </AppBar>
