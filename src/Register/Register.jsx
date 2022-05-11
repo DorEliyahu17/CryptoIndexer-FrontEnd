@@ -57,16 +57,16 @@ function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Crate New Account
+            Create New Account
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
+              id="Name"
               label="Name"
-              name="email"
+              name="Name"
               autoComplete="email"
               autoFocus
             />
@@ -76,19 +76,8 @@ function SignIn() {
               fullWidth
               name="Date"
               label="Date of birth"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-
-              <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="Gender"
-              label="Gender"
-              type="password"
-              id="password"
+              id="Date"
+              type="date"
               autoComplete="current-password"
             />
               <TextField
@@ -97,9 +86,7 @@ function SignIn() {
               fullWidth
               name="Date"
               label="E-mail"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              id="Date"
             />
               <TextField
               margin="normal"
