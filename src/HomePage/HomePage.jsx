@@ -14,9 +14,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';  
-import TableContainer from '@material-ui/core/TableContainer';  
-import TextField from  '@material-ui/core/TextField';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableContainer from '@material-ui/core/TableContainer';
+import TextField from '@material-ui/core/TextField';
 
 
 //MUIDataTable
@@ -59,9 +59,9 @@ function HomePage(props) {
   const [sellIndexInput, setSellIndexInput] = useState({ indexName: "", countToSell: 0 });
 
   //const classes = useStyles();  
-  const [page, setPage] = React.useState(0);  
-  const [data, setData] = useState([]);  
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);  
+  const [page, setPage] = React.useState(0);
+  const [data, setData] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   // const tableRef = React.createRef();
 
@@ -120,93 +120,105 @@ function HomePage(props) {
 
   //COLUMNS
 
-  const symbolColumns = ['Symbol','Price','Days gain(%)','Day Low','Day High', 'Market Cap','Volume' ];
+  const symbolColumns = ['Symbol', 'Price', 'Days gain(%)', 'Day Low', 'Day High', 'Market Cap', 'Volume'];
 
   const commonIndexColumns = [
-    {name: "Payment",options: {customBodyRender: (value, tableMeta, updateValue) => {
-      return (
-        <button onClick={() => {HandlePaymentRow(tableMeta)}}>
-            <Payment color="primary" />
-        </button>
-      );
-    } }},
-  'Index Name','Recommended rating','Days gain(%)','Users Count'];
+    {
+      name: "Payment", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandlePaymentRow(tableMeta) }}>
+              <Payment color="primary" />
+            </button>
+          );
+        }
+      }
+    },
+    'Index Name', 'Recommended rating', 'Days gain(%)', 'Users Count'];
 
   const ownIndexColumns = [
-    {name: "Payment",options: {customBodyRender: (value, tableMeta, updateValue) => {
-      return (
-        <button onClick={() => {HandlePaymentRow(tableMeta)}}>
-            <Payment color="primary" />
-        </button>
-      );
-    } }},
-    {name: "Sell",options: {customBodyRender: (value, tableMeta, updateValue) => {
-      return (
-        <button onClick={() => {HandleSellRow(tableMeta)}}>
-          <HighlightOffIcon color="secondary"/>
-        </button>
-      );
-    } }},
-  'Index Name','Recommended rating','Days gain(%)','Users Count'];
+    {
+      name: "Payment", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandlePaymentRow(tableMeta) }}>
+              <Payment color="primary" />
+            </button>
+          );
+        }
+      }
+    },
+    {
+      name: "Sell", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandleSellRow(tableMeta) }}>
+              <HighlightOffIcon color="secondary" />
+            </button>
+          );
+        }
+      }
+    },
+    'Index Name', 'Recommended rating', 'Days gain(%)', 'Users Count'];
 
 
   //OPTIONS
   const symbolOptions = {
     //filterType: "checkbox",        
-    rowsPerPage:[3],
-    rowsPerPageOptions:[3,5,10,15],
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
     selectableRowsHideCheckboxes: true,
-    onChangePage (currentPage) {
-      console.log({currentPage});
+    onChangePage(currentPage) {
+      console.log({ currentPage });
     },
-    onChangeRowsPerPage (numberOfRows) {
-      console.log({numberOfRows});
+    onChangeRowsPerPage(numberOfRows) {
+      console.log({ numberOfRows });
     }
   };
 
   const ownIndexesOptions = {
     //filterType: "checkbox",        
-    rowsPerPage:[3],
-    rowsPerPageOptions:[3,5,10,15],
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
     selectableRowsHideCheckboxes: true,
-    onChangePage (currentPage) {
-      console.log({currentPage});
+    onChangePage(currentPage) {
+      console.log({ currentPage });
     },
-    onChangeRowsPerPage (numberOfRows) {
-      console.log({numberOfRows});
+    onChangeRowsPerPage(numberOfRows) {
+      console.log({ numberOfRows });
     }
   };
 
   const commonIndexesOptions = {
     //filterType: "checkbox",        
-    rowsPerPage:[3],
-    rowsPerPageOptions:[3,5,10,15],
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
     selectableRowsHideCheckboxes: true,
-    onChangePage (currentPage) {
-      console.log({currentPage});
+    onChangePage(currentPage) {
+      console.log({ currentPage });
     },
-    onChangeRowsPerPage (numberOfRows) {
-      console.log({numberOfRows});
+    onChangeRowsPerPage(numberOfRows) {
+      console.log({ numberOfRows });
     }
   };
 
-//DATA
+  //DATA
 
   const symbolData = [
-    ["BTC", "$40,038.60","2.28%", "$40,028.60", "$40,138.60","$761,877,839,620","$33,368,145,255"],
-    ["ETH", "$2,956.03","2.97%", "$2,950.00", "$2,986.03","$356,678,709,989","$18,253,003,101"]
+    ["BTC", "$40,038.60", "2.28%", "$40,028.60", "$40,138.60", "$761,877,839,620", "$33,368,145,255"],
+    ["ETH", "$2,956.03", "2.97%", "$2,950.00", "$2,986.03", "$356,678,709,989", "$18,253,003,101"]
   ];
 
 
-const commonIndexesData = [
-  [,"index1", "High","2.28%", "50"],
-  [,"index2", "Low","2.97%", "2"]
-];
+  const commonIndexesData = [
+    [, "index1", "High", "2.28%", "50"],
+    [, "index2", "Low", "2.97%", "2"]
+  ];
 
-const ownIndexesData = [
-  [,,"index1", "High","2.28%", 50],
-  [,,"index2", "Low","2.97%", 2]
-];
+  const ownIndexesData = [
+    [, , "index1", "High", "2.28%", 50],
+    [, , "index2", "Low", "2.97%", 2]
+  ];
 
 
 
@@ -254,15 +266,15 @@ const ownIndexesData = [
   // const handleChangePage = (event, newPage) => {  
   //   setPage(newPage);  
   // };  
-  
+
   // const handleChangeRowsPerPage = event => {  
   //   setRowsPerPage(+event.target.value);  
   //   setPage(0);  
   // }; 
 
-// const handleChangePaymentRow = (event, buyIndexRow) => {  
-//   setBuyIndexInput(buyIndexRow);  
-// };  
+  // const handleChangePaymentRow = (event, buyIndexRow) => {  
+  //   setBuyIndexInput(buyIndexRow);  
+  // };  
 
 
 
