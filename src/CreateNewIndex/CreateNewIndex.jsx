@@ -15,6 +15,7 @@ function CreateNewIndex() {
   const [disableButtomBackTestSymbol, setdisableButtomBackTestSymbol] = useState({ state: true });
   const [disableButtomBackTestPercent, setdisableButtomBackTestPercent] = useState({ state: true });
 
+
   const renderSymbolPercentLine = (boxIndex) => (
     <Box
       component="form"
@@ -97,7 +98,21 @@ function CreateNewIndex() {
       setdisableButtomBackTestPercent({ state: true })
     }
   }
-
+  const runBacktest = () =>{
+    let symbol_to_price = {}
+    listSymbolPercentLine.forEach(record => 
+      symbol_to_price[record.name] = record.percent)
+    
+    console.log(symbol_to_price)
+    fetch('http://localhost:5000/api/create-new-index',{
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(symbol_to_price)
+    })
+    .then(response => console.log(response.json()))
+  }
   return (
     <div id="create-new-index-form">
       <div id="create-new-index-symbol-list">
@@ -119,7 +134,7 @@ function CreateNewIndex() {
         : null
       }
       <div>
-        <Button disabled={disableButtomBackTestSymbol.state || disableButtomBackTestPercent.state} variant="contained" id="BackTestButtom" /*onClick={handleOnClickAdd}*/>
+        <Button disabled={disableButtomBackTestSymbol.state || disableButtomBackTestPercent.state} variant="contained" id="BackTestButtom" onClick={runBacktest}>
           Backtest
         </Button>
       </div>
