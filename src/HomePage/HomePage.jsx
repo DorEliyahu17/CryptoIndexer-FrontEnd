@@ -6,7 +6,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { ThemeProvider, createTheme, IconButton } from '@mui/material';
 import { ButtonUnstyled } from "@mui/base";
 import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
-
 //mui-table
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -17,15 +16,9 @@ import Paper from '@material-ui/core/Paper';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableContainer from '@material-ui/core/TableContainer';
 import TextField from '@material-ui/core/TextField';
-
-
 //MUIDataTable
 import MUIDataTable from "mui-datatables";
-
-
-
 //mu-icons
-
 //import Remove from '@material-ui/icons/Remove';
 import { Delete } from "@material-ui/icons";
 import { Payment } from "@material-ui/icons";
@@ -288,33 +281,30 @@ function HomePage(props) {
 
   return (
     <div>
-      <div>
-        <h1>Home Page</h1>
-
-
+      <h1 style={{ marginBottom: '30px' }}>Home Page</h1>
+      <div style={{ marginBottom: '30px' }}>
         <MUIDataTable
           title={"Symbols Table"}
           data={symbolData}
           columns={symbolColumns}
           options={symbolOptions}
         />
-
+      </div>
+      <div style={{ marginBottom: '30px' }}>
         <MUIDataTable
+          style={{ marginBottom: '30px' }}
           title={"Best Indexes Table"}
           data={commonIndexesData}
           columns={commonIndexColumns}
           options={commonIndexesOptions}
         />
-
-        <MUIDataTable
-          title={"Own Indexes Table"}
-          data={ownIndexesData}
-          columns={ownIndexColumns}
-          options={ownIndexesOptions}
-        />
-
-
       </div>
+      <MUIDataTable
+        title={"Own Indexes Table"}
+        data={ownIndexesData}
+        columns={ownIndexColumns}
+        options={ownIndexesOptions}
+      />
       {showBuyDialog && (
         <BuyOrSellModal
           //        {...props}
@@ -338,8 +328,5 @@ function HomePage(props) {
     </div>
   );
 }
-
-// const root = ReactDOM.createRoot(document.getElementById('root'));
-// root.render(<HomePage />);
 
 export default HomePage; 
