@@ -6,13 +6,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
 import InputMask from "react-input-mask";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import PropTypes from 'prop-types';
 import { unstable_composeClasses } from "@mui/material";
 import { ClassNames } from "@emotion/react";
+import Charts from '../Components/Charts'
+
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function CreateNewIndex() {
   const [listSupportedSymbols, setListSupportedSymbols] = useState([]);
+  const [indexName, setIndexName] = useState('');
   const [listSymbolPercentLine, setListSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
   const [disableButtomBackTestSymbol, setDisableButtomBackTestSymbol] = useState(true);
   const [disableButtomBackTestPercent, setDisableButtomBackTestPercent] = useState(true);
@@ -93,22 +97,29 @@ function CreateNewIndex() {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].name = event.target.value;
     setListSymbolPercentLine(changedSymbolsList);
-    console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
+    // console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
     check_if_all_symbol_complete()
+  };
+
+  const handleOnChangeIndexName = (event) => {
+    setIndexName(event.target.value);
+    // setListSymbolPercentLine(changedSymbolsList);
+    // console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
+    // check_if_all_symbol_complete()
   };
 
   const check_if_all_symbol_complete = () => {
     listSymbolPercentLine.map((stock, index) => {
       (stock.name !== '' && stock.name !== null) ? setDisableButtomBackTestSymbol(false) : setDisableButtomBackTestSymbol(true);
     })
-    console.log("disableButtomBackTestSymbol state is: " + disableButtomBackTestSymbol)
+    // console.log("disableButtomBackTestSymbol state is: " + disableButtomBackTestSymbol)
   };
 
   const handleOnChangePercent = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].percent = event.target.value;
     setListSymbolPercentLine(changedSymbolsList);
-    console.log("Symbol.name=" + listSymbolPercentLine[index].name + " NewSymbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
+    // console.log("Symbol.name=" + listSymbolPercentLine[index].name + " NewSymbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
     check_if_all_percent_complete()
   };
 
@@ -183,13 +194,24 @@ function CreateNewIndex() {
     }
   };
 
-  const renderBacktestChart = () => {
-    return <h1>Backtest data received</h1>
-  }
-
   return (
     <div id="create-new-index-form">
       <div id="create-new-index-symbol-list">
+        <Box
+          component="form"
+          id={`box-index-name`}
+          sx={{
+            '& .MuiTextField-root': { m: 1, width: '25ch' },
+          }}
+          autoComplete="off"
+        >
+          <TextField
+            required
+            label="Index Name"
+            placeholder="Index Name"
+            onChange={(event) => handleOnChangeIndexName(event)}
+          />
+        </Box>
         {listSymbolPercentLine.map((symbol, index) => {
           console.log("Symbol.name=" + symbol.name + "Symbol.percent=" + symbol.percent + " LineIndex=" + index);
           return renderSymbolPercentLine(index);
@@ -211,7 +233,7 @@ function CreateNewIndex() {
         <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
           Backtest
         </Button>
-        {showBacktest && renderBacktestChart()}
+        {showBacktest && <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />}
       </div>
       <ToastContainer />
     </div>
