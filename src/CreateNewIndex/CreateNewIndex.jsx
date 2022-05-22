@@ -5,6 +5,8 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
 import InputMask from "react-input-mask";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import PropTypes from 'prop-types';
 import { unstable_composeClasses } from "@mui/material";
 import { ClassNames } from "@emotion/react";
@@ -17,6 +19,9 @@ function CreateNewIndex() {
   const [backtestPrices, setBacktestPrices] = useState([])
   const [backtestDates, setBacktestDates] = useState([])
 
+  useEffect(() => {
+
+  }, [])
   const renderSymbolPercentLine = (boxIndex) => (
     <Box
       component="form"
@@ -134,6 +139,7 @@ function CreateNewIndex() {
     listSymbolPercentLine.forEach(record => {
       symbolToPrice[record.name.toLocaleUpperCase()] = record.percent;
     })
+    console.log(listSymbolPercentLine);
     const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice) }), { method: 'get' });
     const responseData = await response.json();
     if (responseData.success) {
@@ -146,9 +152,15 @@ function CreateNewIndex() {
       console.log(responseData.data.balance_progress)
       console.log(responseData.data.dates)
     } else {
-
+      setShowBacktest(false);
+      console.log(responseData.data);
+      toast(responseData.data);
     }
   };
+
+  const renderBacktestChart = () => {
+    return <h1>Backtest data received</h1>
+  }
 
   return (
     <div id="create-new-index-form">
@@ -174,7 +186,9 @@ function CreateNewIndex() {
         <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
           Backtest
         </Button>
+        {showBacktest && renderBacktestChart()}
       </div>
+      <ToastContainer />
     </div>
   );
 };
