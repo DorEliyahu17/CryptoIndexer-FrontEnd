@@ -5,16 +5,23 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
 import InputMask from "react-input-mask";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import PropTypes from 'prop-types';
 import { unstable_composeClasses } from "@mui/material";
 import { ClassNames } from "@emotion/react";
 
 function CreateNewIndex() {
-
   const [listSymbolPercentLine, setlistSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
-  const [disableButtomBackTestSymbol, setdisableButtomBackTestSymbol] = useState({ state: true });
-  const [disableButtomBackTestPercent, setdisableButtomBackTestPercent] = useState({ state: true });
+  const [disableButtomBackTestSymbol, setdisableButtomBackTestSymbol] = useState(true);
+  const [disableButtomBackTestPercent, setdisableButtomBackTestPercent] = useState(true);
+  const [showBacktest, setShowBacktest] = useState(false)
+  const [backtestPrices, setBacktestPrices] = useState([])
+  const [backtestDates, setBacktestDates] = useState([])
 
+  useEffect(() => {
+
+  }, [])
   const renderSymbolPercentLine = (boxIndex) => (
     <Box
       component="form"
@@ -57,13 +64,15 @@ function CreateNewIndex() {
     changedlistSymbolPercentLine.push({ name: '', percent: 0 })
     setlistSymbolPercentLine(changedlistSymbolPercentLine);
   };
+
   const handleOnClickRealse = () => {
     let changedlistSymbolPercentLine = listSymbolPercentLine.map((listItem) => {
       return listItem;
     });
     changedlistSymbolPercentLine.pop()
     setlistSymbolPercentLine(changedlistSymbolPercentLine);
-  }
+  };
+
   const handleOnChangeSymbol = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].name = event.target.value;
@@ -71,12 +80,13 @@ function CreateNewIndex() {
     console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
     check_if_all_symbol_complete()
   };
+
   const check_if_all_symbol_complete = () => {
     listSymbolPercentLine.map((stock, index) => {
-      (stock.name !== '' && stock.name !== null) ? setdisableButtomBackTestSymbol({ state: false }) : setdisableButtomBackTestSymbol({ state: true });
+      (stock.name !== '' && stock.name !== null) ? setdisableButtomBackTestSymbol(false) : setdisableButtomBackTestSymbol(true);
     })
-    console.log("disableButtomBackTestSymbol state is: " + disableButtomBackTestSymbol.state)
-  }
+    console.log("disableButtomBackTestSymbol state is: " + disableButtomBackTestSymbol)
+  };
 
   const handleOnChangePercent = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
@@ -85,17 +95,71 @@ function CreateNewIndex() {
     console.log("Symbol.name=" + listSymbolPercentLine[index].name + " NewSymbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
     check_if_all_percent_complete()
   };
+
   const check_if_all_percent_complete = () => {
     let sumPercent = 0;
     listSymbolPercentLine.map((stock, index) => {
       sumPercent += Number(stock.percent);
     })
     if (sumPercent === 100) {
-      setdisableButtomBackTestPercent({ state: false })
+      setdisableButtomBackTestPercent(false)
     }
     else {
-      setdisableButtomBackTestPercent({ state: true })
+      setdisableButtomBackTestPercent(true)
     }
+  };
+
+  //example of POST request
+  const createNewIndexRequest = () => {
+    let symbolToPrice = {};
+    let dataToPass = [];
+    listSymbolPercentLine.forEach(record => {
+      symbolToPrice[record.name] = record.percent
+    })
+    let encodedKey = encodeURIComponent('data');
+    let encodedValue = encodeURIComponent(JSON.stringify(symbolToPrice));
+    dataToPass.push(encodedKey + "=" + encodedValue);
+    dataToPass = dataToPass.join("&");
+    fetch('/api/create-new-index', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: dataToPass
+    }).then(response => {
+      console.log(response.json())
+    }).catch((e) => {
+      console.log(e);
+    })
+  };
+
+  //example of GET request
+  const backTestRequest = async () => {
+    let symbolToPrice = {};
+    listSymbolPercentLine.forEach(record => {
+      symbolToPrice[record.name.toLocaleUpperCase()] = record.percent;
+    })
+    console.log(listSymbolPercentLine);
+    const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice) }), { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      setBacktestPrices(responseData.data.balance_progress);
+      setBacktestDates(responseData.data.dates);
+      setShowBacktest(true);
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      console.log(responseData.data.balance_progress)
+      console.log(responseData.data.dates)
+    } else {
+      setShowBacktest(false);
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  };
+
+  const renderBacktestChart = () => {
+    return <h1>Backtest data received</h1>
   }
 
   return (
@@ -119,11 +183,13 @@ function CreateNewIndex() {
         : null
       }
       <div>
-        <Button disabled={disableButtomBackTestSymbol.state || disableButtomBackTestPercent.state} variant="contained" id="BackTestButtom" /*onClick={handleOnClickAdd}*/>
+        <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
           Backtest
         </Button>
+        {showBacktest && renderBacktestChart()}
       </div>
+      <ToastContainer />
     </div>
-  )
+  );
 };
 export default CreateNewIndex;
