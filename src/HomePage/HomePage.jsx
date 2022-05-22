@@ -5,6 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 //import Table from '@material-ui/core/Table';
 import { ThemeProvider, createTheme, IconButton } from '@mui/material';
 import { ButtonUnstyled } from "@mui/base";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
 //mui-table
 import Table from '@material-ui/core/Table';
@@ -44,7 +46,9 @@ const styles = theme => ({
 
 function HomePage(props) {
   const [example, setExample] = useState(false);
-  const [SymbolsData, setSymbolsData] = useState([]);
+  const [symbolsData, setSymbolsData] = useState([]);
+  const [mostSuccessfulUsersData, setMostSuccessfulUsersData] = useState([]);
+  const [ownIndexesData, setOwnIndexesData] = useState([]);
   const defaultMaterialTheme = createTheme();
   const [showBuyDialog, setShowBuyDialog] = useState(false);
   const [buyIndexInput, setBuyIndexInput] = useState({ indexName: "", countToBuy: 0 });
@@ -113,8 +117,8 @@ function HomePage(props) {
 
   //COLUMNS
 
-  const symbolColumns = ['Symbol', 'Price', 'Days gain(%)', 'Day Low', 'Day High', 'Market Cap', 'Volume'];
-
+  const symbolColumns = ['Symbol', 'Price', 'Weekly gain(%)', 'Week Low', 'Week High', 'Market Cap', 'Volume'];
+/*
   const commonIndexColumns = [
     {
       name: "Payment", options: {
@@ -128,6 +132,22 @@ function HomePage(props) {
       }
     },
     'Index Name', 'Recommended rating', 'Days gain(%)', 'Users Count'];
+*/
+
+const mostSuccessfulUsers = [
+  {
+    name: "Payment", options: {
+      customBodyRender: (value, tableMeta, updateValue) => {
+        return (
+          <button onClick={() => { HandlePaymentRow(tableMeta) }}>
+            <Payment color="primary" />
+          </button>
+        );
+      }
+    }
+  },
+  'Creator Name', 'Index Name', 'Weekly gain(%)', 'Users Count'];
+
 
   const ownIndexColumns = [
     {
@@ -152,7 +172,7 @@ function HomePage(props) {
         }
       }
     },
-    'Index Name', 'Recommended rating', 'Days gain(%)', 'Users Count'];
+    'Index Name', 'Weekly gain(%)', 'Users Count'];
 
 
   //OPTIONS
@@ -182,7 +202,20 @@ function HomePage(props) {
     }
   };
 
-  const commonIndexesOptions = {
+  // const commonIndexesOptions = {
+  //   //filterType: "checkbox",        
+  //   rowsPerPage: [3],
+  //   rowsPerPageOptions: [3, 5, 10, 15],
+  //   selectableRowsHideCheckboxes: true,
+  //   onChangePage(currentPage) {
+  //     console.log({ currentPage });
+  //   },
+  //   onChangeRowsPerPage(numberOfRows) {
+  //     console.log({ numberOfRows });
+  //   }
+  // };
+
+  const mostSuccessfulUsersOptions = {
     //filterType: "checkbox",        
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
@@ -197,21 +230,26 @@ function HomePage(props) {
 
   //DATA
 
-  const symbolData = [
-    ["BTC", "$40,038.60", "2.28%", "$40,028.60", "$40,138.60", "$761,877,839,620", "$33,368,145,255"],
-    ["ETH", "$2,956.03", "2.97%", "$2,950.00", "$2,986.03", "$356,678,709,989", "$18,253,003,101"]
-  ];
+  // const symbolsData = [
+  //   ["BTC", "$40,038.60", "2.28%", "$40,028.60", "$40,138.60", "$761,877,839,620", "$33,368,145,255"],
+  //   ["ETH", "$2,956.03", "2.97%", "$2,950.00", "$2,986.03", "$356,678,709,989", "$18,253,003,101"]
+  // ];
 
 
-  const commonIndexesData = [
-    [, "index1", "High", "2.28%", "50"],
-    [, "index2", "Low", "2.97%", "2"]
-  ];
+  // const commonIndexesData = [
+  //   [, "index1", "High", "2.28%", "50"],
+  //   [, "index2", "Low", "2.97%", "2"]
+  // ];
 
-  const ownIndexesData = [
-    [, , "index1", "High", "2.28%", 50],
-    [, , "index2", "Low", "2.97%", 2]
-  ];
+  // const mostSuccessfulUsersData = [
+  //   [, "Tal Gavriel", "The best", "2.28%", "50"],
+  //   [, "Matan kalili", "The second", "2.97%", "2"]
+  // ];
+
+  // const ownIndexesData = [
+  //   [, , "index1", "High", "2.28%", 50],
+  //   [, , "index2", "Low", "2.97%", 2]
+  // ];
 
 
 
@@ -270,6 +308,59 @@ function HomePage(props) {
   // };  
 
 
+  useEffect(async () => {
+    const response = await fetch('/api/supported-symbols-list', { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(symbolObject => {
+        tempSymbolsNameArr.push([symbolObject.sym,symbolObject.price,symbolObject.weeklyGain,symbolObject.weekLow,symbolObject.weekHigh,symbolObject.marketCap,symbolObject.volume]);
+      });
+      setSymbolsData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  }, []);
+
+  useEffect(async () => {
+    const response = await fetch('/api/most-successful-users-list', { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(successfulUser => {
+        tempSymbolsNameArr.push([,successfulUser.userName,successfulUser.indexName,successfulUser.weeklyGain,successfulUser.usersCount]);
+      });
+      setMostSuccessfulUsersData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  }, []);
+
+  useEffect(async () => {
+    const response = await fetch('/api/own-indexes?'+ new URLSearchParams({ data: JSON.stringify("tal gavriel") }), { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(index => {
+        tempSymbolsNameArr.push([,,index.indexName,index.weeklyGain,index.usersCount]);
+      });
+      setOwnIndexesData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  }, []);
 
   useEffect(() => {
     console.log("aa");
@@ -285,7 +376,7 @@ function HomePage(props) {
       <div style={{ marginBottom: '30px' }}>
         <MUIDataTable
           title={"Symbols Table"}
-          data={symbolData}
+          data={symbolsData}
           columns={symbolColumns}
           options={symbolOptions}
         />
@@ -294,9 +385,9 @@ function HomePage(props) {
         <MUIDataTable
           style={{ marginBottom: '30px' }}
           title={"Best Indexes Table"}
-          data={commonIndexesData}
-          columns={commonIndexColumns}
-          options={commonIndexesOptions}
+          data={mostSuccessfulUsersData}
+          columns={mostSuccessfulUsers}
+          options={mostSuccessfulUsersOptions}
         />
       </div>
       <MUIDataTable
