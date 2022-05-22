@@ -52,9 +52,13 @@
     "@mui/lab": "^5.0.0-alpha.79",
     "@mui/material": "^5.6.3",
     "@mui/styled-engine-sc": "^5.6.1",
+    "chartjs": "^0.3.24",
+    "react-chartjs-2": "^4.1.0",
     "react-input-mask": "^2.0.4",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
+    "react-toastify": "^9.0.1",
     "styled-components": "^5.3.5"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }
