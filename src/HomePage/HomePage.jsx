@@ -267,6 +267,19 @@ const mostSuccessfulUsers = [
     console.log(buyIndexInput.indexName);
     console.log(countToBuy);
     //todo: send the indexName and countToBuy to BUY api
+
+    fetch('/api/buy-index', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: {userName:"tal",indexName:buyIndexInput.indexName, funding:countToBuy}
+    }).then(response => {
+      console.log(response.json())
+    }).catch((e) => {
+      console.log(e);
+    })
+
     return Promise.resolve();
   }
 
@@ -285,6 +298,19 @@ const mostSuccessfulUsers = [
     console.log(sellIndexInput.indexName);
     console.log(countToSell);
     //todo: send the indexName and countToSell to SELL api
+
+    fetch('/api/sell-index', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: {userName:"tal",indexName:sellIndexInput.indexName, funding:countToSell}
+    }).then(response => {
+      console.log(response.json())
+    }).catch((e) => {
+      console.log(e);
+    })
+
     return Promise.resolve();
   }
 
