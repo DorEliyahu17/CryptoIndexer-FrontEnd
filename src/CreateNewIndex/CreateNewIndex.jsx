@@ -12,16 +12,32 @@ import { unstable_composeClasses } from "@mui/material";
 import { ClassNames } from "@emotion/react";
 
 function CreateNewIndex() {
-  const [listSymbolPercentLine, setlistSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
-  const [disableButtomBackTestSymbol, setdisableButtomBackTestSymbol] = useState(true);
-  const [disableButtomBackTestPercent, setdisableButtomBackTestPercent] = useState(true);
+  const [listSupportedSymbols, setListSupportedSymbols] = useState([]);
+  const [listSymbolPercentLine, setListSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
+  const [disableButtomBackTestSymbol, setDisableButtomBackTestSymbol] = useState(true);
+  const [disableButtomBackTestPercent, setDisableButtomBackTestPercent] = useState(true);
   const [showBacktest, setShowBacktest] = useState(false)
   const [backtestPrices, setBacktestPrices] = useState([])
   const [backtestDates, setBacktestDates] = useState([])
 
-  useEffect(() => {
+  useEffect(async () => {
+    const response = await fetch('/api/supported-symbols-list', { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(symbolObject => {
+        tempSymbolsNameArr.push(symbolObject.sym);
+      });
+      setListSupportedSymbols(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  }, []);
 
-  }, [])
   const renderSymbolPercentLine = (boxIndex) => (
     <Box
       component="form"
@@ -62,7 +78,7 @@ function CreateNewIndex() {
       return listItem;
     });
     changedlistSymbolPercentLine.push({ name: '', percent: 0 })
-    setlistSymbolPercentLine(changedlistSymbolPercentLine);
+    setListSymbolPercentLine(changedlistSymbolPercentLine);
   };
 
   const handleOnClickRealse = () => {
@@ -70,20 +86,20 @@ function CreateNewIndex() {
       return listItem;
     });
     changedlistSymbolPercentLine.pop()
-    setlistSymbolPercentLine(changedlistSymbolPercentLine);
+    setListSymbolPercentLine(changedlistSymbolPercentLine);
   };
 
   const handleOnChangeSymbol = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].name = event.target.value;
-    setlistSymbolPercentLine(changedSymbolsList);
+    setListSymbolPercentLine(changedSymbolsList);
     console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
     check_if_all_symbol_complete()
   };
 
   const check_if_all_symbol_complete = () => {
     listSymbolPercentLine.map((stock, index) => {
-      (stock.name !== '' && stock.name !== null) ? setdisableButtomBackTestSymbol(false) : setdisableButtomBackTestSymbol(true);
+      (stock.name !== '' && stock.name !== null) ? setDisableButtomBackTestSymbol(false) : setDisableButtomBackTestSymbol(true);
     })
     console.log("disableButtomBackTestSymbol state is: " + disableButtomBackTestSymbol)
   };
@@ -91,7 +107,7 @@ function CreateNewIndex() {
   const handleOnChangePercent = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].percent = event.target.value;
-    setlistSymbolPercentLine(changedSymbolsList);
+    setListSymbolPercentLine(changedSymbolsList);
     console.log("Symbol.name=" + listSymbolPercentLine[index].name + " NewSymbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
     check_if_all_percent_complete()
   };
@@ -102,10 +118,10 @@ function CreateNewIndex() {
       sumPercent += Number(stock.percent);
     })
     if (sumPercent === 100) {
-      setdisableButtomBackTestPercent(false)
+      setDisableButtomBackTestPercent(false)
     }
     else {
-      setdisableButtomBackTestPercent(true)
+      setDisableButtomBackTestPercent(true)
     }
   };
 
@@ -136,25 +152,34 @@ function CreateNewIndex() {
   //example of GET request
   const backTestRequest = async () => {
     let symbolToPrice = {};
+    let dataValid = true;
     listSymbolPercentLine.forEach(record => {
-      symbolToPrice[record.name.toLocaleUpperCase()] = record.percent;
+      let symbolName = record.name.toLocaleUpperCase();
+      if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol === symbolName) === -1) {
+        dataValid = false;
+      }
+      symbolToPrice[symbolName] = record.percent;
     })
-    console.log(listSymbolPercentLine);
-    const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice) }), { method: 'get' });
-    const responseData = await response.json();
-    if (responseData.success) {
-      setBacktestPrices(responseData.data.balance_progress);
-      setBacktestDates(responseData.data.dates);
-      setShowBacktest(true);
-      console.log(responseData)
-      console.log(responseData.success)
-      console.log(responseData.data)
-      console.log(responseData.data.balance_progress)
-      console.log(responseData.data.dates)
+    if (dataValid) {
+      console.log(listSymbolPercentLine);
+      const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice) }), { method: 'get' });
+      const responseData = await response.json();
+      if (responseData.success) {
+        setBacktestPrices(responseData.data.balance_progress);
+        setBacktestDates(responseData.data.dates);
+        setShowBacktest(true);
+        console.log(responseData)
+        console.log(responseData.success)
+        console.log(responseData.data)
+        console.log(responseData.data.balance_progress)
+        console.log(responseData.data.dates)
+      } else {
+        setShowBacktest(false);
+        console.log(responseData.data);
+        toast(responseData.data);
+      }
     } else {
-      setShowBacktest(false);
-      console.log(responseData.data);
-      toast(responseData.data);
+      toast('One or more coins symbols are not exist or not supported');
     }
   };
 
