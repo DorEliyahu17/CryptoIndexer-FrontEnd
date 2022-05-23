@@ -20,9 +20,9 @@ function CreateNewIndex() {
   const [listSymbolPercentLine, setListSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
   const [disableButtomBackTestSymbol, setDisableButtomBackTestSymbol] = useState(true);
   const [disableButtomBackTestPercent, setDisableButtomBackTestPercent] = useState(true);
-  const [showBacktest, setShowBacktest] = useState(false)
-  const [backtestPrices, setBacktestPrices] = useState([])
-  const [backtestDates, setBacktestDates] = useState([])
+  const [showBacktest, setShowBacktest] = useState(false);
+  const [backtestPrices, setBacktestPrices] = useState([]);
+  const [backtestDates, setBacktestDates] = useState([]);
 
   useEffect(async () => {
     const response = await fetch('/api/supported-symbols-list', { method: 'get' });
@@ -169,7 +169,7 @@ function CreateNewIndex() {
       if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol === symbolName) === -1) {
         dataValid = false;
       }
-      symbolToPrice[symbolName] = record.percent;
+      symbolToPrice[symbolName] = record.percent / 100;
     })
     if (dataValid) {
       console.log(listSymbolPercentLine);
@@ -192,6 +192,10 @@ function CreateNewIndex() {
     } else {
       toast('One or more coins symbols are not exist or not supported');
     }
+  };
+
+  const renderTable = () => {
+    return (<Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />);
   };
 
   return (
@@ -233,7 +237,7 @@ function CreateNewIndex() {
         <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
           Backtest
         </Button>
-        {showBacktest && <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />}
+        {showBacktest && renderTable()}
       </div>
       <ToastContainer />
     </div>
