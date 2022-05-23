@@ -13,8 +13,16 @@ import Charts from '../Components/Charts'
 
 import 'react-toastify/dist/ReactToastify.css';
 
+const propTypes = {
+  userToken: PropTypes.String.isRequired,
+};
 
-function CreateNewIndex() {
+const defaultProps = {
+  userToken: '',
+};
+
+function CreateNewIndex(props) {
+  const { userToken } = props;
   const [listSupportedSymbols, setListSupportedSymbols] = useState([]);
   const [indexName, setIndexName] = useState('');
   const [listSymbolPercentLine, setListSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
@@ -239,4 +247,7 @@ function CreateNewIndex() {
     </div>
   );
 };
+
+CreateNewIndex.defaultProps = defaultProps;
+CreateNewIndex.propTypes = propTypes;
 export default CreateNewIndex;

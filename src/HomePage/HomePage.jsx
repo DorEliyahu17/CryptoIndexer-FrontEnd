@@ -15,7 +15,16 @@ import MaterialTable from "material-table";
 
 import './HomePage.less';
 
-function HomePage() {
+const propTypes = {
+  userToken: PropTypes.String.isRequired,
+};
+
+const defaultProps = {
+  userToken: '',
+};
+
+function HomePage(props) {
+  const { userToken } = props;
   const [example, setExample] = useState(false);
   const [SymbolsData, setSymbolsData] = useState([]);
   const defaultMaterialTheme = createTheme();
@@ -263,4 +272,6 @@ function HomePage() {
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 // root.render(<HomePage />);
 
+HomePage.defaultProps = defaultProps;
+HomePage.propTypes = propTypes;
 export default HomePage; 
