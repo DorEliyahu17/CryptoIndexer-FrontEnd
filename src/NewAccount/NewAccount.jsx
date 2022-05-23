@@ -1,4 +1,4 @@
-//import React, {useEffect, useState} from "react";
+
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -17,13 +17,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 
-//function Login() {
-  //return (
-  //  <div>
-    //  <h1>shlomo</h1>
-  //  </div>
- // );
-//}
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -81,7 +74,7 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="Date"
               label="Date of birth"
               type="password"
               id="password"
@@ -92,8 +85,18 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="Gender"
               label="Gender"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+              <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="Date"
+              label="E-mail"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -108,7 +111,14 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 1, mb: 1 }}
+            >
+              Add a digital wallet
+            </Button>
             <Button
               type="submit"
               fullWidth

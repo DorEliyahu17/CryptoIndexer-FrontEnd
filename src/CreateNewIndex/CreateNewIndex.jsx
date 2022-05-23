@@ -1,63 +1,58 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, {useEffect, useState, Fragment} from "react";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
-import InputMask from "react-input-mask";
 import PropTypes from 'prop-types';
-import { unstable_composeClasses } from "@mui/material";
-import { ClassNames } from "@emotion/react";
 
 function CreateNewIndex() {
+  
+  const [listSymbolPercentLine, setlistSymbolPercentLine] =  useState([{name: '', percent: 0}, {name: '', percent: 0}]);
+  
+  useEffect(() => {
+    listSymbolPercentLine.map((symbol, index) => {
+      console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
+    });
 
-  const [listSymbolPercentLine, setlistSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
-  const [disableButtomBackTestSymbol, setdisableButtomBackTestSymbol] = useState({ state: true });
-  const [disableButtomBackTestPercent, setdisableButtomBackTestPercent] = useState({ state: true });
-
-  const renderSymbolPercentLine = (boxIndex) => (
+  }, [listSymbolPercentLine]);
+  
+  const renderSymbolPercentLine = (boxIndex, symbolName = '', percent = 0) => (
     <Box
       component="form"
       id={`box-${boxIndex}`}
       sx={{
         '& .MuiTextField-root': { m: 1, width: '25ch' },
       }}
+      noValidate
       autoComplete="off"
     >
-      <InputMask
-        mask="aaa"
-        disabled={false}
-        maskChar=" "
+      <TextField
+        required
         id={`symbol-${boxIndex}`}
+        label="Symbol Name"
+        placeholder="Symbol Name"
         onChange={(event) => handleOnChangeSymbol(event, boxIndex)}
-      >
-        {() => <TextField
-          required
-          label="Symbol Name"
-          placeholder="Symbol Name" />}
-      </InputMask>
-      <InputMask
-        mask="99"
-        disabled={false}
-        maskChar=" "
+      />
+      <TextField
+        required
         id={`percent-${boxIndex}`}
-        onChange={(event) => handleOnChangePercent(event, boxIndex)}>
-        {() => <TextField
-          required
-          label="Percent"
-          placeholder="Percent" />}
-      </InputMask>
+        label="0"
+        value={0}
+        placeholder="Percent"
+        onChange={(event) => handleOnChangePercent(event, boxIndex)}
+      />
     </Box>
   );
 
-  const handleOnClickAdd = () => {
+  const handleOnClickAdd = () =>{
     let changedlistSymbolPercentLine = listSymbolPercentLine.map((listItem) => {
       return listItem;
     });
-    changedlistSymbolPercentLine.push({ name: '', percent: 0 })
+    changedlistSymbolPercentLine.push({name:'' , percent: 0})
     setlistSymbolPercentLine(changedlistSymbolPercentLine);
   };
-  const handleOnClickRealse = () => {
+  const handleOnClickRealse = () =>{
     let changedlistSymbolPercentLine = listSymbolPercentLine.map((listItem) => {
       return listItem;
     });
@@ -66,63 +61,38 @@ function CreateNewIndex() {
   }
   const handleOnChangeSymbol = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
-    changedSymbolsList[index].name = event.target.value;
+    changedSymbolsList[index].name = event.target.value; 
     setlistSymbolPercentLine(changedSymbolsList);
-    console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
-    check_if_all_symbol_complete()
+    console.log("NewSymbol.name="+listSymbolPercentLine[index].name+" Symbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
   };
-  const check_if_all_symbol_complete = () => {
-    listSymbolPercentLine.map((stock, index) => {
-      (stock.name !== '' && stock.name !== null) ? setdisableButtomBackTestSymbol({ state: false }) : setdisableButtomBackTestSymbol({ state: true });
-    })
-    console.log("disableButtomBackTestSymbol state is: " + disableButtomBackTestSymbol.state)
-  }
 
   const handleOnChangePercent = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].percent = event.target.value;
     setlistSymbolPercentLine(changedSymbolsList);
-    console.log("Symbol.name=" + listSymbolPercentLine[index].name + " NewSymbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
-    check_if_all_percent_complete()
+    console.log("Symbol.name="+listSymbolPercentLine[index].name+" NewSymbol.percent="+listSymbolPercentLine[index].percent+" LineIndex="+index);
   };
-  const check_if_all_percent_complete = () => {
-    let sumPercent = 0;
-    listSymbolPercentLine.map((stock, index) => {
-      sumPercent += Number(stock.percent);
-    })
-    if (sumPercent === 100) {
-      setdisableButtomBackTestPercent({ state: false })
-    }
-    else {
-      setdisableButtomBackTestPercent({ state: true })
-    }
-  }
 
   return (
     <div id="create-new-index-form">
       <div id="create-new-index-symbol-list">
-        {listSymbolPercentLine.map((symbol, index) => {
-          console.log("Symbol.name=" + symbol.name + "Symbol.percent=" + symbol.percent + " LineIndex=" + index);
-          return renderSymbolPercentLine(index);
-        })}
+          {listSymbolPercentLine.map((symbol, index) => {
+            console.log("symbol.name="+symbol.name+"symbol.percent="+symbol.percent+" index="+index);
+            return renderSymbolPercentLine(index, symbol.name, symbol.percent);
+          })}
       </div>
-      <Button variant="contained" id="add-new-SymbolPercentLine" onClick={handleOnClickAdd}>
-        Add
-      </Button>
-      {listSymbolPercentLine.length > 2
-        ?
-        <Stack direction="row" spacing={2}>
-          <Button variant="outlined" startIcon={<DeleteIcon />} id="Relase-last-SymbolPercentLine" onClick={handleOnClickRealse}>
-            Relase
-          </Button>
-        </Stack>
-        : null
-      }
-      <div>
-        <Button disabled={disableButtomBackTestSymbol.state || disableButtomBackTestPercent.state} variant="contained" id="BackTestButtom" /*onClick={handleOnClickAdd}*/>
-          Backtest
+        <Button variant="contained" id="add-new-SymbolPercentLine" onClick={handleOnClickAdd}>
+          Add
         </Button>
-      </div>
+         { listSymbolPercentLine.length > 2 
+        ? 
+          <Stack direction="row" spacing={2}>
+            <Button variant="outlined" startIcon={<DeleteIcon />} id="Relase-last-SymbolPercentLine" onClick={handleOnClickRealse}>
+            Relase
+            </Button>
+          </Stack>
+        : null
+         }
     </div>
   )
 };
