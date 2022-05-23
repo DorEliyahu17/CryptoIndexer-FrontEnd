@@ -14,7 +14,7 @@ import Charts from '../Components/Charts'
 import 'react-toastify/dist/ReactToastify.css';
 
 const propTypes = {
-  userToken: PropTypes.String.isRequired,
+  userToken: PropTypes.String,
 };
 
 const defaultProps = {

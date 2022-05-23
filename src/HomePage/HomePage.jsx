@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './HomePage.less';
 
 const propTypes = {
-  userToken: PropTypes.String.isRequired,
+  userToken: PropTypes.String,
 };
 
 const defaultProps = {
@@ -32,9 +32,77 @@ function HomePage(props) {
   const [sellIndexInput, setSellIndexInput] = useState({ indexName: "", countToSell: 0 });
 
   //const classes = useStyles();  
-  const [page, setPage] = React.useState(0);
+  const [page, setPage] = useState(0);
   const [data, setData] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(async () => {
+    await getSupportedSymbol();
+    await getMostSuccessfulUsersList();
+    await getOwnIndexes();
+  }, []);
+
+  useEffect(() => {
+    console.log("aa");
+    //handleGetSymbolsData();
+    //console.log(SymbolsData);
+
+  }, [showBuyDialog]);
+
+  //need to be fixed first in the api then here
+  const getSupportedSymbol = async () => {
+    const response = await fetch('/api/supported-symbols-list', { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(symbolObject => {
+        tempSymbolsNameArr.push([symbolObject.sym, symbolObject.price, symbolObject.weeklyGain, symbolObject.weekLow, symbolObject.weekHigh, symbolObject.marketCap, symbolObject.volume]);
+      });
+      setSymbolsData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  };
+
+  const getMostSuccessfulUsersList = async () => {
+    const response = await fetch('/api/most-successful-users-list', { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(successfulUser => {
+        tempSymbolsNameArr.push([, successfulUser.userName, successfulUser.indexName, successfulUser.weeklyGain, successfulUser.usersCount]);
+      });
+      setMostSuccessfulUsersData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  };
+
+  const getOwnIndexes = async () => {
+    const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: JSON.stringify("tal gavriel") }), { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(index => {
+        tempSymbolsNameArr.push([, , index.indexName, index.weeklyGain, index.usersCount]);
+      });
+      setOwnIndexesData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  };
 
   // const tableRef = React.createRef();
 
@@ -308,69 +376,6 @@ function HomePage(props) {
   // const handleChangePaymentRow = (event, buyIndexRow) => {  
   //   setBuyIndexInput(buyIndexRow);  
   // };  
-
-
-  useEffect(async () => {
-    const response = await fetch('/api/supported-symbols-list', { method: 'get' });
-    const responseData = await response.json();
-    if (responseData.success) {
-      console.log(responseData)
-      console.log(responseData.success)
-      console.log(responseData.data)
-      let tempSymbolsNameArr = [];
-      responseData.data.map(symbolObject => {
-        tempSymbolsNameArr.push([symbolObject.sym, symbolObject.price, symbolObject.weeklyGain, symbolObject.weekLow, symbolObject.weekHigh, symbolObject.marketCap, symbolObject.volume]);
-      });
-      setSymbolsData(tempSymbolsNameArr);
-    } else {
-      console.log(responseData.data);
-      toast(responseData.data);
-    }
-  }, []);
-
-  useEffect(async () => {
-    const response = await fetch('/api/most-successful-users-list', { method: 'get' });
-    const responseData = await response.json();
-    if (responseData.success) {
-      console.log(responseData)
-      console.log(responseData.success)
-      console.log(responseData.data)
-      let tempSymbolsNameArr = [];
-      responseData.data.map(successfulUser => {
-        tempSymbolsNameArr.push([, successfulUser.userName, successfulUser.indexName, successfulUser.weeklyGain, successfulUser.usersCount]);
-      });
-      setMostSuccessfulUsersData(tempSymbolsNameArr);
-    } else {
-      console.log(responseData.data);
-      toast(responseData.data);
-    }
-  }, []);
-
-  useEffect(async () => {
-    const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: JSON.stringify("tal gavriel") }), { method: 'get' });
-    const responseData = await response.json();
-    if (responseData.success) {
-      console.log(responseData)
-      console.log(responseData.success)
-      console.log(responseData.data)
-      let tempSymbolsNameArr = [];
-      responseData.data.map(index => {
-        tempSymbolsNameArr.push([, , index.indexName, index.weeklyGain, index.usersCount]);
-      });
-      setOwnIndexesData(tempSymbolsNameArr);
-    } else {
-      console.log(responseData.data);
-      toast(responseData.data);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log("aa");
-    //handleGetSymbolsData();
-    //console.log(SymbolsData);
-
-  }, [showBuyDialog]);
-
 
   return (
     <div>
