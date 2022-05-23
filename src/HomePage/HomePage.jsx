@@ -1,55 +1,31 @@
 import React, { useEffect, useState } from "react";
-// import ReactDOM from "react-dom/client";
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-//import Table from '@material-ui/core/Table';
-import { ThemeProvider, createTheme, IconButton } from '@mui/material';
-import { ButtonUnstyled } from "@mui/base";
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
-//mui-table
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableContainer from '@material-ui/core/TableContainer';
-import TextField from '@material-ui/core/TextField';
 //MUIDataTable
 import MUIDataTable from "mui-datatables";
 //mu-icons
-//import Remove from '@material-ui/icons/Remove';
 import { Delete } from "@material-ui/icons";
 import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-//import MaterialTable from "material-table";
 
+import 'react-toastify/dist/ReactToastify.css';
 import './HomePage.less';
 
-const styles = theme => ({
-  root: {
-    display: 'flex',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'hide',
-  },
-  table: {
-    minWidth: 340,
-  },
-  tableCell: {
-    paddingRight: 4,
-    paddingLeft: 5
-  }
-});
+const propTypes = {
+  userToken: PropTypes.String.isRequired,
+};
+
+const defaultProps = {
+  userToken: '',
+};
 
 function HomePage(props) {
+  const { userToken } = props;
   const [example, setExample] = useState(false);
   const [symbolsData, setSymbolsData] = useState([]);
   const [mostSuccessfulUsersData, setMostSuccessfulUsersData] = useState([]);
   const [ownIndexesData, setOwnIndexesData] = useState([]);
-  const defaultMaterialTheme = createTheme();
   const [showBuyDialog, setShowBuyDialog] = useState(false);
   const [buyIndexInput, setBuyIndexInput] = useState({ indexName: "", countToBuy: 0 });
   const [showSellDialog, setShowSellDialog] = useState(false);
@@ -118,8 +94,23 @@ function HomePage(props) {
   //COLUMNS
 
   const symbolColumns = ['Symbol', 'Price', 'Weekly gain(%)', 'Week Low', 'Week High', 'Market Cap', 'Volume'];
-/*
-  const commonIndexColumns = [
+  /*
+    const commonIndexColumns = [
+      {
+        name: "Payment", options: {
+          customBodyRender: (value, tableMeta, updateValue) => {
+            return (
+              <button onClick={() => { HandlePaymentRow(tableMeta) }}>
+                <Payment color="primary" />
+              </button>
+            );
+          }
+        }
+      },
+      'Index Name', 'Recommended rating', 'Days gain(%)', 'Users Count'];
+  */
+
+  const mostSuccessfulUsers = [
     {
       name: "Payment", options: {
         customBodyRender: (value, tableMeta, updateValue) => {
@@ -131,22 +122,7 @@ function HomePage(props) {
         }
       }
     },
-    'Index Name', 'Recommended rating', 'Days gain(%)', 'Users Count'];
-*/
-
-const mostSuccessfulUsers = [
-  {
-    name: "Payment", options: {
-      customBodyRender: (value, tableMeta, updateValue) => {
-        return (
-          <button onClick={() => { HandlePaymentRow(tableMeta) }}>
-            <Payment color="primary" />
-          </button>
-        );
-      }
-    }
-  },
-  'Creator Name', 'Index Name', 'Weekly gain(%)', 'Users Count'];
+    'Creator Name', 'Index Name', 'Weekly gain(%)', 'Users Count'];
 
 
   const ownIndexColumns = [
@@ -273,7 +249,7 @@ const mostSuccessfulUsers = [
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: {userName:"tal",indexName:buyIndexInput.indexName, funding:countToBuy}
+      body: { userName: "tal", indexName: buyIndexInput.indexName, funding: countToBuy }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
@@ -304,7 +280,7 @@ const mostSuccessfulUsers = [
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: {userName:"tal",indexName:sellIndexInput.indexName, funding:countToSell}
+      body: { userName: "tal", indexName: sellIndexInput.indexName, funding: countToSell }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
@@ -343,7 +319,7 @@ const mostSuccessfulUsers = [
       console.log(responseData.data)
       let tempSymbolsNameArr = [];
       responseData.data.map(symbolObject => {
-        tempSymbolsNameArr.push([symbolObject.sym,symbolObject.price,symbolObject.weeklyGain,symbolObject.weekLow,symbolObject.weekHigh,symbolObject.marketCap,symbolObject.volume]);
+        tempSymbolsNameArr.push([symbolObject.sym, symbolObject.price, symbolObject.weeklyGain, symbolObject.weekLow, symbolObject.weekHigh, symbolObject.marketCap, symbolObject.volume]);
       });
       setSymbolsData(tempSymbolsNameArr);
     } else {
@@ -361,7 +337,7 @@ const mostSuccessfulUsers = [
       console.log(responseData.data)
       let tempSymbolsNameArr = [];
       responseData.data.map(successfulUser => {
-        tempSymbolsNameArr.push([,successfulUser.userName,successfulUser.indexName,successfulUser.weeklyGain,successfulUser.usersCount]);
+        tempSymbolsNameArr.push([, successfulUser.userName, successfulUser.indexName, successfulUser.weeklyGain, successfulUser.usersCount]);
       });
       setMostSuccessfulUsersData(tempSymbolsNameArr);
     } else {
@@ -371,7 +347,7 @@ const mostSuccessfulUsers = [
   }, []);
 
   useEffect(async () => {
-    const response = await fetch('/api/own-indexes?'+ new URLSearchParams({ data: JSON.stringify("tal gavriel") }), { method: 'get' });
+    const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: JSON.stringify("tal gavriel") }), { method: 'get' });
     const responseData = await response.json();
     if (responseData.success) {
       console.log(responseData)
@@ -379,7 +355,7 @@ const mostSuccessfulUsers = [
       console.log(responseData.data)
       let tempSymbolsNameArr = [];
       responseData.data.map(index => {
-        tempSymbolsNameArr.push([,,index.indexName,index.weeklyGain,index.usersCount]);
+        tempSymbolsNameArr.push([, , index.indexName, index.weeklyGain, index.usersCount]);
       });
       setOwnIndexesData(tempSymbolsNameArr);
     } else {
@@ -424,7 +400,6 @@ const mostSuccessfulUsers = [
       />
       {showBuyDialog && (
         <BuyOrSellModal
-          //        {...props}
           isBuyModal={true}
           setShowBuyDialog={setShowBuyDialog}
           buyIndexInput={buyIndexInput}
@@ -434,7 +409,6 @@ const mostSuccessfulUsers = [
       )}
       {showSellDialog && (
         <BuyOrSellModal
-          //        {...props}
           isBuyModal={false}
           setShowSellDialog={setShowSellDialog}
           sellIndexInput={sellIndexInput}
@@ -446,4 +420,6 @@ const mostSuccessfulUsers = [
   );
 }
 
+HomePage.defaultProps = defaultProps;
+HomePage.propTypes = propTypes;
 export default HomePage; 
