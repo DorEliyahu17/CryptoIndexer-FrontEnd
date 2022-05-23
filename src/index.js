@@ -12,7 +12,6 @@ import Login from "./Login/Login"
 import Register from "./Register/Register"
 import NewAccount from "./NewAccount/NewAccount"
 import IndexPopUp from "./IndexPopUp/IndexPopUp"
-import ForgotPassword from "./ForgotPassword/ForgotPassword"
 import App from "./App";
 
 import "./index.css";
