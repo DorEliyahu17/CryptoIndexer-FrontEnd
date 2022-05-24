@@ -31,120 +31,14 @@ function Copyright(props) {
   );
 }
 
-const tiers = [
-  {
-    title: '2 nd',
-    price: '0',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-  },
-  {
-    title: '1 st',
-    subheader: 'Most popular',
-    price: '15+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
 
-  },
-  {
-    title: '3 rd',
-    price: '10+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-
-  },
-  {
-    title: 'Nasdaq Crypto Index',
-    price: '23+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'Crypto10',
-    price: '12+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'Bitwise 10',
-    price: '30',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'CRYPTO20',
-    price: '22+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'SPBTC',
-    price: '2.5+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'DeFi Pulse Index',
-    price: '11+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'SPCMC',
-    price: '7+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'All Crypto Index',
-    price: '8+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'Major Crypto Index',
-    price: '30+',
-    description: [
-      'This is an example of a description written by the author of the index',
-    ],
-    buttonText: 'See more details',
-    buttonVariant: 'contained',
-  },
-];
 
 const footers = [
  
 ];
 
 function PricingContent(props) {
-  const { search } = props;
+  const { search, tiers } = props;
   const [filterTiers, setFilterTiers] = useState(tiers);
 
   useEffect(()=>{
@@ -182,7 +76,7 @@ function PricingContent(props) {
       {/* End hero unit */}
       <Container maxWidth="md" component="main">
         <Grid container spacing={5} alignItems="flex-end">
-          {filterTiers.map((tier) => (
+          {(filterTiers || []).map((tier) => (
             // Enterprise card is full width at sm breakpoint
             <Grid
               item
@@ -224,7 +118,7 @@ function PricingContent(props) {
                     </Typography>
                   </Box>
                   <ul>
-                    {tier.description.map((line) => (
+                    {(tier.description || []).map((line) => (
                       <Typography
                         component="li"
                         variant="subtitle1"
@@ -257,7 +151,7 @@ function PricingContent(props) {
         }}
       >
         <Grid container spacing={4} justifyContent="space-evenly">
-          {footers.map((footer) => (
+          {(footers || []).map((footer) => (
             <Grid item xs={6} sm={3} key={footer.title}>
               <Typography variant="h6" color="text.primary" gutterBottom>
                 {footer.title}
@@ -283,7 +177,24 @@ function PricingContent(props) {
 
 
 export default function Content() {
+  const [tiers, setTiers] = useState();
   const [search, setSearch] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() =>{
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/content', { method: 'get' });
+        const responseData = await response.json();
+        setTiers(responseData)
+        setIsLoading(false)
+      } catch (error) {
+        setTiers([])
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  },[])
   return (
     <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
@@ -292,6 +203,7 @@ export default function Content() {
         elevation={0}
         sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
       >
+        {isLoading ? <div>loading...</div> :
         <Toolbar>
           <Grid container spacing={2} alignItems="center">
             <Grid item>
@@ -309,9 +221,9 @@ export default function Content() {
                 variant="standard"
               />
             </Grid>
-            <PricingContent search={search}/>
+            <PricingContent search={search} tiers={tiers}/>
           </Grid>
-        </Toolbar>
+        </Toolbar>}
       </AppBar>
     </Paper>
   );
