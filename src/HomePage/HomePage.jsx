@@ -1,40 +1,112 @@
 import React, { useEffect, useState } from "react";
-// import ReactDOM from "react-dom/client";
 import PropTypes from 'prop-types';
-import { Table } from "@mui/material";
-import { ThemeProvider, createTheme } from '@mui/material';
-import { ButtonUnstyled } from "@mui/base";
+import { ToastContainer, toast } from 'react-toastify';
 import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
+//MUIDataTable
+import MUIDataTable from "mui-datatables";
 //mu-icons
-
-//import Remove from '@material-ui/icons/Remove';
-//import { Delete } from "@material-ui/icons";
+import { Delete } from "@material-ui/icons";
 import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import MaterialTable from "material-table";
 
+import 'react-toastify/dist/ReactToastify.css';
 import './HomePage.less';
 
-function HomePage() {
+const propTypes = {
+  userToken: PropTypes.String,
+};
+
+const defaultProps = {
+  userToken: '',
+};
+
+function HomePage(props) {
+  const { userToken } = props;
   const [example, setExample] = useState(false);
-  const [SymbolsData, setSymbolsData] = useState([]);
-  const defaultMaterialTheme = createTheme();
+  const [symbolsData, setSymbolsData] = useState([]);
+  const [mostSuccessfulUsersData, setMostSuccessfulUsersData] = useState([]);
+  const [ownIndexesData, setOwnIndexesData] = useState([]);
   const [showBuyDialog, setShowBuyDialog] = useState(false);
   const [buyIndexInput, setBuyIndexInput] = useState({ indexName: "", countToBuy: 0 });
   const [showSellDialog, setShowSellDialog] = useState(false);
   const [sellIndexInput, setSellIndexInput] = useState({ indexName: "", countToSell: 0 });
 
+  //const classes = useStyles();  
+  const [page, setPage] = useState(0);
+  const [data, setData] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(async () => {
+    await getSupportedSymbol();
+    await getMostSuccessfulUsersList();
+    await getOwnIndexes();
+  }, []);
+
+  useEffect(() => {
+    console.log("aa");
+    //handleGetSymbolsData();
+    //console.log(SymbolsData);
+
+  }, [showBuyDialog]);
+
+  //need to be fixed first in the api then here
+  const getSupportedSymbol = async () => {
+    const response = await fetch('/api/supported-symbols-list', { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(symbolObject => {
+        tempSymbolsNameArr.push([symbolObject.sym, symbolObject.price, symbolObject.weeklyGain, symbolObject.weekLow, symbolObject.weekHigh, symbolObject.marketCap, symbolObject.volume]);
+      });
+      setSymbolsData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  };
+
+  const getMostSuccessfulUsersList = async () => {
+    const response = await fetch('/api/most-successful-users-list', { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(successfulUser => {
+        tempSymbolsNameArr.push([, successfulUser.userName, successfulUser.indexName, successfulUser.weeklyGain, successfulUser.usersCount]);
+      });
+      setMostSuccessfulUsersData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  };
+
+  const getOwnIndexes = async () => {
+    const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: JSON.stringify("tal gavriel") }), { method: 'get' });
+    const responseData = await response.json();
+    if (responseData.success) {
+      console.log(responseData)
+      console.log(responseData.success)
+      console.log(responseData.data)
+      let tempSymbolsNameArr = [];
+      responseData.data.map(index => {
+        tempSymbolsNameArr.push([, , index.indexName, index.weeklyGain, index.usersCount]);
+      });
+      setOwnIndexesData(tempSymbolsNameArr);
+    } else {
+      console.log(responseData.data);
+      toast(responseData.data);
+    }
+  };
+
   // const tableRef = React.createRef();
 
-  const symbolColumns = [
-    { field: 'symbol', title: 'Symbol' },
-    { field: 'price', title: 'Price' },
-    { field: 'daysGain', title: 'Days gain(%)' },
-    { field: 'dayLow', title: 'Day Low' },
-    { field: 'dayHigh', title: 'Day High' },
-    { field: 'marketCap', title: 'Market Cap' },
-    { field: 'volume', title: 'Volume', type: "numeric" },
-  ];
+
 
 
   // const symbolData = (query) => (
@@ -54,37 +126,6 @@ function HomePage() {
   //   }));
 
 
-
-  const symbolData = [
-    {
-      "symbol": "BTC",
-      "price": "$40,038.60",
-      "daysGain": "2.28%",
-      "dayLow": "$40,028.60",
-      "dayHigh": "$40,138.60",
-      "marketCap": "$761,877,839,620",
-      "volume": "$33,368,145,255"
-    },
-    {
-      "symbol": "ETH",
-      "price": "$2,956.03",
-      "daysGain": "2.97%	",
-      "dayLow": "$2,950.00",
-      "dayHigh": "$2,986.03",
-      "marketCap": "$356,678,709,989",
-      "volume": "$18,253,003,101"
-    }
-  ];
-
-
-  const indexColumns = [
-    { field: 'indexName', title: 'Index Name' },
-    { field: 'recommendedRating', title: 'Recommended rating' },
-    { field: 'daysGain', title: 'Days gain(%)' },
-    { field: 'usersCount', title: 'Users Count' }
-  ];
-
-
   // const commonIndexData = (query) => (
   //   new Promise((resolve,reject)=> {
   //     let url = "https://server/api/get/index?";
@@ -100,23 +141,6 @@ function HomePage() {
   //           });
   //         });
   //   }));
-
-
-  const commonIndexesData = [
-    {
-      "indexName": "index1",
-      "recommendedRating": "High",
-      "daysGain": "2.28%",
-      "usersCount": "50"
-    },
-    {
-      "indexName": "index2",
-      "recommendedRating": "Low",
-      "daysGain": "2.97%	",
-      "usersCount": "2"
-    }
-  ];
-
 
 
   // const ownIndexData = (query) => (
@@ -135,23 +159,145 @@ function HomePage() {
   //         });
   //   }));
 
+  //COLUMNS
 
-  const ownIndexesData = [
+  const symbolColumns = ['Symbol', 'Price', 'Weekly gain(%)', 'Week Low', 'Week High', 'Market Cap', 'Volume'];
+  /*
+    const commonIndexColumns = [
+      {
+        name: "Payment", options: {
+          customBodyRender: (value, tableMeta, updateValue) => {
+            return (
+              <button onClick={() => { HandlePaymentRow(tableMeta) }}>
+                <Payment color="primary" />
+              </button>
+            );
+          }
+        }
+      },
+      'Index Name', 'Recommended rating', 'Days gain(%)', 'Users Count'];
+  */
+
+  const mostSuccessfulUsers = [
     {
-      "indexName": "index1",
-      "recommendedRating": "High",
-      "daysGain": "2.28%",
-      "usersCount": "50"
+      name: "Payment", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandlePaymentRow(tableMeta) }}>
+              <Payment color="primary" />
+            </button>
+          );
+        }
+      }
+    },
+    'Creator Name', 'Index Name', 'Weekly gain(%)', 'Users Count'];
+
+
+  const ownIndexColumns = [
+    {
+      name: "Payment", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandlePaymentRow(tableMeta) }}>
+              <Payment color="primary" />
+            </button>
+          );
+        }
+      }
     },
     {
-      "indexName": "index2",
-      "recommendedRating": "Low",
-      "daysGain": "2.97%	",
-      "usersCount": "2"
-    }
-  ];
+      name: "Sell", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandleSellRow(tableMeta) }}>
+              <HighlightOffIcon color="secondary" />
+            </button>
+          );
+        }
+      }
+    },
+    'Index Name', 'Weekly gain(%)', 'Users Count'];
 
-  const HandlePaymentRow = (event, rowData) => {
+
+  //OPTIONS
+  const symbolOptions = {
+    //filterType: "checkbox",        
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
+    selectableRowsHideCheckboxes: true,
+    onChangePage(currentPage) {
+      console.log({ currentPage });
+    },
+    onChangeRowsPerPage(numberOfRows) {
+      console.log({ numberOfRows });
+    }
+  };
+
+  const ownIndexesOptions = {
+    //filterType: "checkbox",        
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
+    selectableRowsHideCheckboxes: true,
+    onChangePage(currentPage) {
+      console.log({ currentPage });
+    },
+    onChangeRowsPerPage(numberOfRows) {
+      console.log({ numberOfRows });
+    }
+  };
+
+  // const commonIndexesOptions = {
+  //   //filterType: "checkbox",        
+  //   rowsPerPage: [3],
+  //   rowsPerPageOptions: [3, 5, 10, 15],
+  //   selectableRowsHideCheckboxes: true,
+  //   onChangePage(currentPage) {
+  //     console.log({ currentPage });
+  //   },
+  //   onChangeRowsPerPage(numberOfRows) {
+  //     console.log({ numberOfRows });
+  //   }
+  // };
+
+  const mostSuccessfulUsersOptions = {
+    //filterType: "checkbox",        
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
+    selectableRowsHideCheckboxes: true,
+    onChangePage(currentPage) {
+      console.log({ currentPage });
+    },
+    onChangeRowsPerPage(numberOfRows) {
+      console.log({ numberOfRows });
+    }
+  };
+
+  //DATA
+
+  // const symbolsData = [
+  //   ["BTC", "$40,038.60", "2.28%", "$40,028.60", "$40,138.60", "$761,877,839,620", "$33,368,145,255"],
+  //   ["ETH", "$2,956.03", "2.97%", "$2,950.00", "$2,986.03", "$356,678,709,989", "$18,253,003,101"]
+  // ];
+
+
+  // const commonIndexesData = [
+  //   [, "index1", "High", "2.28%", "50"],
+  //   [, "index2", "Low", "2.97%", "2"]
+  // ];
+
+  // const mostSuccessfulUsersData = [
+  //   [, "Tal Gavriel", "The best", "2.28%", "50"],
+  //   [, "Matan kalili", "The second", "2.97%", "2"]
+  // ];
+
+  // const ownIndexesData = [
+  //   [, , "index1", "High", "2.28%", 50],
+  //   [, , "index2", "Low", "2.97%", 2]
+  // ];
+
+
+
+  const HandlePaymentRow = (rowData) => {
     console.log(rowData.indexName);
     buyIndexInput.indexName = rowData.indexName;
     setShowBuyDialog(true);
@@ -165,80 +311,100 @@ function HomePage() {
     console.log(buyIndexInput.indexName);
     console.log(countToBuy);
     //todo: send the indexName and countToBuy to BUY api
+
+    fetch('/api/buy-index', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: { userName: "tal", indexName: buyIndexInput.indexName, funding: countToBuy }
+    }).then(response => {
+      console.log(response.json())
+    }).catch((e) => {
+      console.log(e);
+    })
+
     return Promise.resolve();
   }
 
-  const HandleSellRow = (event, rowData) => {
-    console.log(rowData.indexName);
-    sellIndexInput.indexName = rowData.indexName;
+
+  const HandleSellRow = (rowData) => {
+    console.log(rowData.rowData);
+    sellIndexInput.indexName = rowData[0];
     setShowSellDialog(true);
     console.log(sellIndexInput.countToSell);
     //todo: send the rowData.indexName and sellIndexInput.countToBuy to SELL api
     //sellIndexInput.countToSell = 0;
     //sellIndexInput.indexName = "";
   }
+
   const SellIndex = (countToSell) => {
     console.log(sellIndexInput.indexName);
     console.log(countToSell);
     //todo: send the indexName and countToSell to SELL api
+
+    fetch('/api/sell-index', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: { userName: "tal", indexName: sellIndexInput.indexName, funding: countToSell }
+    }).then(response => {
+      console.log(response.json())
+    }).catch((e) => {
+      console.log(e);
+    })
+
     return Promise.resolve();
   }
 
-  const handleGetSymbolsData = () => {
-    //todo:
-    //get the data from the backed
-    // setSymbolsData(res);
-  };
+  // const handleGetSymbolsData = () => {
+  //   //todo:
+  //   //get the data from the backed
+  //   // setSymbolsData(res);
+  // };
 
+  // const handleChangePage = (event, newPage) => {  
+  //   setPage(newPage);  
+  // };  
 
+  // const handleChangeRowsPerPage = event => {  
+  //   setRowsPerPage(+event.target.value);  
+  //   setPage(0);  
+  // }; 
 
-  useEffect(() => {
-    console.log("aa");
-    //handleGetSymbolsData();
-    //console.log(SymbolsData);
-
-  }, [showBuyDialog]);
-
+  // const handleChangePaymentRow = (event, buyIndexRow) => {  
+  //   setBuyIndexInput(buyIndexRow);  
+  // };  
 
   return (
     <div>
-      <div>
-        <h1>Home Page</h1>
-
-        <ThemeProvider theme={defaultMaterialTheme}>
-          <MaterialTable title="Symbols Table" columns={symbolColumns} data={symbolData} options={{ exportButton: true }} />
-        </ThemeProvider>
-
-
-        <ThemeProvider theme={defaultMaterialTheme}>
-          <MaterialTable title="Best Indexes Table" columns={indexColumns} data={commonIndexesData} actions={[
-            {
-              icon: Payment,
-              tooltip: 'pay to buy it',
-              onClick: (event, rowData) => HandlePaymentRow(event, rowData)
-            }
-          ]} />
-        </ThemeProvider>
-
-        <ThemeProvider theme={defaultMaterialTheme}>
-          <MaterialTable title="My Own Indexes Table" columns={indexColumns} data={ownIndexesData} actions={[
-            {
-              icon: Payment,
-              tooltip: 'pay to buy it',
-              onClick: (event, rowData) => HandlePaymentRow(event, rowData)
-            },
-            {
-              icon: HighlightOffIcon,
-              tooltip: 'sell this index',
-              onClick: (event, rowData) => HandleSellRow(event, rowData)
-            }
-          ]} />
-        </ThemeProvider>
-
+      <h1 style={{ marginBottom: '30px' }}>Home Page</h1>
+      <div style={{ marginBottom: '30px' }}>
+        <MUIDataTable
+          title={"Symbols Table"}
+          data={symbolsData}
+          columns={symbolColumns}
+          options={symbolOptions}
+        />
       </div>
+      <div style={{ marginBottom: '30px' }}>
+        <MUIDataTable
+          style={{ marginBottom: '30px' }}
+          title={"Best Indexes Table"}
+          data={mostSuccessfulUsersData}
+          columns={mostSuccessfulUsers}
+          options={mostSuccessfulUsersOptions}
+        />
+      </div>
+      <MUIDataTable
+        title={"Own Indexes Table"}
+        data={ownIndexesData}
+        columns={ownIndexColumns}
+        options={ownIndexesOptions}
+      />
       {showBuyDialog && (
         <BuyOrSellModal
-          //        {...props}
           isBuyModal={true}
           setShowBuyDialog={setShowBuyDialog}
           buyIndexInput={buyIndexInput}
@@ -248,7 +414,6 @@ function HomePage() {
       )}
       {showSellDialog && (
         <BuyOrSellModal
-          //        {...props}
           isBuyModal={false}
           setShowSellDialog={setShowSellDialog}
           sellIndexInput={sellIndexInput}
@@ -260,7 +425,6 @@ function HomePage() {
   );
 }
 
-// const root = ReactDOM.createRoot(document.getElementById('root'));
-// root.render(<HomePage />);
-
+HomePage.defaultProps = defaultProps;
+HomePage.propTypes = propTypes;
 export default HomePage; 
