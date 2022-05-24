@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
 import InputMask from "react-input-mask";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { unstable_composeClasses } from "@mui/material";
 import { ClassNames } from "@emotion/react";
@@ -28,19 +28,19 @@ function CreateNewIndex(props) {
   const [listSymbolPercentLine, setListSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
   const [disableButtomBackTestSymbol, setDisableButtomBackTestSymbol] = useState(true);
   const [disableButtomBackTestPercent, setDisableButtomBackTestPercent] = useState(true);
-  const [showBacktest, setShowBacktest] = useState(false)
-  const [backtestPrices, setBacktestPrices] = useState([])
-  const [backtestDates, setBacktestDates] = useState([])
+  const [showBacktest, setShowBacktest] = useState(false);
+  const [backtestPrices, setBacktestPrices] = useState([]);
+  const [backtestDates, setBacktestDates] = useState([]);
 
   useEffect(async () => {
     const response = await fetch('/api/supported-symbols-list', { method: 'get' });
     const responseData = await response.json();
-    if (responseData.success) {
+    if (responseData.success && responseData.data.count > 0) {
       console.log(responseData)
       console.log(responseData.success)
       console.log(responseData.data)
       let tempSymbolsNameArr = [];
-      responseData.data.map(symbolObject => {
+      responseData.data.result.map(symbolObject => {
         tempSymbolsNameArr.push(symbolObject.sym);
       });
       setListSupportedSymbols(tempSymbolsNameArr);
@@ -146,26 +146,37 @@ function CreateNewIndex(props) {
 
   //example of POST request
   const createNewIndexRequest = () => {
-    let symbolToPrice = {};
+    let dataToEncode = {};
+    let symbolToPrice = [];
     let dataToPass = [];
+    let dataValid = true;
     listSymbolPercentLine.forEach(record => {
-      symbolToPrice[record.name] = record.percent
+      let symbolName = record.name.toUpperCase();
+      let weight = record.percent / 100;
+      if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol === symbolName) === -1) {
+        dataValid = false;
+      }
+      symbolToPrice.push({ symbol: symbolName, weight: weight });
     })
-    let encodedKey = encodeURIComponent('data');
-    let encodedValue = encodeURIComponent(JSON.stringify(symbolToPrice));
-    dataToPass.push(encodedKey + "=" + encodedValue);
-    dataToPass = dataToPass.join("&");
-    fetch('/api/create-new-index', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: dataToPass
-    }).then(response => {
-      console.log(response.json())
-    }).catch((e) => {
-      console.log(e);
-    })
+    if (dataValid) {
+      // TODO: change later is private field
+      dataToEncode = { symbolToPrice: symbolToPrice, isPrivate: false }
+      let encodedKey = encodeURIComponent('data');
+      let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
+      dataToPass.push(encodedKey + "=" + encodedValue);
+      dataToPass = dataToPass.join("&");
+      fetch('/api/create-new-index', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: dataToPass
+      }).then(response => {
+        console.log(response.json())
+      }).catch((e) => {
+        console.log(e);
+      })
+    }
   };
 
   //example of GET request
@@ -173,16 +184,18 @@ function CreateNewIndex(props) {
     let symbolToPrice = {};
     let dataValid = true;
     listSymbolPercentLine.forEach(record => {
-      let symbolName = record.name.toLocaleUpperCase();
+      let symbolName = record.name.toUpperCase();
+      // debugger
       if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol === symbolName) === -1) {
         dataValid = false;
       }
-      symbolToPrice[symbolName] = record.percent;
+      symbolToPrice[symbolName] = record.percent / 100;
     })
     if (dataValid) {
       console.log(listSymbolPercentLine);
       const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice) }), { method: 'get' });
       const responseData = await response.json();
+      // debugger
       if (responseData.success) {
         setBacktestPrices(responseData.data.balance_progress);
         setBacktestDates(responseData.data.dates);
@@ -200,6 +213,10 @@ function CreateNewIndex(props) {
     } else {
       toast('One or more coins symbols are not exist or not supported');
     }
+  };
+
+  const renderTable = () => {
+    return (<Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />);
   };
 
   return (
@@ -241,9 +258,11 @@ function CreateNewIndex(props) {
         <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
           Backtest
         </Button>
-        {showBacktest && <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />}
+        <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={createNewIndexRequest}>
+          Create New Index
+        </Button>
+        {showBacktest && renderTable()}
       </div>
-      <ToastContainer />
     </div>
   );
 };

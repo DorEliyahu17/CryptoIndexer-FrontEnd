@@ -2,6 +2,7 @@ import Navbar from "./Components/Navbar";
 import React, { useState } from "react";
 import { Route } from "react-router";
 import { BrowserRouter, Routes } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
 import HomePage from "./HomePage/HomePage";
 import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
@@ -40,6 +41,7 @@ function App() {
           <Route path='/IndexPopUp' element={<IndexPopUp userToken={loggedUserToken} />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </div>
 
 

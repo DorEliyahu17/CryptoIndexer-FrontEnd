@@ -189,4 +189,6 @@ function Content() {
   );
 }
 
+// Content.defaultProps = defaultProps;
+// Content.propTypes = propTypes;
 export default Content;
