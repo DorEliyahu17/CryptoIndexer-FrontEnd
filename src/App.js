@@ -1,5 +1,5 @@
 import Navbar from "./Components/Navbar";
-import React from "react";
+import React, { useState } from "react";
 import { Route } from "react-router";
 import { BrowserRouter, Routes } from "react-router-dom";
 import HomePage from "./HomePage/HomePage";
@@ -7,11 +7,13 @@ import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
 import Login from "./Login/Login"
 import Register from "./Register/Register"
+import NewAccount from "./NewAccount/NewAccount"
+import IndexPopUp from "./IndexPopUp/IndexPopUp"
 
 import "./App.css";
 
 function App() {
-
+  const [loggedUserToken, setloggedUserToken] = useState("");
 
   return (
     <div className='App'>
@@ -29,11 +31,13 @@ function App() {
       />
       <BrowserRouter>
         <Routes>
-          <Route index element={<HomePage />} />
-          <Route path='/create-new-index' element={<CreateNewIndex />} />
-          <Route path='/explorer-indexes' element={<ExplorerIndexes />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
+          <Route index element={<HomePage userToken={loggedUserToken} />} />
+          <Route path='/create-new-index' element={<CreateNewIndex userToken={loggedUserToken} />} />
+          <Route path='/explorer-indexes' element={<ExplorerIndexes userToken={loggedUserToken} />} />
+          <Route path='/login' element={<Login setUserToken={setloggedUserToken} />} />
+          <Route path='/register' element={<Register setUserToken={setloggedUserToken} />} />
+          <Route path='/NewAccount' element={<NewAccount />} />
+          <Route path='/IndexPopUp' element={<IndexPopUp userToken={loggedUserToken} />} />
         </Routes>
       </BrowserRouter>
     </div>
