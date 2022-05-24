@@ -7,6 +7,8 @@ import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
 import Login from "./Login/Login"
 import Register from "./Register/Register"
+import NewAccount from "./NewAccount/NewAccount"
+import IndexPopUp from "./IndexPopUp/IndexPopUp"
 
 import "./App.css";
 
@@ -34,6 +36,8 @@ function App() {
           <Route path='/explorer-indexes' element={<ExplorerIndexes userToken={loggedUserToken} />} />
           <Route path='/login' element={<Login setUserToken={setloggedUserToken} />} />
           <Route path='/register' element={<Register setUserToken={setloggedUserToken} />} />
+          <Route path='/NewAccount' element={<NewAccount />} />
+          <Route path='/IndexPopUp' element={<IndexPopUp userToken={loggedUserToken} />} />
         </Routes>
       </BrowserRouter>
     </div>
