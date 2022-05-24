@@ -58,7 +58,7 @@ function HomePage(props) {
       console.log(responseData.success)
       console.log(responseData.data)
       let tempSymbolsNameArr = [];
-      responseData.data.map(symbolObject => {
+      responseData.data.result.map(symbolObject => {
         tempSymbolsNameArr.push([symbolObject.sym, symbolObject.price, symbolObject.weeklyGain, symbolObject.weekLow, symbolObject.weekHigh, symbolObject.marketCap, symbolObject.volume]);
       });
       setSymbolsData(tempSymbolsNameArr);
