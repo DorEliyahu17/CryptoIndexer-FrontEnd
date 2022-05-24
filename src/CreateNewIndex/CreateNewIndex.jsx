@@ -27,12 +27,12 @@ function CreateNewIndex() {
   useEffect(async () => {
     const response = await fetch('/api/supported-symbols-list', { method: 'get' });
     const responseData = await response.json();
-    if (responseData.success) {
+    if (responseData.success && responseData.data.result > 0) {
       console.log(responseData)
       console.log(responseData.success)
       console.log(responseData.data)
       let tempSymbolsNameArr = [];
-      responseData.data.map(symbolObject => {
+      responseData.data.result.map(symbolObject => {
         tempSymbolsNameArr.push(symbolObject.sym);
       });
       setListSupportedSymbols(tempSymbolsNameArr);
@@ -138,26 +138,38 @@ function CreateNewIndex() {
 
   //example of POST request
   const createNewIndexRequest = () => {
-    let symbolToPrice = {};
+    let dataToEncode = {};
+    let symbolToPrice = [];
     let dataToPass = [];
+    let dataValid = true;
     listSymbolPercentLine.forEach(record => {
-      symbolToPrice[record.name] = record.percent
+      let symbolName = record.name.toUpperCase();
+      let weight = record.percent / 100;
+      if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol === symbolName) === -1) {
+        dataValid = false;
+      }
+      symbolToPrice.push({ symbol: symbolName, weight: weight });
     })
-    let encodedKey = encodeURIComponent('data');
-    let encodedValue = encodeURIComponent(JSON.stringify(symbolToPrice));
-    dataToPass.push(encodedKey + "=" + encodedValue);
-    dataToPass = dataToPass.join("&");
-    fetch('/api/create-new-index', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: dataToPass
-    }).then(response => {
-      console.log(response.json())
-    }).catch((e) => {
-      console.log(e);
-    })
+    if (dataValid) {
+      // TODO: change later is private field
+      dataToEncode = { symbolToPrice: symbolToPrice, isPrivate: false }
+      let encodedKey = encodeURIComponent('data');
+      let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
+      dataToPass.push(encodedKey + "=" + encodedValue);
+      dataToPass = dataToPass.join("&");
+      debugger
+      fetch('/api/create-new-index', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: dataToPass
+      }).then(response => {
+        console.log(response.json())
+      }).catch((e) => {
+        console.log(e);
+      })
+    }
   };
 
   //example of GET request
@@ -165,7 +177,7 @@ function CreateNewIndex() {
     let symbolToPrice = {};
     let dataValid = true;
     listSymbolPercentLine.forEach(record => {
-      let symbolName = record.name.toLocaleUpperCase();
+      let symbolName = record.name.toUpperCase();
       if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol === symbolName) === -1) {
         dataValid = false;
       }
@@ -175,7 +187,7 @@ function CreateNewIndex() {
       console.log(listSymbolPercentLine);
       const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice) }), { method: 'get' });
       const responseData = await response.json();
-      if (responseData.success) {
+      if (responseData.success && responseData.data.result > 0) {
         setBacktestPrices(responseData.data.balance_progress);
         setBacktestDates(responseData.data.dates);
         setShowBacktest(true);
@@ -236,6 +248,9 @@ function CreateNewIndex() {
       <div>
         <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
           Backtest
+        </Button>
+        <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={createNewIndexRequest}>
+          Create New Index
         </Button>
         {showBacktest && renderTable()}
       </div>
