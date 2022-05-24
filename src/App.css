@@ -32,7 +32,17 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+#menu-appbar .MuiList-root a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#navbar #pages-list a:hover {
+  color: #D3F3EE;
 }

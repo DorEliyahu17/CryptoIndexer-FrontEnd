@@ -22,8 +22,6 @@ function App() {
         pages={[
           { name: "Create New Index", href: "/create-new-index" },
           { name: "Explorer Indexes", href: "/explorer-indexes" },
-          { name: "Login", href: "/login" },
-          { name: "Register", href: "/register" },
         ]}
         settings={[
           { name: "Login", href: "/login" },
