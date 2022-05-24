@@ -206,7 +206,7 @@ function HomePage() {
         <h1>Home Page</h1>
 
         <ThemeProvider theme={defaultMaterialTheme}>
-          <MaterialTable title="Symbols Table" columns={symbolColumns} data={symbolData} options={{ exportButton: true }} />;
+          <MaterialTable title="Symbols Table" columns={symbolColumns} data={symbolData} options={{ exportButton: true }} />
         </ThemeProvider>
 
 
@@ -217,7 +217,7 @@ function HomePage() {
               tooltip: 'pay to buy it',
               onClick: (event, rowData) => HandlePaymentRow(event, rowData)
             }
-          ]} />;
+          ]} />
         </ThemeProvider>
 
         <ThemeProvider theme={defaultMaterialTheme}>
@@ -232,7 +232,7 @@ function HomePage() {
               tooltip: 'sell this index',
               onClick: (event, rowData) => HandleSellRow(event, rowData)
             }
-          ]} />;
+          ]} />
         </ThemeProvider>
 
       </div>
