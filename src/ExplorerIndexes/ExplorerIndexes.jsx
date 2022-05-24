@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -23,7 +23,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-      CryptoIndexer
+        CryptoIndexer
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -34,17 +34,17 @@ function Copyright(props) {
 
 
 const footers = [
- 
+
 ];
 
 function PricingContent(props) {
   const { search, tiers } = props;
   const [filterTiers, setFilterTiers] = useState(tiers);
 
-  useEffect(()=>{
+  useEffect(() => {
     const temp = tiers.filter((tier) => tier.title.toLocaleLowerCase().includes(search))
     setFilterTiers(temp)
-  },[search])
+  }, [search])
 
   return (
     <React.Fragment>
@@ -68,9 +68,9 @@ function PricingContent(props) {
         >
           Community
         </Typography>
-        
+
         <Typography variant="h5" align="center" color="text.secondary" component="p">
-         Look in the community for indexes created by your friends..
+          Look in the community for indexes created by your friends..
         </Typography>
       </Container>
       {/* End hero unit */}
@@ -90,7 +90,7 @@ function PricingContent(props) {
                   title={tier.title}
                   subheader={tier.subheader}
                   titleTypographyProps={{ align: 'center' }}
-                  action={tier.title === 'Pro' ? <StarIcon /> : null}
+                  action={tier.title === '1 st' ? <StarIcon /> : null}
                   subheaderTypographyProps={{
                     align: 'center',
                   }}
@@ -131,7 +131,7 @@ function PricingContent(props) {
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button fullWidth variant={tier.buttonVariant}>
+                  <Button fullWidth variant={tier.buttonVariant} href="/IndexPopUp">
                     {tier.buttonText}
                   </Button>
                 </CardActions>
@@ -181,7 +181,7 @@ export default function Content() {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() =>{
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('/api/content', { method: 'get' });
@@ -194,7 +194,7 @@ export default function Content() {
       }
     }
     fetchData()
-  },[])
+  }, [])
   return (
     <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
@@ -204,26 +204,26 @@ export default function Content() {
         sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
       >
         {isLoading ? <div>loading...</div> :
-        <Toolbar>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item>
-              <SearchIcon color="inherit" sx={{ display: 'block' }} />
+          <Toolbar>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item>
+                <SearchIcon color="inherit" sx={{ display: 'block' }} />
+              </Grid>
+              <Grid item xs>
+                <TextField
+                  fullWidth
+                  placeholder="Search by email address, phone number, or user UID"
+                  InputProps={{
+                    disableUnderline: true,
+                    sx: { fontSize: 'default' },
+                  }}
+                  onChange={(e) => setSearch(e.target.value)}
+                  variant="standard"
+                />
+              </Grid>
+              <PricingContent search={search} tiers={tiers} />
             </Grid>
-            <Grid item xs>
-              <TextField
-                fullWidth
-                placeholder="Search by email address, phone number, or user UID"
-                InputProps={{
-                  disableUnderline: true,
-                  sx: { fontSize: 'default' },
-                }}
-                onChange={(e)=> setSearch(e.target.value)}
-                variant="standard"
-              />
-            </Grid>
-            <PricingContent search={search} tiers={tiers}/>
-          </Grid>
-        </Toolbar>}
+          </Toolbar>}
       </AppBar>
     </Paper>
   );

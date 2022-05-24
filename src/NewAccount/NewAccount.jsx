@@ -143,6 +143,6 @@ function NewAccount() {
   );
 }
 
-CreateNewIndex.defaultProps = defaultProps;
-CreateNewIndex.propTypes = propTypes;
+NewAccount.defaultProps = defaultProps;
+NewAccount.propTypes = propTypes;
 export default NewAccount; 

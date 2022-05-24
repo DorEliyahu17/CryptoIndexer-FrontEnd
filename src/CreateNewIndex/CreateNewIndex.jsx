@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
 import InputMask from "react-input-mask";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { unstable_composeClasses } from "@mui/material";
 import { ClassNames } from "@emotion/react";
@@ -35,7 +35,7 @@ function CreateNewIndex(props) {
   useEffect(async () => {
     const response = await fetch('/api/supported-symbols-list', { method: 'get' });
     const responseData = await response.json();
-    if (responseData.success && responseData.data.result > 0) {
+    if (responseData.success && responseData.data.count > 0) {
       console.log(responseData)
       console.log(responseData.success)
       console.log(responseData.data)
@@ -165,7 +165,6 @@ function CreateNewIndex(props) {
       let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
       dataToPass.push(encodedKey + "=" + encodedValue);
       dataToPass = dataToPass.join("&");
-      debugger
       fetch('/api/create-new-index', {
         method: 'POST',
         headers: {
@@ -186,6 +185,7 @@ function CreateNewIndex(props) {
     let dataValid = true;
     listSymbolPercentLine.forEach(record => {
       let symbolName = record.name.toUpperCase();
+      // debugger
       if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol === symbolName) === -1) {
         dataValid = false;
       }
@@ -195,7 +195,8 @@ function CreateNewIndex(props) {
       console.log(listSymbolPercentLine);
       const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice) }), { method: 'get' });
       const responseData = await response.json();
-      if (responseData.success && responseData.data.result > 0) {
+      // debugger
+      if (responseData.success) {
         setBacktestPrices(responseData.data.balance_progress);
         setBacktestDates(responseData.data.dates);
         setShowBacktest(true);
@@ -262,7 +263,6 @@ function CreateNewIndex(props) {
         </Button>
         {showBacktest && renderTable()}
       </div>
-      <ToastContainer />
     </div>
   );
 };
