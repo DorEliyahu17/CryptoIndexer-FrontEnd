@@ -38,8 +38,8 @@ function BuyModalContainer(props) {
 
   return (
     <div>
-      <ModalShadow onClick={close} />
-      <Modal>
+      <ModalShadow style={{ zIndex: 100 }} onClick={close} />
+      <Modal style={{ zIndex: 150 }}>
         <ModalBanner>Edit countToBuy</ModalBanner>
         <ModalContent>
           {content}
