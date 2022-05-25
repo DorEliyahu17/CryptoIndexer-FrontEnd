@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import HomePage from "./HomePage/HomePage";
 import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
+import AdminPanel from "./AdminPanel/AdminPanel"
 import Login from "./Login/Login"
 import Register from "./Register/Register"
 import NewAccount from "./NewAccount/NewAccount"
@@ -22,6 +23,7 @@ function App() {
         pages={[
           { name: "Create New Index", href: "/create-new-index" },
           { name: "Explorer Indexes", href: "/explorer-indexes" },
+          { name: "Admin Panel", href: "/AdminPanel" },
         ]}
         settings={[
           { name: "Login", href: "/login" },
@@ -33,6 +35,7 @@ function App() {
           <Route index element={<HomePage userToken={loggedUserToken} />} />
           <Route path='/create-new-index' element={<CreateNewIndex userToken={loggedUserToken} />} />
           <Route path='/explorer-indexes' element={<ExplorerIndexes userToken={loggedUserToken} />} />
+          <Route path='/AdminPanel' element={<AdminPanel userToken={loggedUserToken} />} />
           <Route path='/login' element={<Login setUserToken={setloggedUserToken} />} />
           <Route path='/register' element={<Register setUserToken={setloggedUserToken} />} />
           <Route path='/NewAccount' element={<NewAccount />} />
