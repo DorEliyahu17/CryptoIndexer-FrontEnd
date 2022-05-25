@@ -75,6 +75,7 @@ function CreateNewIndex(props) {
         mask="99"
         disabled={false}
         maskChar=" "
+        pattern="[0-9]*"
         id={`percent-${boxIndex}`}
         onChange={(event) => handleOnChangePercent(event, boxIndex)}>
         {() => <TextField
@@ -90,6 +91,8 @@ function CreateNewIndex(props) {
       return listItem;
     });
     changedlistSymbolPercentLine.push({ name: '', percent: 0 })
+    setDisableButtomBackTestSymbol(true)
+    setDisableButtomBackTestPercent(false)
     setListSymbolPercentLine(changedlistSymbolPercentLine);
   };
 
@@ -98,7 +101,24 @@ function CreateNewIndex(props) {
       return listItem;
     });
     changedlistSymbolPercentLine.pop()
+    validateSymbolComplete()
+    validatePercentComplete()
     setListSymbolPercentLine(changedlistSymbolPercentLine);
+  };
+
+  const validatePercentComplete = () => {
+    let sumPercent = 0;
+    listSymbolPercentLine.map((stock, index) => {
+      sumPercent += Number(stock.percent);
+    });
+    (sumPercent === 100) ? setDisableButtomBackTestPercent(false) : setDisableButtomBackTestPercent(true);
+  };
+
+  const validateSymbolComplete = () => {
+    listSymbolPercentLine.map((stock, index) => {
+      (stock.name !== '' && stock.name !== null) ? setDisableButtomBackTestSymbol(false) : setDisableButtomBackTestSymbol(true);
+    });
+    // console.log("disableButtomBackTestSymbol state is: " + disableButtomBackTestSymbol)
   };
 
   const handleOnChangeSymbol = (event, index) => {
@@ -106,21 +126,14 @@ function CreateNewIndex(props) {
     changedSymbolsList[index].name = event.target.value;
     setListSymbolPercentLine(changedSymbolsList);
     // console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
-    check_if_all_symbol_complete()
+    validateSymbolComplete()
   };
 
   const handleOnChangeIndexName = (event) => {
     setIndexName(event.target.value);
     // setListSymbolPercentLine(changedSymbolsList);
     // console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
-    // check_if_all_symbol_complete()
-  };
-
-  const check_if_all_symbol_complete = () => {
-    listSymbolPercentLine.map((stock, index) => {
-      (stock.name !== '' && stock.name !== null) ? setDisableButtomBackTestSymbol(false) : setDisableButtomBackTestSymbol(true);
-    })
-    // console.log("disableButtomBackTestSymbol state is: " + disableButtomBackTestSymbol)
+    // validateSymbolComplete()
   };
 
   const handleOnChangePercent = (event, index) => {
@@ -128,21 +141,10 @@ function CreateNewIndex(props) {
     changedSymbolsList[index].percent = event.target.value;
     setListSymbolPercentLine(changedSymbolsList);
     // console.log("Symbol.name=" + listSymbolPercentLine[index].name + " NewSymbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
-    check_if_all_percent_complete()
+    validatePercentComplete()
   };
 
-  const check_if_all_percent_complete = () => {
-    let sumPercent = 0;
-    listSymbolPercentLine.map((stock, index) => {
-      sumPercent += Number(stock.percent);
-    })
-    if (sumPercent === 100) {
-      setDisableButtomBackTestPercent(false)
-    }
-    else {
-      setDisableButtomBackTestPercent(true)
-    }
-  };
+
 
   //example of POST request
   const createNewIndexRequest = () => {
@@ -160,7 +162,7 @@ function CreateNewIndex(props) {
     })
     if (dataValid) {
       // TODO: change later is private field
-      dataToEncode = { symbolToPrice: symbolToPrice, isPrivate: false }
+      dataToEncode = { indexName: indexName, symbolToPrice: symbolToPrice, isPrivate: false }
       let encodedKey = encodeURIComponent('data');
       let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
       dataToPass.push(encodedKey + "=" + encodedValue);
@@ -220,47 +222,53 @@ function CreateNewIndex(props) {
   };
 
   return (
-    <div id="create-new-index-form">
-      <div id="create-new-index-symbol-list">
-        <Box
-          component="form"
-          id={`box-index-name`}
-          sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch' },
-          }}
-          autoComplete="off"
-        >
-          <TextField
-            required
-            label="Index Name"
-            placeholder="Index Name"
-            onChange={(event) => handleOnChangeIndexName(event)}
-          />
-        </Box>
-        {listSymbolPercentLine.map((symbol, index) => {
-          console.log("Symbol.name=" + symbol.name + "Symbol.percent=" + symbol.percent + " LineIndex=" + index);
-          return renderSymbolPercentLine(index);
-        })}
+    <div id="create-new-index-form" style={{ display: 'flex', marginRight: '40px' }}>
+      <div id="create-new-index-symbol-list" style={{ display: 'flex', minWidth: '575px' }}>
+        <div>
+          <Box
+            component="form"
+            id={`box-index-name`}
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '25ch' },
+            }}
+            autoComplete="off"
+          >
+            <TextField
+              required
+              label="Index Name"
+              placeholder="Index Name"
+              onChange={(event) => handleOnChangeIndexName(event)}
+            />
+          </Box>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+            <Button variant="contained" id="add-new-SymbolPercentLine" onClick={handleOnClickAdd}>
+              Add
+            </Button>
+            {listSymbolPercentLine.length > 2
+              ?
+              <Stack direction="row" spacing={2}>
+                <Button variant="outlined" startIcon={<DeleteIcon />} id="Relase-last-SymbolPercentLine" onClick={handleOnClickRealse} style={{ marginLeft: '5px' }}>
+                  Relase
+                </Button>
+              </Stack>
+              : null
+            }
+          </div>
+          {listSymbolPercentLine.map((symbol, index) => {
+            console.log("Symbol.name=" + symbol.name + "Symbol.percent=" + symbol.percent + " LineIndex=" + index);
+            return renderSymbolPercentLine(index);
+          })}
+        </div>
       </div>
-      <Button variant="contained" id="add-new-SymbolPercentLine" onClick={handleOnClickAdd}>
-        Add
-      </Button>
-      {listSymbolPercentLine.length > 2
-        ?
-        <Stack direction="row" spacing={2}>
-          <Button variant="outlined" startIcon={<DeleteIcon />} id="Relase-last-SymbolPercentLine" onClick={handleOnClickRealse}>
-            Relase
+      <div id="create-new-index-actions" style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', alignItems: 'flex-start' }}>
+        <div style={{ marginTop: '5px', marginLeft: '10px' }}>
+          <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
+            Backtest
           </Button>
-        </Stack>
-        : null
-      }
-      <div>
-        <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
-          Backtest
-        </Button>
-        <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={createNewIndexRequest}>
-          Create New Index
-        </Button>
+          <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent || indexName === ''} variant="contained" id="CreateNewIndextButtom" onClick={createNewIndexRequest} style={{ marginLeft: '5px' }}>
+            Create New Index
+          </Button>
+        </div>
         {showBacktest && renderTable()}
       </div>
     </div>
