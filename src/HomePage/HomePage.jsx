@@ -312,17 +312,19 @@ function HomePage(props) {
     console.log(countToBuy);
     //todo: send the indexName and countToBuy to BUY api
 
-    fetch('/api/buy-index', {
+    fetch('/api//buy-or-sell-index', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: { userName: "tal", indexName: buyIndexInput.indexName, funding: countToBuy }
+      body: { userName: "tal", index_hash:"hash", indexName: sellIndexInput.indexName,transactionData: {funding: -countToSell, date:Date.now} }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
       console.log(e);
     })
+
+    await getOwnIndexes();
 
     return Promise.resolve();
   }
@@ -343,17 +345,19 @@ function HomePage(props) {
     console.log(countToSell);
     //todo: send the indexName and countToSell to SELL api
 
-    fetch('/api/sell-index', {
+    fetch('/api//buy-or-sell-index', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: { userName: "tal", indexName: sellIndexInput.indexName, funding: countToSell }
+      body: { userName: "tal", index_hash:"hash", indexName: sellIndexInput.indexName,transactionData: {funding: -countToSell, date:Date.now} }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
       console.log(e);
     })
+
+    await getOwnIndexes();
 
     return Promise.resolve();
   }
