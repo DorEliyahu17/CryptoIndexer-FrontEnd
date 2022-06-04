@@ -27,26 +27,22 @@ import ListItemText from '@mui/material/ListItemText';
 
 const products = [
   {
-    name: 'Product 1',
-    desc: 'A nice thing',
-    price: '$9.99',
+    name: 'Coin 1',
+    price: '50%',
   },
   {
-    name: 'Product 2',
-    desc: 'Another thing',
-    price: '$3.45',
+    name: 'Coin 2',
+    price: '5%',
   },
   {
-    name: 'Product 3',
-    desc: 'Something else',
-    price: '$6.51',
+    name: 'Coin 3',
+    price: '20%',
   },
   {
-    name: 'Product 4',
-    desc: 'Best thing of all',
-    price: '$14.11',
+    name: 'Coin 4',
+    price: '25%',
   },
-  { name: 'Shipping', desc: '', price: 'Free' },
+ 
 ];
 
 const addresses = ['1 MUI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
@@ -102,14 +98,14 @@ function PricingContent() {
           color="text.primary"
           gutterBottom
         >
-          Stock Name Example
+          Index Name Example
         </Typography>
 
         <Typography variant="h5" align="center" color="text.secondary" component="p">
-          Look in the community for indexes created by your friends..
+        Explanation of the index.
         </Typography>
         <Typography variant="h6" gutterBottom>
-          Order summary
+          Details of the composition of the currencies in the index
         </Typography>
         <List disablePadding>
           {products.map((product) => (
@@ -120,9 +116,9 @@ function PricingContent() {
           ))}
 
           <ListItem sx={{ py: 1, px: 0 }}>
-            <ListItemText primary="Total" />
+            <ListItemText primary="Profit in 1Y" />
             <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-              $34.06
+              %34.06
             </Typography>
           </ListItem>
         </List>
@@ -131,17 +127,41 @@ function PricingContent() {
           </Grid>
         </Grid>
       </Container>
-      {/* End hero unit */}
+      <Typography align='center'>
+      <TextField
+                margin="normal"
+                required
+                id="number"
+                label="Type an amount to check using a reverse checks"
+                name="number"
+                autoFocus
+              />
+        <Button
+        type="submit"
+        fullWidth
+        color = "primary"
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}
+
+        href="/explorer-indexes"
+      >
+        Test
+      </Button>
       <Button
         type="submit"
         fullWidth
+        color = "secondary"
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
+
         href="/explorer-indexes"
       >
-        Back To Community
-
+        Invest this amount
       </Button>
+      </Typography>
+
+
+      {/* End hero unit */}
 
     </React.Fragment>
 
@@ -152,7 +172,7 @@ function PricingContent() {
 function Content() {
   return (
 
-    <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
+    <Paper sx={{ maxWidth: 1300, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
         position="static"
         color="inherit"
@@ -161,31 +181,21 @@ function Content() {
       >
         <Toolbar>
           <Grid container spacing={2} alignItems="center">
-            <Grid item>
-              <SearchIcon color="inherit" sx={{ display: 'block' }} />
-            </Grid>
-            <Grid item xs>
-              <TextField
-                fullWidth
-                placeholder="Search by email address, phone number, or user UID"
-                InputProps={{
-                  disableUnderline: true,
-                  sx: { fontSize: 'default' },
-                }}
-                variant="standard"
-              />
-            </Grid>
-            <Grid item>
-              <Button variant="contained" sx={{ mr: 1 }} href="/HomePage">
-                Search
-              </Button>
-            </Grid>
             <PricingContent />
           </Grid>
         </Toolbar>
-      </AppBar>
+        <Button
+        type="submit"
+        variant="contained"
+        sx={{ mt: 10, width: 300 }}
+        href="/explorer-indexes"
+      >
+        Back To Community
 
+      </Button>
+      </AppBar>
     </Paper>
+    
   );
 }
 
