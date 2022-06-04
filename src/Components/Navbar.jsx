@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import PropTypes from 'prop-types';
+import Logo from  "../logo512.png";
 
 const propTypes = {
   pages: PropTypes.array.isRequired,
@@ -38,9 +39,14 @@ function Navbar(props) {
     <AppBar id='navbar' position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <a href='/'>
-            <img src='logo.png' width='100' />
-          </a>
+        <Box
+            component="img"
+            sx={{
+            height: 120,
+            }}
+            alt="Your logo."
+            src={Logo}
+        />
           <Box id='pages-list' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
