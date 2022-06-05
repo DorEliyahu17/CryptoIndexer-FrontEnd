@@ -1,4 +1,3 @@
-
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -15,7 +14,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+const propTypes = {
+  userToken: PropTypes.String,
+};
 
+const defaultProps = {
+  userToken: '',
+};
 
 function Copyright(props: any) {
   return (
@@ -31,7 +36,7 @@ function Copyright(props: any) {
 }
 const theme = createTheme();
 
-export default function SignIn() {
+function NewAccount() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -74,24 +79,34 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="Date"
               label="Date of birth"
               type="password"
               id="password"
               autoComplete="current-password"
             />
 
-              <TextField
+            <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
+              name="Gender"
               label="Gender"
               type="password"
               id="password"
               autoComplete="current-password"
             />
-              <TextField
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="Date"
+              label="E-mail"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <TextField
               margin="normal"
               required
               fullWidth
@@ -101,7 +116,14 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 1, mb: 1 }}
+            >
+              Add a digital wallet
+            </Button>
             <Button
               type="submit"
               fullWidth
@@ -111,7 +133,7 @@ export default function SignIn() {
               Sign UP
             </Button>
             <Grid container>
-       
+
             </Grid>
           </Box>
         </Box>
@@ -120,4 +142,7 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
-//export default Login; 
+
+NewAccount.defaultProps = defaultProps;
+NewAccount.propTypes = propTypes;
+export default NewAccount; 

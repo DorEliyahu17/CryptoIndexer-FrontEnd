@@ -2,11 +2,14 @@ import Navbar from "./Components/Navbar";
 import React, { useState } from "react";
 import { Route } from "react-router";
 import { BrowserRouter, Routes } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
 import HomePage from "./HomePage/HomePage";
 import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
 import Login from "./Login/Login"
 import Register from "./Register/Register"
+import NewAccount from "./NewAccount/NewAccount"
+import IndexPopUp from "./IndexPopUp/IndexPopUp"
 
 import "./App.css";
 
@@ -19,8 +22,6 @@ function App() {
         pages={[
           { name: "Create New Index", href: "/create-new-index" },
           { name: "Explorer Indexes", href: "/explorer-indexes" },
-          { name: "Login", href: "/login" },
-          { name: "Register", href: "/register" },
         ]}
         settings={[
           { name: "Login", href: "/login" },
@@ -34,8 +35,11 @@ function App() {
           <Route path='/explorer-indexes' element={<ExplorerIndexes userToken={loggedUserToken} />} />
           <Route path='/login' element={<Login setUserToken={setloggedUserToken} />} />
           <Route path='/register' element={<Register setUserToken={setloggedUserToken} />} />
+          <Route path='/NewAccount' element={<NewAccount />} />
+          <Route path='/IndexPopUp' element={<IndexPopUp userToken={loggedUserToken} />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </div>
 
 

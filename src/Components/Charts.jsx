@@ -111,7 +111,6 @@ function Charts(props) {
   };
 
   const renderChartByType = () => {
-    debugger
     switch (type) {
       case 'line':
         return <Line
@@ -122,9 +121,9 @@ function Charts(props) {
   }
 
   return (
-    <React.Fragment>
+    <div style={{ width: '100%', height: '100%' }}>
       {renderChartByType()}
-    </React.Fragment>
+    </div>
   );
 };
 

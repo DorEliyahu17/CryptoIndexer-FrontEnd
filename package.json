@@ -55,6 +55,7 @@
     "chartjs": "^0.3.24",
     "react-chartjs-2": "^4.1.0",
     "react-input-mask": "^2.0.4",
+    "react-loading": "^2.0.3",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "react-toastify": "^9.0.1",
