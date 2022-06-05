@@ -164,7 +164,7 @@ function CreateNewIndex(props) {
             // if search text would exclude currently selected option.
             renderValue={() => {
               if (listSymbolPercentLine[boxIndex].name !== '') {
-                return listSymbolPercentLine[boxIndex].name + ' - ' + listSupportedSymbols.filter((symbolObject) => containsText(symbolObject.symbol, listSymbolPercentLine[boxIndex].name))[0].name;
+                return listSymbolPercentLine[boxIndex].name + ' - ' + listSupportedSymbols.find(symbolObject => symbolObject.symbol === listSymbolPercentLine[boxIndex].name).name;
               } else {
                 return 'Select a symbol';
               }
@@ -255,7 +255,7 @@ function CreateNewIndex(props) {
     listSymbolPercentLine.forEach(record => {
       let symbolName = record.name.toUpperCase();
       let weight = record.percent / 100;
-      if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol === symbolName) === -1) {
+      if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol.symbol === symbolName) === -1) {
         dataValid = false;
       }
       symbolToPrice.push({ symbol: symbolName, weight: weight });
@@ -326,15 +326,17 @@ function CreateNewIndex(props) {
     });
 
     return (
-      <Fragment>
+      <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column', flexWrap: 'nowrap', justifyContent: 'flex-end' }}>
         <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} otherSymbols={backtestOtherSymbols} isMultiAxios={true} />
-        <MUIDataTable
-          title={"Statistics"}
-          data={statisticsData}
-          columns={statisticsColumns}
-          options={statisticsOptions}
-        />
-      </Fragment>
+        <div style={{ width: '100%', height: '100%' }}>
+          <MUIDataTable
+            title={"Statistics"}
+            data={statisticsData}
+            columns={statisticsColumns}
+            options={statisticsOptions}
+          />
+        </div>
+      </div>
     );
   };
 
@@ -393,7 +395,7 @@ function CreateNewIndex(props) {
                     <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
                       Backtest
                     </Button>
-                    <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent || indexName === '' || showBacktest} variant="contained" id="CreateNewIndextButtom" onClick={createNewIndexRequest} style={{ marginLeft: '5px' }}>
+                    <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent || indexName === '' || !showBacktest} variant="contained" id="CreateNewIndextButtom" onClick={createNewIndexRequest} style={{ marginLeft: '5px' }}>
                       Create New Index
                     </Button>
                   </div>
