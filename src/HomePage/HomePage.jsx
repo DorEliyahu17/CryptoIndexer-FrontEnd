@@ -87,7 +87,7 @@ function HomePage(props) {
   };
 
   const getOwnIndexes = async () => {
-    const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: JSON.stringify("tal gavriel") }), { method: 'get' });
+    const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: JSON.stringify(userToken) }), { method: 'get' });
     const responseData = await response.json();
     if (responseData.success) {
       console.log(responseData)
@@ -220,34 +220,16 @@ function HomePage(props) {
 
 
   //OPTIONS
-  const symbolOptions = {
-    //filterType: "checkbox",        
-    //filterType: "checkbox",        
-    //filterType: "checkbox",        
+  const symbolOptions = {  
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
-    selectableRowsHideCheckboxes: true,
-    // onChangePage(currentPage) {
-    //   // console.log({ currentPage });
-    // },
-    // onChangeRowsPerPage(numberOfRows) {
-    //   // console.log({ numberOfRows });
-    // }
+    selectableRowsHideCheckboxes: true
   };
 
-  const ownIndexesOptions = {
-    //filterType: "checkbox",        
-    //filterType: "checkbox",        
-    //filterType: "checkbox",        
+  const ownIndexesOptions = {      
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
-    selectableRowsHideCheckboxes: true,
-    // onChangePage(currentPage) {
-    //   console.log({ currentPage });
-    // },
-    // onChangeRowsPerPage(numberOfRows) {
-    //   console.log({ numberOfRows });
-    // }
+    selectableRowsHideCheckboxes: true
   };
 
   // const commonIndexesOptions = {
@@ -265,19 +247,10 @@ function HomePage(props) {
   //   }
   // };
 
-  const mostSuccessfulUsersOptions = {
-    //filterType: "checkbox",        
-    //filterType: "checkbox",        
-    //filterType: "checkbox",        
+  const mostSuccessfulUsersOptions = {     
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
-    selectableRowsHideCheckboxes: true,
-    // onChangePage(currentPage) {
-    //   console.log({ currentPage });
-    // },
-    // onChangeRowsPerPage(numberOfRows) {
-    //   console.log({ numberOfRows });
-    // }
+    selectableRowsHideCheckboxes: true
   };
 
   //DATA
@@ -325,7 +298,7 @@ function HomePage(props) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: { userName: "tal", index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: -countToBuy, date: Date.now } }
+      body: { userToken: userToken, index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: -countToBuy, date: Date.now } }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
@@ -358,7 +331,7 @@ function HomePage(props) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: { userName: "tal", index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: -countToSell, date: Date.now } }
+      body: { userToken: userToken, index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: -countToSell, date: Date.now } }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
