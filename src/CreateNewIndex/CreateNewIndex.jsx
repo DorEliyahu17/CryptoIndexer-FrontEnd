@@ -18,8 +18,8 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MUIDataTable from "mui-datatables";
-import Loading from '../Components/Loading'
-import Charts from '../Components/Charts'
+import Loading from '../Components/Loading';
+import Charts from '../Components/Charts';
 
 import 'react-toastify/dist/ReactToastify.css';
 
