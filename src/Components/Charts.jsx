@@ -16,8 +16,7 @@ const propTypes = {
   type: PropTypes.string,
   firstIndexName: PropTypes.string,
   firstIndexPrices: PropTypes.array,
-  secondIndexName: PropTypes.string,
-  secondIndexPrices: PropTypes.array,
+  otherSymbols: PropTypes.array,
   labels: PropTypes.array,
   isMultiAxios: PropTypes.bool,
 };
@@ -26,14 +25,13 @@ const defaultProps = {
   type: 'line',
   firstIndexName: 'Not Passed',
   firstIndexPrices: [],
-  secondIndexName: 'Not Passed',
-  secondIndexPrices: [],
+  otherSymbols: [],
   labels: [],
   isMultiAxios: false,
 };
 
 function Charts(props) {
-  const { type, firstIndexName, firstIndexPrices, secondIndexName, secondIndexPrices, labels, isMultiAxios } = props;
+  const { type, firstIndexName, firstIndexPrices, otherSymbols, labels, isMultiAxios } = props;
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -44,56 +42,22 @@ function Charts(props) {
     Legend
   );
 
-  const scales = isMultiAxios ?
+  let scales = {
+    y: {
+      type: 'linear',
+      display: true,
+      position: 'left',
+    },
+  };
+
+  let datasets = [
     {
-      y: {
-        type: 'linear',
-        display: true,
-        position: 'left',
-      },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'right',
-        grid: {
-          drawOnChartArea: false,
-        },
-      },
+      label: firstIndexName,
+      data: firstIndexPrices,
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
     }
-    :
-    {
-      y: {
-        type: 'linear',
-        display: true,
-        position: 'left',
-      },
-    };
-
-  const datasets = isMultiAxios ?
-    [
-      {
-        label: firstIndexName,
-        data: firstIndexPrices,
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: secondIndexName,
-        data: secondIndexPrices,
-        borderColor: 'rgb(53, 162, 235)',
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      },
-    ]
-    :
-    [
-      {
-        label: firstIndexName,
-        data: firstIndexPrices,
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      }
-    ];
-
+  ];
 
   const options = {
     responsive: true,
@@ -111,6 +75,20 @@ function Charts(props) {
   };
 
   const renderChartByType = () => {
+    if (isMultiAxios) {
+      otherSymbols.map((symbolObject, index) => {
+        let red = Math.floor(Math.random() * 256);
+        let green = Math.floor(Math.random() * 256);
+        let blue = Math.floor(Math.random() * 256);
+        datasets.push({
+          label: symbolObject.symbol,
+          data: symbolObject.balance_progress,
+          borderColor: `rgb(${red}, ${green}, ${blue})`,
+          backgroundColor: `rgb(${red}, ${green}, ${blue})`,
+        });
+      });
+    }
+
     switch (type) {
       case 'line':
         return <Line
