@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
 import InputMask from "react-input-mask";
 import { toast } from 'react-toastify';
@@ -17,6 +17,7 @@ import {
   Button
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import MUIDataTable from "mui-datatables";
 import Loading from '../Components/Loading'
 import Charts from '../Components/Charts'
 
@@ -313,7 +314,28 @@ function CreateNewIndex(props) {
   };
 
   const renderTable = () => {
-    return (<Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} otherSymbols={backtestOtherSymbols} isMultiAxios={true} />);
+    const statisticsOptions = {
+      rowsPerPage: [3],
+      rowsPerPageOptions: [3, 5, 10, 15],
+      selectableRowsHideCheckboxes: true,
+    };
+    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown'];
+    let statisticsData = [];
+    backtestOtherSymbols.map((symbolObject) => {
+      statisticsData.push([symbolObject.symbol, symbolObject.roi, symbolObject.maxDrawdown]);
+    });
+
+    return (
+      <Fragment>
+        <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} otherSymbols={backtestOtherSymbols} isMultiAxios={true} />
+        <MUIDataTable
+          title={"Statistics"}
+          data={statisticsData}
+          columns={statisticsColumns}
+          options={statisticsOptions}
+        />
+      </Fragment>
+    );
   };
 
   return (
