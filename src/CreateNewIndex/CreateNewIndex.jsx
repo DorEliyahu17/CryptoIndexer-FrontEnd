@@ -44,19 +44,16 @@ function CreateNewIndex(props) {
   const [showBacktestLoading, setShowBacktestLoading] = useState(false);
   const [backtestPrices, setBacktestPrices] = useState([]);
   const [backtestDates, setBacktestDates] = useState([]);
+  const [backtestOtherSymbols, setBacktestOtherSymbols] = useState([]);
 
   useEffect(async () => {
     setShowLoading(true);
     const response = await fetch('/api/supported-symbols-list', { method: 'get' });
     const responseData = await response.json();
     if (responseData.success && responseData.data.length > 0) {
-      console.log(responseData)
-      console.log(responseData.success)
-      console.log(responseData.data)
       setListSupportedSymbols(responseData.data);
       setShowLoading(false);
     } else {
-      console.log(responseData.data);
       toast('Error fetching supported symbols data: ' + responseData.data);
     }
   }, []);
@@ -106,16 +103,12 @@ function CreateNewIndex(props) {
 
   const handleOnChangeIndexName = (event) => {
     setIndexName(event.target.value);
-    // setListSymbolPercentLine(changedSymbolsList);
-    // console.log("NewSymbol.name= " + listSymbolPercentLine[index].name + " Symbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
-    // validateSymbolComplete()
   };
 
   const handleOnChangePercent = (event, index) => {
     let changedSymbolsList = listSymbolPercentLine;
     changedSymbolsList[index].percent = event.target.value;
     setListSymbolPercentLine(changedSymbolsList);
-    // console.log("Symbol.name=" + listSymbolPercentLine[index].name + " NewSymbol.percent=" + listSymbolPercentLine[index].percent + " LineIndex=" + index);
     validatePercentComplete()
   };
 
@@ -301,24 +294,16 @@ function CreateNewIndex(props) {
       symbolToPrice[symbolName] = record.percent / 100;
     })
     if (dataValid) {
-      console.log(listSymbolPercentLine);
-      // debugger
       const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice), initialCash }), { method: 'get' });
       const responseData = await response.json();
-      // debugger
       setShowBacktestLoading(false);
       if (responseData.success) {
-        setBacktestPrices(responseData.data.balance_progress);
-        setBacktestDates(responseData.data.dates);
+        setBacktestPrices(responseData.data.index.balance_progress);
+        setBacktestDates(responseData.data.index.dates);
+        setBacktestOtherSymbols(responseData.data.symbols);
         setShowBacktest(true);
-        console.log(responseData)
-        console.log(responseData.success)
-        console.log(responseData.data)
-        console.log(responseData.data.balance_progress)
-        console.log(responseData.data.dates)
       } else {
         setShowBacktest(false);
-        console.log(responseData.data);
         toast(responseData.data);
       }
     } else {
@@ -328,7 +313,7 @@ function CreateNewIndex(props) {
   };
 
   const renderTable = () => {
-    return (<Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />);
+    return (<Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} otherSymbols={backtestOtherSymbols} isMultiAxios={true} />);
   };
 
   return (
@@ -371,7 +356,6 @@ function CreateNewIndex(props) {
                 }
               </div>
               {listSymbolPercentLine.map((symbol, index) => {
-                console.log("Symbol.name=" + symbol.name + "Symbol.percent=" + symbol.percent + " LineIndex=" + index);
                 return renderSymbolPercentLine(index);
               })}
             </div>
