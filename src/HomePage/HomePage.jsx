@@ -8,6 +8,7 @@ import MUIDataTable from "mui-datatables";
 import { Delete } from "@material-ui/icons";
 import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import Loading from '../Components/Loading'
 
 import 'react-toastify/dist/ReactToastify.css';
 import './HomePage.less';
@@ -23,7 +24,8 @@ const defaultProps = {
 function HomePage(props) {
   const { userToken } = props;
   const [example, setExample] = useState(false);
-  const [symbolsData, setSymbolsData] = useState([]);
+  const [supportedSymbolsData, setSupportedSymbolsData] = useState([]);
+  const [showLoading, setShowLoading] = useState(false);
   const [mostSuccessfulUsersData, setMostSuccessfulUsersData] = useState([]);
   const [ownIndexesData, setOwnIndexesData] = useState([]);
   const [showBuyDialog, setShowBuyDialog] = useState(false);
@@ -37,9 +39,11 @@ function HomePage(props) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(async () => {
+    setShowLoading(true);
     await getSupportedSymbol();
     await getMostSuccessfulUsersList();
     await getOwnIndexes();
+    setShowLoading(false);
   }, []);
 
   useEffect(() => {
@@ -51,19 +55,15 @@ function HomePage(props) {
 
   //need to be fixed first in the api then here
   const getSupportedSymbol = async () => {
-    const response = await fetch('/api/supported-symbols-list', { method: 'get' });
+    const response = await fetch('/api/home-page-supported-symbols-list', { method: 'get' });
     const responseData = await response.json();
     if (responseData.success) {
-      console.log(responseData)
-      console.log(responseData.success)
-      console.log(responseData.data)
       let tempSymbolsNameArr = [];
-      responseData.data.result.map(symbolObject => {
-        tempSymbolsNameArr.push([symbolObject.sym, symbolObject.price, symbolObject.weeklyGain, symbolObject.weekLow, symbolObject.weekHigh, symbolObject.marketCap, symbolObject.volume]);
+      responseData.data.map(symbolObject => {
+        tempSymbolsNameArr.push([`${symbolObject.symbol} - ${symbolObject.name}`, symbolObject.price, symbolObject.weeklyGain, symbolObject.weekLow, symbolObject.weekHigh, symbolObject.marketCap, symbolObject.volume]);
       });
-      setSymbolsData(tempSymbolsNameArr);
+      setSupportedSymbolsData(tempSymbolsNameArr);
     } else {
-      console.log(responseData.data);
       toast(responseData.data);
     }
   };
@@ -161,7 +161,7 @@ function HomePage(props) {
 
   //COLUMNS
 
-  const symbolColumns = ['Symbol', 'Price', 'Weekly gain(%)', 'Week Low', 'Week High', 'Market Cap', 'Volume'];
+  const symbolColumns = ['Symbol', 'Price', 'Weekly gain(%)', 'Week Low', 'Week High'];
   /*
     const commonIndexColumns = [
       {
@@ -222,31 +222,37 @@ function HomePage(props) {
   //OPTIONS
   const symbolOptions = {
     //filterType: "checkbox",        
-    rowsPerPage: [3],
-    rowsPerPageOptions: [3, 5, 10, 15],
-    selectableRowsHideCheckboxes: true,
-    onChangePage(currentPage) {
-      console.log({ currentPage });
-    },
-    onChangeRowsPerPage(numberOfRows) {
-      console.log({ numberOfRows });
-    }
-  };
-
-  const ownIndexesOptions = {
+    //filterType: "checkbox",        
     //filterType: "checkbox",        
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
     selectableRowsHideCheckboxes: true,
-    onChangePage(currentPage) {
-      console.log({ currentPage });
-    },
-    onChangeRowsPerPage(numberOfRows) {
-      console.log({ numberOfRows });
-    }
+    // onChangePage(currentPage) {
+    //   // console.log({ currentPage });
+    // },
+    // onChangeRowsPerPage(numberOfRows) {
+    //   // console.log({ numberOfRows });
+    // }
+  };
+
+  const ownIndexesOptions = {
+    //filterType: "checkbox",        
+    //filterType: "checkbox",        
+    //filterType: "checkbox",        
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
+    selectableRowsHideCheckboxes: true,
+    // onChangePage(currentPage) {
+    //   console.log({ currentPage });
+    // },
+    // onChangeRowsPerPage(numberOfRows) {
+    //   console.log({ numberOfRows });
+    // }
   };
 
   // const commonIndexesOptions = {
+  //   //filterType: "checkbox",        
+  //   //filterType: "checkbox",        
   //   //filterType: "checkbox",        
   //   rowsPerPage: [3],
   //   rowsPerPageOptions: [3, 5, 10, 15],
@@ -261,15 +267,17 @@ function HomePage(props) {
 
   const mostSuccessfulUsersOptions = {
     //filterType: "checkbox",        
+    //filterType: "checkbox",        
+    //filterType: "checkbox",        
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
     selectableRowsHideCheckboxes: true,
-    onChangePage(currentPage) {
-      console.log({ currentPage });
-    },
-    onChangeRowsPerPage(numberOfRows) {
-      console.log({ numberOfRows });
-    }
+    // onChangePage(currentPage) {
+    //   console.log({ currentPage });
+    // },
+    // onChangeRowsPerPage(numberOfRows) {
+    //   console.log({ numberOfRows });
+    // }
   };
 
   //DATA
@@ -307,22 +315,24 @@ function HomePage(props) {
     //buyIndexInput.indexName = "";
   }
 
-  const BuyIndex = (countToBuy) => {
+  const BuyIndex = async (countToBuy) => {
     console.log(buyIndexInput.indexName);
     console.log(countToBuy);
     //todo: send the indexName and countToBuy to BUY api
 
-    fetch('/api/buy-index', {
+    fetch('/api//buy-or-sell-index', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: { userName: "tal", indexName: buyIndexInput.indexName, funding: countToBuy }
+      body: { userName: "tal", index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: -countToBuy, date: Date.now } }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
       console.log(e);
     })
+
+    await getOwnIndexes();
 
     return Promise.resolve();
   }
@@ -338,22 +348,24 @@ function HomePage(props) {
     //sellIndexInput.indexName = "";
   }
 
-  const SellIndex = (countToSell) => {
+  const SellIndex = async (countToSell) => {
     console.log(sellIndexInput.indexName);
     console.log(countToSell);
     //todo: send the indexName and countToSell to SELL api
 
-    fetch('/api/sell-index', {
+    fetch('/api//buy-or-sell-index', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: { userName: "tal", indexName: sellIndexInput.indexName, funding: countToSell }
+      body: { userName: "tal", index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: -countToSell, date: Date.now } }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
       console.log(e);
     })
+
+    await getOwnIndexes();
 
     return Promise.resolve();
   }
@@ -365,66 +377,94 @@ function HomePage(props) {
   // };
 
   // const handleChangePage = (event, newPage) => {  
+  // const handleChangePage = (event, newPage) => {  
+  // const handleChangePage = (event, newPage) => {  
   //   setPage(newPage);  
+  //   setPage(newPage);  
+  //   setPage(newPage);  
+  // };  
+  // };  
   // };  
 
   // const handleChangeRowsPerPage = event => {  
+  // const handleChangeRowsPerPage = event => {  
+  // const handleChangeRowsPerPage = event => {  
+  //   setRowsPerPage(+event.target.value);  
+  //   setRowsPerPage(+event.target.value);  
   //   setRowsPerPage(+event.target.value);  
   //   setPage(0);  
+  //   setPage(0);  
+  //   setPage(0);  
+  // }; 
+  // }; 
   // }; 
 
   // const handleChangePaymentRow = (event, buyIndexRow) => {  
+  // const handleChangePaymentRow = (event, buyIndexRow) => {  
+  // const handleChangePaymentRow = (event, buyIndexRow) => {  
   //   setBuyIndexInput(buyIndexRow);  
+  //   setBuyIndexInput(buyIndexRow);  
+  //   setBuyIndexInput(buyIndexRow);  
+  // };  
+  // };  
   // };  
 
   return (
     <div>
-      <h1 style={{ marginBottom: '30px' }}>Home Page</h1>
-      <div style={{ marginBottom: '30px' }}>
-        <MUIDataTable
-          title={"Symbols Table"}
-          data={symbolsData}
-          columns={symbolColumns}
-          options={symbolOptions}
-        />
-      </div>
-      <div style={{ marginBottom: '30px' }}>
-        <MUIDataTable
-          style={{ marginBottom: '30px' }}
-          title={"Best Indexes Table"}
-          data={mostSuccessfulUsersData}
-          columns={mostSuccessfulUsers}
-          options={mostSuccessfulUsersOptions}
-        />
-      </div>
-      <MUIDataTable
-        title={"Own Indexes Table"}
-        data={ownIndexesData}
-        columns={ownIndexColumns}
-        options={ownIndexesOptions}
-      />
-      {showBuyDialog && (
-        <BuyOrSellModal
-          isBuyModal={true}
-          setShowBuyDialog={setShowBuyDialog}
-          buyIndexInput={buyIndexInput}
-          setBuyIndexInput={setBuyIndexInput}
-          BuyIndex={BuyIndex}
-        />
-      )}
-      {showSellDialog && (
-        <BuyOrSellModal
-          isBuyModal={false}
-          setShowSellDialog={setShowSellDialog}
-          sellIndexInput={sellIndexInput}
-          setSellIndexInput={setSellIndexInput}
-          SellIndex={SellIndex}
-        />
-      )}
+      {showLoading ?
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
+          <Loading />
+        </div>
+        :
+        <div>
+          <h1 style={{ marginBottom: '30px' }}>Home Page</h1>
+          <div style={{ marginBottom: '30px' }}>
+            <MUIDataTable
+              title={"Symbols Table"}
+              data={supportedSymbolsData}
+              columns={symbolColumns}
+              options={symbolOptions}
+            />
+          </div>
+          <div style={{ marginBottom: '30px' }}>
+            <MUIDataTable
+              style={{ marginBottom: '30px' }}
+              title={"Best Indexes Table"}
+              data={mostSuccessfulUsersData}
+              columns={mostSuccessfulUsers}
+              options={mostSuccessfulUsersOptions}
+            />
+          </div>
+          <MUIDataTable
+            title={"Own Indexes Table"}
+            data={ownIndexesData}
+            columns={ownIndexColumns}
+            options={ownIndexesOptions}
+          />
+          {showBuyDialog && (
+            <BuyOrSellModal
+              isBuyModal={true}
+              setShowBuyDialog={setShowBuyDialog}
+              buyIndexInput={buyIndexInput}
+              setBuyIndexInput={setBuyIndexInput}
+              BuyIndex={BuyIndex}
+            />
+          )}
+          {showSellDialog && (
+            <BuyOrSellModal
+              isBuyModal={false}
+              setShowSellDialog={setShowSellDialog}
+              sellIndexInput={sellIndexInput}
+              setSellIndexInput={setSellIndexInput}
+              SellIndex={SellIndex}
+            />
+          )}
+        </div>
+      }
     </div>
   );
 }
 
 HomePage.defaultProps = defaultProps;
 HomePage.propTypes = propTypes;
-export default HomePage; 
+export default HomePage;

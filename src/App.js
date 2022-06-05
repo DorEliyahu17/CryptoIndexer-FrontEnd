@@ -1,8 +1,8 @@
 import Navbar from "./Components/Navbar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Route } from "react-router";
 import { BrowserRouter, Routes } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import HomePage from "./HomePage/HomePage";
 import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
