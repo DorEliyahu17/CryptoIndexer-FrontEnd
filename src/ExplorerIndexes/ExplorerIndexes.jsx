@@ -23,7 +23,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        CryptoIndexer
+      CryptoIndexer
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -34,7 +34,7 @@ function Copyright(props) {
 
 
 const footers = [
-
+ 
 ];
 
 function PricingContent(props) {
@@ -68,9 +68,9 @@ function PricingContent(props) {
         >
           Community
         </Typography>
-
+        
         <Typography variant="h5" align="center" color="text.secondary" component="p">
-          Look in the community for indexes created by your friends..
+         Look in the community for indexes created by your friends..
         </Typography>
       </Container>
       {/* End hero unit */}
@@ -204,26 +204,26 @@ export default function Content() {
         sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
       >
         {isLoading ? <div>loading...</div> :
-          <Toolbar>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item>
-                <SearchIcon color="inherit" sx={{ display: 'block' }} />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  fullWidth
-                  placeholder="Search by email address, phone number, or user UID"
-                  InputProps={{
-                    disableUnderline: true,
-                    sx: { fontSize: 'default' },
-                  }}
-                  onChange={(e) => setSearch(e.target.value)}
-                  variant="standard"
-                />
-              </Grid>
-              <PricingContent search={search} tiers={tiers} />
+        <Toolbar>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item>
+              <SearchIcon color="inherit" sx={{ display: 'block' }} />
             </Grid>
-          </Toolbar>}
+            <Grid item xs>
+              <TextField
+                fullWidth
+                placeholder="Search by Symbol name"
+                InputProps={{
+                  disableUnderline: true,
+                  sx: { fontSize: 'default' },
+                }}
+                onChange={(e) => setSearch(e.target.value)}
+                variant="standard"
+              />
+            </Grid>
+            <PricingContent search={search} tiers={tiers} />
+          </Grid>
+        </Toolbar>}
       </AppBar>
     </Paper>
   );
