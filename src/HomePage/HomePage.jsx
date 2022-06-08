@@ -91,16 +91,12 @@ function HomePage(props) {
     const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: JSON.stringify(userToken) }), { method: 'get' });
     const responseData = await response.json();
     if (responseData.success) {
-      console.log(responseData)
-      console.log(responseData.success)
-      console.log(responseData.data)
       let tempSymbolsNameArr = [];
       responseData.data.map(index => {
         tempSymbolsNameArr.push([, , index.indexName, index.weeklyGain, index.usersCount]);
       });
       setOwnIndexesData(tempSymbolsNameArr);
     } else {
-      console.log(responseData.data);
       toast(responseData.data);
     }
   };
