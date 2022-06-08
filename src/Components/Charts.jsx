@@ -19,6 +19,7 @@ const propTypes = {
   otherSymbols: PropTypes.array,
   labels: PropTypes.array,
   isMultiAxios: PropTypes.bool,
+  otherSymbolsColors: PropTypes.object,
 };
 
 const defaultProps = {
@@ -28,10 +29,11 @@ const defaultProps = {
   otherSymbols: [],
   labels: [],
   isMultiAxios: false,
+  otherSymbolsColors: {},
 };
 
 function Charts(props) {
-  const { type, firstIndexName, firstIndexPrices, otherSymbols, labels, isMultiAxios } = props;
+  const { type, firstIndexName, firstIndexPrices, otherSymbols, labels, isMultiAxios, otherSymbolsColors } = props;
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -75,16 +77,16 @@ function Charts(props) {
   };
 
   const renderChartByType = () => {
+    debugger
     if (isMultiAxios) {
       otherSymbols.map((symbolObject, index) => {
-        let red = Math.floor(Math.random() * 256);
-        let green = Math.floor(Math.random() * 256);
-        let blue = Math.floor(Math.random() * 256);
+        debugger
+
         datasets.push({
           label: symbolObject.symbol,
           data: symbolObject.balance_progress,
-          borderColor: `rgb(${red}, ${green}, ${blue})`,
-          backgroundColor: `rgb(${red}, ${green}, ${blue})`,
+          borderColor: `rgb(${otherSymbolsColors[symbolObject.symbol]['red']}, ${otherSymbolsColors[symbolObject.symbol]['green']}, ${otherSymbolsColors[symbolObject.symbol]['blue']})`,
+          backgroundColor: `rgb(${otherSymbolsColors[symbolObject.symbol]['red']}, ${otherSymbolsColors[symbolObject.symbol]['green']}, ${otherSymbolsColors[symbolObject.symbol]['blue']})`,
         });
       });
     }

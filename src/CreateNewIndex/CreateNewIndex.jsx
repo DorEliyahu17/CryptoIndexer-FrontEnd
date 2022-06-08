@@ -43,6 +43,7 @@ function CreateNewIndex(props) {
   const [disableButtomBackTestPercent, setDisableButtomBackTestPercent] = useState(true);
   const [showBacktest, setShowBacktest] = useState(false);
   const [showBacktestLoading, setShowBacktestLoading] = useState(false);
+  const [backtestColors, setBacktestColors] = useState([]);
   const [backtestPrices, setBacktestPrices] = useState([]);
   const [backtestDates, setBacktestDates] = useState([]);
   const [backtestOtherSymbols, setBacktestOtherSymbols] = useState([]);
@@ -285,23 +286,32 @@ function CreateNewIndex(props) {
   const backTestRequest = async () => {
     let symbolToPrice = {};
     let dataValid = true;
+    const colorsObject = {};
     setShowBacktestLoading(true);
     listSymbolPercentLine.forEach(record => {
       let symbolName = record.name.toUpperCase();
-      // debugger
-      if (listSupportedSymbols.findIndex(supportedSymbol => supportedSymbol.symbol === symbolName) === -1) {
+      let objectToPush = {}
+      let color = {};
+      let foundInSupportedSymbols = listSupportedSymbols.find(supportedSymbol => supportedSymbol.symbol === symbolName);
+      if (!foundInSupportedSymbols) {
         dataValid = false;
       }
+      color['red'] = foundInSupportedSymbols.red;
+      color['green'] = foundInSupportedSymbols.green;
+      color['blue'] = foundInSupportedSymbols.blue;
       symbolToPrice[symbolName] = record.percent / 100;
+      colorsObject[symbolName] = color;
     })
     if (dataValid) {
       const response = await fetch('/api/backtest-new-index?' + new URLSearchParams({ data: JSON.stringify(symbolToPrice), initialCash }), { method: 'get' });
       const responseData = await response.json();
       setShowBacktestLoading(false);
       if (responseData.success) {
+        setBacktestColors(colorsObject)
         setBacktestPrices(responseData.data.index.balance_progress);
         setBacktestDates(responseData.data.index.dates);
         setBacktestOtherSymbols(responseData.data.symbols);
+        debugger
         setShowBacktest(true);
       } else {
         setShowBacktest(false);
@@ -327,7 +337,7 @@ function CreateNewIndex(props) {
 
     return (
       <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column', flexWrap: 'nowrap', justifyContent: 'flex-end' }}>
-        <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} otherSymbols={backtestOtherSymbols} isMultiAxios={true} />
+        <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} otherSymbols={backtestOtherSymbols} otherSymbolsColors={backtestColors} isMultiAxios={true} />
         <div style={{ width: '100%', height: '100%' }}>
           <MUIDataTable
             title={"Statistics"}
