@@ -1,4 +1,5 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import InputMask from "react-input-mask";
 import { toast } from 'react-toastify';
@@ -33,7 +34,9 @@ const defaultProps = {
 
 function CreateNewIndex(props) {
   const { userToken } = props;
+  const navigate = useNavigate();
   const [showLoading, setShowLoading] = useState(false);
+  const [showCreatingLoading, setShowCreatingLoading] = useState(false);
   const [listSupportedSymbols, setListSupportedSymbols] = useState([]);
   const [indexName, setIndexName] = useState('');
   const [listSymbolPercentLine, setListSymbolPercentLine] = useState([{ name: '', percent: 0 }, { name: '', percent: 0 }]);
@@ -247,8 +250,13 @@ function CreateNewIndex(props) {
     </Box>
   );
 
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+
   //example of POST request
   const createNewIndexRequest = () => {
+    setShowCreatingLoading(true);
     let dataToEncode = {};
     let symbolToPrice = [];
     let dataToPass = [];
@@ -274,10 +282,19 @@ function CreateNewIndex(props) {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: dataToPass
-      }).then(response => {
-        console.log(response.json())
-      }).catch((e) => {
-        console.log(e);
+      }).then(async (response) => {
+        setShowCreatingLoading(false);
+        if (!response.ok) {
+          toast(`An error has occured: ${response.status} - ${response.statusText}.\nPlease try again later.`);
+        } else {
+          toast('The index created successfully!');
+          await sleep(2000).then(response => {
+            console.log("sleep res: " + response);
+            navigate("/");
+          });
+        }
+      }).catch((response) => {
+        toast(response.data);
       })
     }
   };
@@ -290,7 +307,6 @@ function CreateNewIndex(props) {
     setShowBacktestLoading(true);
     listSymbolPercentLine.forEach(record => {
       let symbolName = record.name.toUpperCase();
-      let objectToPush = {}
       let color = {};
       let foundInSupportedSymbols = listSupportedSymbols.find(supportedSymbol => supportedSymbol.symbol === symbolName);
       if (!foundInSupportedSymbols) {
@@ -311,7 +327,6 @@ function CreateNewIndex(props) {
         setBacktestPrices(responseData.data.index.balance_progress);
         setBacktestDates(responseData.data.index.dates);
         setBacktestOtherSymbols(responseData.data.symbols);
-        debugger
         setShowBacktest(true);
       } else {
         setShowBacktest(false);
@@ -402,7 +417,7 @@ function CreateNewIndex(props) {
                     {renderInitialCashForBacktest()}
                   </div>
                   <div>
-                    <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
+                    <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent || indexName === ''} variant="contained" id="BackTestButtom" onClick={backTestRequest}>
                       Backtest
                     </Button>
                     <Button disabled={disableButtomBackTestSymbol || disableButtomBackTestPercent || indexName === '' || !showBacktest} variant="contained" id="CreateNewIndextButtom" onClick={createNewIndexRequest} style={{ marginLeft: '5px' }}>
@@ -413,6 +428,7 @@ function CreateNewIndex(props) {
               </div>
               <div style={{ width: '100%' }}>
                 {showBacktestLoading && <Loading label="Fetching data..." />}
+                {showCreatingLoading && <Loading label="Creating index..." />}
               </div>
             </div>
             {showBacktest && renderTable()}

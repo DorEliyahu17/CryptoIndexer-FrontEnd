@@ -77,11 +77,8 @@ function Charts(props) {
   };
 
   const renderChartByType = () => {
-    debugger
     if (isMultiAxios) {
       otherSymbols.map((symbolObject, index) => {
-        debugger
-
         datasets.push({
           label: symbolObject.symbol,
           data: symbolObject.balance_progress,
