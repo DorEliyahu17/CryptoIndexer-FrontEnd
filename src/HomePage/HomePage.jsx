@@ -60,7 +60,8 @@ function HomePage(props) {
     if (responseData.success) {
       let tempSymbolsNameArr = [];
       responseData.data.map(symbolObject => {
-        tempSymbolsNameArr.push([`${symbolObject.symbol} - ${symbolObject.name}`, symbolObject.price, symbolObject.weeklyGain, symbolObject.weekLow, symbolObject.weekHigh, symbolObject.marketCap, symbolObject.volume]);
+
+        tempSymbolsNameArr.push([`${symbolObject.Symbol} - ${symbolObject.Name}`, symbolObject.Price, symbolObject.Weekly_Prc_Change, symbolObject.Weekly_Low, symbolObject.Weekly_High]);
       });
       setSupportedSymbolsData(tempSymbolsNameArr);
     } else {
@@ -220,13 +221,13 @@ function HomePage(props) {
 
 
   //OPTIONS
-  const symbolOptions = {  
+  const symbolOptions = {
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
     selectableRowsHideCheckboxes: true
   };
 
-  const ownIndexesOptions = {      
+  const ownIndexesOptions = {
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
     selectableRowsHideCheckboxes: true
@@ -247,7 +248,7 @@ function HomePage(props) {
   //   }
   // };
 
-  const mostSuccessfulUsersOptions = {     
+  const mostSuccessfulUsersOptions = {
     rowsPerPage: [3],
     rowsPerPageOptions: [3, 5, 10, 15],
     selectableRowsHideCheckboxes: true
