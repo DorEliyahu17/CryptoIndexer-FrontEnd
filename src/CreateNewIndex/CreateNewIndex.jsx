@@ -282,19 +282,21 @@ function CreateNewIndex(props) {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: dataToPass
-      }).then(async (response) => {
+        // }).then(async (response) => {
+      }).then((response) => {
         setShowCreatingLoading(false);
         if (!response.ok) {
-          toast(`An error has occured: ${response.status} - ${response.statusText}.\nPlease try again later.`);
+          toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
         } else {
           toast('The index created successfully!');
-          await sleep(2000).then(response => {
-            console.log("sleep res: " + response);
-            navigate("/");
-          });
+          navigate("/");
+          // await sleep(2000).then(response => {
+          //   console.log("sleep res: " + response);
+          //   navigate("/");
+          // });
         }
       }).catch((response) => {
-        toast(response.data);
+        toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
       })
     }
   };
