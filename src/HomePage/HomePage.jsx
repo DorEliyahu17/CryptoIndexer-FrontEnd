@@ -5,10 +5,10 @@ import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
 //MUIDataTable
 import MUIDataTable from "mui-datatables";
 //mu-icons
-import { Delete } from "@material-ui/icons";
+// import { Delete } from "@material-ui/icons";
 import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import Loading from '../Components/Loading'
+import Loading from '../Components/Loading';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './HomePage.less';

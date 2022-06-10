@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,28 +15,29 @@ import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import CssBaseline from '@mui/material/CssBaseline';
 import StarIcon from '@mui/icons-material/StarBorder';
-import Link from '@mui/material/Link';
+// import Link from '@mui/material/Link';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
+import Loading from '../Components/Loading';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        CryptoIndexer
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+// function Copyright(props) {
+//   return (
+//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
+//       {'Copyright © '}
+//       <Link color="inherit" href="https://mui.com/">
+//         CryptoIndexer
+//       </Link>{' '}
+//       {new Date().getFullYear()}
+//       {'.'}
+//     </Typography>
+//   );
+// }
 
 
 
-const footers = [
+// const footers = [
 
-];
+// ];
 
 function PricingContent(props) {
   const { search, tiers } = props;
@@ -48,9 +49,9 @@ function PricingContent(props) {
   }, [search])
 
   return (
-    <React.Fragment>
+    <Fragment>
       <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <AppBar
         position="static"
         color="default"
@@ -59,19 +60,18 @@ function PricingContent(props) {
       >
       </AppBar>
       {/* Hero unit */}
-      <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 8, pb: 6 }}>
+      <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 1, pb: 4 }}>
         <Typography
-          component="h1"
+          // component="h1"
           variant="h2"
           align="center"
           color="text.primary"
           gutterBottom
         >
-          Community
+          Explorer Indexes
         </Typography>
-
         <Typography variant="h5" align="center" color="text.secondary" component="p">
-          Look in the community for indexes created by your friends..
+          Take a look at the community indexes
         </Typography>
       </Container>
       {/* End hero unit */}
@@ -142,7 +142,7 @@ function PricingContent(props) {
         </Grid>
       </Container>
       {/* Footer */}
-      <Container
+      {/* <Container
         maxWidth="md"
         component="footer"
         sx={{
@@ -170,9 +170,9 @@ function PricingContent(props) {
           ))}
         </Grid>
         <Copyright sx={{ mt: 5 }} />
-      </Container>
+      </Container> */}
       {/* End footer */}
-    </React.Fragment>
+    </Fragment>
   );
 }
 
@@ -212,27 +212,34 @@ function ExplorerIndexes(props) {
         elevation={0}
         sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
       >
-        {isLoading ? <div>loading...</div> :
+        {isLoading ?
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
+            <Loading />
+          </div>
+          :
           <Toolbar>
             <Grid container spacing={2} alignItems="center">
-              <Grid item>
-                <SearchIcon color="inherit" sx={{ display: 'block' }} />
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  fullWidth
-                  placeholder="Search by Symbol name"
-                  InputProps={{
-                    disableUnderline: true,
-                    sx: { fontSize: 'default' },
-                  }}
-                  onChange={(e) => setSearch(e.target.value)}
-                  variant="standard"
-                />
-              </Grid>
+              <div style={{ marginTop: '30px', display: 'flex', alignItems: 'flex-end', flexDirection: 'row' }}>
+                <Grid item>
+                  <SearchIcon color="inherit" sx={{ display: 'block' }} />
+                </Grid>
+                <Grid item xs>
+                  <TextField
+                    fullWidth
+                    placeholder="Search by Symbol name"
+                    InputProps={{
+                      disableUnderline: true,
+                      sx: { fontSize: 'default' },
+                    }}
+                    onChange={(e) => setSearch(e.target.value)}
+                    variant="standard"
+                  />
+                </Grid>
+              </div>
               <PricingContent search={search} tiers={tiers} />
             </Grid>
-          </Toolbar>}
+          </Toolbar>
+        }
       </AppBar>
     </Paper>
   );
