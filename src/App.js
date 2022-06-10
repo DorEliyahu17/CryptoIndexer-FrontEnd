@@ -5,11 +5,11 @@ import { BrowserRouter, Routes } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import HomePage from "./HomePage/HomePage";
 import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
-import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes"
-import Login from "./Login/Login"
-import Register from "./Register/Register"
-import NewAccount from "./NewAccount/NewAccount"
-import IndexPopUp from "./IndexPopUp/IndexPopUp"
+import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes";
+import Login from "./Login/Login.jsx";
+import Register from "./Register/Register";
+import NewAccount from "./NewAccount/NewAccount";
+import IndexPopUp from "./IndexPopUp/IndexPopUp";
 
 import "./App.css";
 

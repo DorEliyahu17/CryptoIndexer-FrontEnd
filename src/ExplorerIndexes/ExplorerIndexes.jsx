@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -23,7 +24,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-      CryptoIndexer
+        CryptoIndexer
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -34,7 +35,7 @@ function Copyright(props) {
 
 
 const footers = [
- 
+
 ];
 
 function PricingContent(props) {
@@ -68,9 +69,9 @@ function PricingContent(props) {
         >
           Community
         </Typography>
-        
+
         <Typography variant="h5" align="center" color="text.secondary" component="p">
-         Look in the community for indexes created by your friends..
+          Look in the community for indexes created by your friends..
         </Typography>
       </Container>
       {/* End hero unit */}
@@ -175,8 +176,16 @@ function PricingContent(props) {
   );
 }
 
+const propTypes = {
+  userToken: PropTypes.String,
+};
 
-export default function Content() {
+const defaultProps = {
+  userToken: '',
+};
+
+function ExplorerIndexes(props) {
+  const { userToken } = props;
   const [tiers, setTiers] = useState();
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -204,27 +213,31 @@ export default function Content() {
         sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
       >
         {isLoading ? <div>loading...</div> :
-        <Toolbar>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item>
-              <SearchIcon color="inherit" sx={{ display: 'block' }} />
+          <Toolbar>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item>
+                <SearchIcon color="inherit" sx={{ display: 'block' }} />
+              </Grid>
+              <Grid item xs>
+                <TextField
+                  fullWidth
+                  placeholder="Search by Symbol name"
+                  InputProps={{
+                    disableUnderline: true,
+                    sx: { fontSize: 'default' },
+                  }}
+                  onChange={(e) => setSearch(e.target.value)}
+                  variant="standard"
+                />
+              </Grid>
+              <PricingContent search={search} tiers={tiers} />
             </Grid>
-            <Grid item xs>
-              <TextField
-                fullWidth
-                placeholder="Search by Symbol name"
-                InputProps={{
-                  disableUnderline: true,
-                  sx: { fontSize: 'default' },
-                }}
-                onChange={(e) => setSearch(e.target.value)}
-                variant="standard"
-              />
-            </Grid>
-            <PricingContent search={search} tiers={tiers} />
-          </Grid>
-        </Toolbar>}
+          </Toolbar>}
       </AppBar>
     </Paper>
   );
 }
+
+ExplorerIndexes.defaultProps = defaultProps;
+ExplorerIndexes.propTypes = propTypes;
+export default ExplorerIndexes;
