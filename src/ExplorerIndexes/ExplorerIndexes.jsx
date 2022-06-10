@@ -196,7 +196,7 @@ export default function Content() {
     fetchData()
   }, [])
   return (
-    <Paper sx={{ maxWidth: 936, margin: 'auto', overflow: 'hidden' }}>
+    <Paper sx={{ maxWidth: 1300, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
         position="static"
         color="default"
