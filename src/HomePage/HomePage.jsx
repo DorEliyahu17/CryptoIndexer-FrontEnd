@@ -38,10 +38,16 @@ function HomePage(props) {
   const [data, setData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+
   useEffect(async () => {
     setShowLoading(true);
     await getSupportedSymbol();
+    await sleep(5)
     await getMostSuccessfulUsersList();
+    await sleep(5)
     await getOwnIndexes();
     setShowLoading(false);
   }, []);

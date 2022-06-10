@@ -250,9 +250,9 @@ function CreateNewIndex(props) {
     </Box>
   );
 
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
+  // const sleep = (milliseconds) => {
+  //   return new Promise(resolve => setTimeout(resolve, milliseconds))
+  // }
 
   //example of POST request
   const createNewIndexRequest = () => {
