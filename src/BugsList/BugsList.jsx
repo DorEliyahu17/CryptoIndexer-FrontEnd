@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import PropTypes from 'prop-types';
 import MUIDataTable from "mui-datatables";
 import Loading from '../Components/Loading';
 import Charts from '../Components/Charts';
@@ -37,15 +36,6 @@ function BugsList() {
       navigate("/");
     }
     await fetchBugs();
-    // const response = await fetch('/api/reported-bugs', { method: 'get' });
-    // const responseData = await response.json();
-    // if (responseData.success && responseData.data.result.length > 0) {
-    //   setBugsList(responseData.data.result);
-    //   setDoneBugsCount(responseData.data.doneBugsCount);
-    // } else {
-    //   toast('Error fetching bugs list data: ' + responseData.data);
-    // }
-    // setShowLoading(false);
   }, []);
 
   const HandlePaymentRow = async (rowData) => {
@@ -56,23 +46,13 @@ function BugsList() {
       isDone: rowData.rowData[0],
       reporterName: rowData.rowData[3]
     }
-    // debugger
     const response = await fetch('/api/update-bug?' + new URLSearchParams({ data: JSON.stringify(dataToPass) }), { method: 'get' });
     const responseData = await response.json();
-    // debugger
     if (responseData.success && responseData.data.modifiedCount > 0) {
       await fetchBugs();
-      // setBugsList(responseData.data.result);
-      // setDoneBugsCount(responseData.data.doneBugsCount);
     } else {
       toast('Error fetching bugs list data: ' + (!responseData.success ? responseData.data : 'There was an error with the DB, please report it as a bug.'));
     }
-    // buyIndexInput.indexName = rowData.indexName;
-    // setShowBuyDialog(true);
-    // console.log(buyIndexInput.countToBuy);
-    //todo: send the rowData.indexName and buyIndexInput.countToBuy to BUY api
-    //buyIndexInput.countToBuy = 0;
-    //buyIndexInput.indexName = "";
   }
 
   const renderTable = () => {
