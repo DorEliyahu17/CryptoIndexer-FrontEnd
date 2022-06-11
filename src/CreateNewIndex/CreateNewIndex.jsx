@@ -270,7 +270,7 @@ function CreateNewIndex(props) {
     })
     if (dataValid) {
       // TODO: change later is private field
-      dataToEncode = { indexName: indexName, symbolToPrice: symbolToPrice, isPrivate: false }
+      dataToEncode = { userToken: (userToken || window.localStorage.getItem('authorization')), indexName: indexName, symbolToPrice: symbolToPrice, isPrivate: false }
       let encodedKey = encodeURIComponent('data');
       let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
       dataToPass.push(encodedKey + "=" + encodedValue);
@@ -340,10 +340,17 @@ function CreateNewIndex(props) {
       rowsPerPageOptions: [3, 5, 10, 15],
       selectableRowsHideCheckboxes: true,
     };
-    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown'];
+    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharp Ratio', 'Standard Weekly Return', 'Average Weekly Return'];
     let statisticsData = [];
     backtestOtherSymbols.map((symbolObject) => {
-      statisticsData.push([symbolObject.symbol, symbolObject.roi, symbolObject.maxDrawdown]);
+      statisticsData.push([
+        symbolObject.symbol,
+        symbolObject.roi.toFixed(5),
+        symbolObject.max_drawdown.toFixed(5),
+        symbolObject.sharpe_ratio.toFixed(5),
+        symbolObject.weekly_return_std.toFixed(5),
+        symbolObject.weekly_return_avg.toFixed(5)
+      ]);
     });
 
     return (

@@ -38,7 +38,7 @@ function BugsList() {
     await fetchBugs();
   }, []);
 
-  const HandlePaymentRow = async (rowData) => {
+  const handleChangeStatus = async (rowData) => {
     let dataToPass = {
       title: rowData.rowData[4],
       description: rowData.rowData[5],
@@ -66,8 +66,8 @@ function BugsList() {
         name: 'Change Status', options: {
           customBodyRender: (value, tableMeta, updateValue) => {
             return (
-              <button onClick={async () => { await HandlePaymentRow(tableMeta) }}>
-                {!value ? <Check /> : <Clear />}
+              <button onClick={async () => { await handleChangeStatus(tableMeta) }}>
+                {!value ? <Check color="primary" /> : <Clear color="secondary" />}
               </button>
             );
           }

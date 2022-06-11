@@ -75,8 +75,13 @@ function HomePage(props) {
     if (responseData.success) {
       let tempSymbolsNameArr = [];
       responseData.data.map(symbolObject => {
-
-        tempSymbolsNameArr.push([`${symbolObject.Symbol} - ${symbolObject.Name}`, symbolObject.Price, symbolObject.Weekly_Prc_Change, symbolObject.Weekly_Low, symbolObject.Weekly_High]);
+        tempSymbolsNameArr.push([
+          `${symbolObject.Symbol} - ${symbolObject.Name}`,
+          symbolObject.Price.toFixed(5),
+          symbolObject.Weekly_Prc_Change.toFixed(5),
+          symbolObject.Weekly_Low.toFixed(5),
+          symbolObject.Weekly_High.toFixed(5)
+        ]);
       });
       setSupportedSymbolsData(tempSymbolsNameArr);
     } else {
@@ -103,7 +108,7 @@ function HomePage(props) {
   };
 
   const getOwnIndexes = async () => {
-    const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: JSON.stringify(userToken) }), { method: 'get' });
+    const response = await fetch('/api/own-indexes?' + new URLSearchParams({ data: (userToken || window.localStorage.getItem('authorization')) }), { method: 'get' });
     const responseData = await response.json();
     if (responseData.success) {
       let tempSymbolsNameArr = [];
