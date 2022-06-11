@@ -45,9 +45,9 @@ function HomePage(props) {
   useEffect(async () => {
     setShowLoading(true);
     await getSupportedSymbol();
-    await sleep(5)
+    await sleep(20);
     await getMostSuccessfulUsersList();
-    await sleep(5)
+    await sleep(20);
     await getOwnIndexes();
     setShowLoading(false);
   }, []);
@@ -98,8 +98,19 @@ function HomePage(props) {
     const responseData = await response.json();
     if (responseData.success) {
       let tempSymbolsNameArr = [];
-      responseData.data.map(index => {
-        tempSymbolsNameArr.push([, , index.indexName, index.weeklyGain, index.usersCount]);
+      responseData.data.result.map((indexObject, indexNumber) => {
+        let investingUsersCount = 0;
+        if (!indexObject.isPrivate) {
+          //public index
+          investingUsersCount = indexObject.inventingUsers;
+        } else {
+          if (indexObject.canBePublic) {
+            investingUsersCount = "You can share your index with the community :)";
+          } else {
+            investingUsersCount = "You can't share your index with the community :(";
+          }
+        }
+        tempSymbolsNameArr.push([, , indexObject.indexName, /*responseData.data.weeklyGains[indexNumber]*/'Change Me', investingUsersCount]);
       });
       setOwnIndexesData(tempSymbolsNameArr);
     } else {
