@@ -14,18 +14,20 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
   userToken: PropTypes.string,
+  userName: PropTypes.string,
   pages: PropTypes.array.isRequired,
   settings: PropTypes.array.isRequired,
 };
 
 const defaultProps = {
   userToken: '',
+  userName: '',
   pages: [],
   settings: [],
 };
 
 function Navbar(props) {
-  const { userToken, pages, settings } = props;
+  const { userToken, userName, pages, settings } = props;
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -61,7 +63,16 @@ function Navbar(props) {
               </Button>
             ))}
           </Box>
-
+          {(userToken !== '') && (
+            <Typography
+              variant="p"
+              noWrap
+              component="div"
+              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            >
+              Hi {userName},
+            </Typography>
+          )}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

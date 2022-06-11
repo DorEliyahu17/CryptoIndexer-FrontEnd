@@ -1,4 +1,5 @@
 import React, { useState, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import Avatar from '@mui/material/Avatar';
@@ -13,7 +14,18 @@ import Container from '@mui/material/Container';
 import { validateEmail } from '../utils/utils';
 import Loading from '../Components/Loading';
 
-function Register() {
+const propTypes = {
+  setUserToken: PropTypes.func,
+  setUserName: PropTypes.func,
+};
+
+const defaultProps = {
+  setUserToken: () => { },
+  setUserName: () => { },
+};
+
+function Register(props) {
+  const { setUserToken, setUserName } = props;
   const navigate = useNavigate();
   const [showCreatingLoading, setShowCreatingLoading] = useState(false);
 
@@ -24,7 +36,7 @@ function Register() {
     if ((data.get('username') !== '') && (data.get('email') !== '') &&
       (data.get('password') !== '') && (data.get('passwordVal') !== '') &&
       (data.get('apiKey') !== '') && (data.get('password') === data.get('passwordVal')) &&
-      (validateEmail(data.get('email')))) {
+      (data.get('password').length >= 5) && (validateEmail(data.get('email')))) {
       const newUserData = {
         userName: data.get('username'),
         email: data.get('email'),
@@ -44,6 +56,8 @@ function Register() {
         body: dataToPass
       }).then((response) => {
         setShowCreatingLoading(false);
+        setUserToken(response.headers.get('token'));
+        setUserName(response.headers.get('name'));
         if (!response.ok) {
           toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
         } else {
@@ -143,4 +157,6 @@ function Register() {
   );
 }
 
+Register.defaultProps = defaultProps;
+Register.propTypes = propTypes;
 export default Register;

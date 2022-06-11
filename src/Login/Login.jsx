@@ -18,14 +18,16 @@ import { validateEmail } from '../utils/utils';
 
 const propTypes = {
   setUserToken: PropTypes.func,
+  setUserName: PropTypes.func,
 };
 
 const defaultProps = {
   setUserToken: () => { },
+  setUserName: () => { },
 };
 
 function Login(props) {
-  const { setUserToken } = props;
+  const { setUserToken, setUserName } = props;
   const [error, setError] = useState()
   const navigate = useNavigate();
 
@@ -52,7 +54,8 @@ function Login(props) {
           if (!response.ok) {
             toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
           } else {
-            setUserToken(response.headers.get('token'))
+            setUserToken(response.headers.get('token'));
+            setUserName(response.headers.get('name'));
             toast('Login successfully!');
             navigate("/");
           }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -46,7 +47,7 @@ function PricingContent(props) {
   useEffect(() => {
     const temp = tiers.filter((tier) => tier.title.toLocaleLowerCase().includes(search))
     setFilterTiers(temp)
-  }, [search])
+  }, [search]);
 
   return (
     <Fragment>
@@ -186,24 +187,21 @@ const defaultProps = {
 
 function ExplorerIndexes(props) {
   const { userToken } = props;
+  const navigate = useNavigate();
   const [tiers, setTiers] = useState();
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/content', { method: 'get' });
-        const responseData = await response.json();
-        setTiers(responseData)
-        setIsLoading(false)
-      } catch (error) {
-        setTiers([])
-        setIsLoading(false)
-      }
+  useEffect(async () => {
+    if (window.localStorage.getItem('accessToken') === '') {
+      navigate("/login");
     }
-    fetchData()
-  }, [])
+    const response = await fetch('/api/content', { method: 'get' });
+    const responseData = await response.json();
+    setTiers(responseData)
+    setIsLoading(false);
+  }, []);
+
   return (
     <Paper sx={{ maxWidth: 1300, margin: 'auto', overflow: 'hidden' }}>
       <AppBar
