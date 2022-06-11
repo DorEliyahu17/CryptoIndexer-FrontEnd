@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,17 +13,19 @@ import MenuItem from '@mui/material/MenuItem';
 import PropTypes from 'prop-types';
 
 const propTypes = {
+  userToken: PropTypes.string,
   pages: PropTypes.array.isRequired,
-  setting: PropTypes.array.isRequired,
+  settings: PropTypes.array.isRequired,
 };
 
 const defaultProps = {
+  userToken: '',
   pages: [],
-  setting: [],
+  settings: [],
 };
 
 function Navbar(props) {
-  const { pages, settings } = props;
+  const { userToken, pages, settings } = props;
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -82,13 +84,20 @@ function Navbar(props) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {(userToken === '') && settings.map((setting) => (
                 <a href={setting.href}>
                   <MenuItem href={setting.href} key={setting.name} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting.name}</Typography>
                   </MenuItem>
                 </a>
               ))}
+              {(userToken !== '') && (
+                <a href="/logout">
+                  <MenuItem href="/logout" key="Logout" onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                </a>
+              )}
             </Menu>
           </Box>
         </Toolbar>

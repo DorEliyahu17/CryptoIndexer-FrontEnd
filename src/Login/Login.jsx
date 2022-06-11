@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,35 +14,18 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-// import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { validateEmail } from '../utils/utils';
-import { useNavigate } from 'react-router-dom';
-
-// function Copyright(props) {
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         CryptoIndexer
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
-// const theme = createTheme();
 
 const propTypes = {
-  userToken: PropTypes.String,
+  setUserToken: PropTypes.func,
 };
 
 const defaultProps = {
-  userToken: '',
+  setUserToken: () => { },
 };
 
 function Login(props) {
-  const { userToken } = props;
+  const { setUserToken } = props;
   const [error, setError] = useState()
   const navigate = useNavigate();
 
@@ -48,22 +33,32 @@ function Login(props) {
     try {
       if (!validateEmail(email)) {
         setError('Email not valid')
-      }
-      else if (password.length < 6) {
-        setError('password not valid min 6')
-      }
-      else {
-        const response = await fetch('/api/login',
-          {
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            method: "POST",
-            body: JSON.stringify({ email, password })
-          });
-        console.log(response.json())
-        navigate('/');
+      } else if (password.length < 5) {
+        setError('password not valid min 5')
+      } else {
+        let dataToPass = [];
+        let dataToEncode = { email: email, password: password }
+        let encodedKey = encodeURIComponent('data');
+        let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
+        dataToPass.push(encodedKey + "=" + encodedValue);
+        dataToPass = dataToPass.join("&");
+        fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: dataToPass
+        }).then((response) => {
+          if (!response.ok) {
+            toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
+          } else {
+            setUserToken(response.headers.get('token'))
+            toast('Login successfully!');
+            navigate("/");
+          }
+        }).catch((response) => {
+          toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
+        });
       }
     } catch (error) {
       console.log(error)
@@ -82,7 +77,6 @@ function Login(props) {
   };
 
   return (
-    // <ThemeProvider theme={theme}>
     <Grid container component="main" sx={{ height: '100vh' }}>
       <CssBaseline />
       <Grid
@@ -157,12 +151,10 @@ function Login(props) {
                 </Link>
               </Grid>
             </Grid>
-            {/* <Copyright sx={{ mt: 5 }} /> */}
           </Box>
         </Box>
       </Grid>
     </Grid>
-    // </ThemeProvider>
   );
 }
 

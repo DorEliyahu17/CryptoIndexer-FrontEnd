@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { ToastContainer, toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
 //MUIDataTable
 import MUIDataTable from "mui-datatables";
@@ -51,6 +52,13 @@ function HomePage(props) {
     await getOwnIndexes();
     setShowLoading(false);
   }, []);
+
+  useEffect(() => {
+    console.log('userToken=' + userToken);
+    //handleGetSymbolsData();
+    //console.log(SymbolsData);
+
+  }, [userToken]);
 
   useEffect(() => {
     console.log("aa");

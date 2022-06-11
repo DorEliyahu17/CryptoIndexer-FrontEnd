@@ -7,6 +7,7 @@ import HomePage from "./HomePage/HomePage";
 import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes";
 import Login from "./Login/Login";
+import Logout from "./Logout/Logout";
 import Register from "./Register/Register";
 // import NewAccount from "./NewAccount/NewAccount";
 import IndexPopUp from "./IndexPopUp/IndexPopUp";
@@ -14,11 +15,23 @@ import IndexPopUp from "./IndexPopUp/IndexPopUp";
 import "./App.css";
 
 function App() {
-  const [loggedUserToken, setloggedUserToken] = useState("");
+  const [loggedUserToken, setLoggedUserToken] = useState("");
+
+  const setLoggedUserTokenToLocalStorage = (token) => {
+    window.localStorage.setItem('accessToken', token);
+  }; 
+
+  useEffect(() => {
+    // debugger
+    console.log(window.localStorage.getItem('accessToken'));
+    // debugger
+    setLoggedUserToken(window.localStorage.getItem('accessToken'));
+  }, []);
 
   return (
     <div className='App'>
       <Navbar
+        userToken={loggedUserToken}
         pages={[
           { name: "Create New Index", href: "/create-new-index" },
           { name: "Explorer Indexes", href: "/explorer-indexes" },
@@ -30,11 +43,12 @@ function App() {
       />
       <BrowserRouter>
         <Routes>
-          <Route index element={<HomePage userToken={loggedUserToken} />} />
+          <Route index element={<HomePage propsUserToken={loggedUserToken} />} />
           <Route path='/create-new-index' element={<CreateNewIndex userToken={loggedUserToken} />} />
           <Route path='/explorer-indexes' element={<ExplorerIndexes userToken={loggedUserToken} />} />
-          <Route path='/login' element={<Login setUserToken={setloggedUserToken} />} />
-          <Route path='/register' element={<Register setUserToken={setloggedUserToken} />} />
+          <Route path='/login' element={<Login setUserToken={setLoggedUserTokenToLocalStorage} />} />
+          <Route path='/register' element={<Register setUserToken={setLoggedUserTokenToLocalStorage} />} />
+          <Route path='/logout' element={<Logout setUserToken={setLoggedUserTokenToLocalStorage} />} />
           {/* <Route path='/NewAccount' element={<NewAccount />} /> */}
           <Route path='/IndexPopUp' element={<IndexPopUp userToken={loggedUserToken} />} />
         </Routes>
