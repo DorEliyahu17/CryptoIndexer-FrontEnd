@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
 //MUIDataTable
@@ -24,6 +24,7 @@ const defaultProps = {
 
 function HomePage(props) {
   const { userToken } = props;
+  const navigate = useNavigate();
   const [example, setExample] = useState(false);
   const [supportedSymbolsData, setSupportedSymbolsData] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
@@ -45,6 +46,9 @@ function HomePage(props) {
 
   useEffect(async () => {
     setShowLoading(true);
+    if (window.localStorage.getItem('accessToken') === '') {
+      navigate("/login");
+    }
     await getSupportedSymbol();
     await sleep(20);
     await getMostSuccessfulUsersList();

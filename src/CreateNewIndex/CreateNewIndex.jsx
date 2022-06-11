@@ -53,6 +53,9 @@ function CreateNewIndex(props) {
 
   useEffect(async () => {
     setShowLoading(true);
+    if (window.localStorage.getItem('accessToken') === '') {
+      navigate("/login");
+    }
     const response = await fetch('/api/supported-symbols-list', { method: 'get' });
     const responseData = await response.json();
     if (responseData.success && responseData.data.length > 0) {

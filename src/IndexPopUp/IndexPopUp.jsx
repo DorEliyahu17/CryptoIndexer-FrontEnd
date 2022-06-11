@@ -1,4 +1,5 @@
-import React, { useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import AppBar from '@mui/material/AppBar';
@@ -30,10 +31,17 @@ const defaultProps = {
 };
 function Content(props) {
   const { userToken, indexHash, indexName } = props;
+  const navigate = useNavigate();
   const [showBacktestLoading, setShowBacktestLoading] = useState(false);
   const [showBacktest, setShowBacktest] = useState(false);
   const [backtestPrices, setBacktestPrices] = useState([]);
   const [backtestDates, setBacktestDates] = useState([]);
+
+  useEffect(() => {
+    if (window.localStorage.getItem('accessToken') === '') {
+      navigate("/login");
+    }
+  }, [])
 
   const products = [
     {
