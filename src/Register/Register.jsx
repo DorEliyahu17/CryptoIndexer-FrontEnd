@@ -17,15 +17,17 @@ import Loading from '../Components/Loading';
 const propTypes = {
   setUserToken: PropTypes.func,
   setUserName: PropTypes.func,
+  setUserAdmin: PropTypes.func,
 };
 
 const defaultProps = {
   setUserToken: () => { },
   setUserName: () => { },
+  setUserAdmin: () => { },
 };
 
 function Register(props) {
-  const { setUserToken, setUserName } = props;
+  const { setUserToken, setUserName, setUserAdmin } = props;
   const navigate = useNavigate();
   const [showCreatingLoading, setShowCreatingLoading] = useState(false);
 
@@ -56,8 +58,9 @@ function Register(props) {
         body: dataToPass
       }).then((response) => {
         setShowCreatingLoading(false);
-        setUserToken(response.headers.get('token'));
+        setUserToken(response.headers.get('authorization'));
         setUserName(response.headers.get('name'));
+        setUserAdmin(response.headers.get('admin'));
         if (!response.ok) {
           toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
         } else {

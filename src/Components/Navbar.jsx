@@ -15,20 +15,41 @@ import PropTypes from 'prop-types';
 const propTypes = {
   userToken: PropTypes.string,
   userName: PropTypes.string,
+  userAdmin: PropTypes.bool,
   pages: PropTypes.array.isRequired,
+  adminPages: PropTypes.array.isRequired,
   settings: PropTypes.array.isRequired,
+  setUserToken: PropTypes.func,
+  setUserName: PropTypes.func,
+  setUserAdmin: PropTypes.func,
 };
 
 const defaultProps = {
   userToken: '',
   userName: '',
+  userAdmin: false,
   pages: [],
+  adminPages: [],
   settings: [],
+  setUserToken: () => { },
+  setUserName: () => { },
+  setUserAdmin: () => { },
 };
 
 function Navbar(props) {
-  const { userToken, userName, pages, settings } = props;
+  const { userToken, userName, userAdmin, pages, adminPages, settings, setUserToken, setUserName, setUserAdmin } = props;
   const [anchorElUser, setAnchorElUser] = useState(null);
+
+  useEffect(() => {
+    setUserToken(window.localStorage.getItem('authorization'));
+    setUserName(window.localStorage.getItem('userName'));
+    let isAdmin = window.localStorage.getItem('admin')
+    if (isAdmin === "true") {
+      setUserAdmin(true);
+    } else {
+      setUserAdmin(false);
+    }
+  }, []);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -62,8 +83,24 @@ function Navbar(props) {
                 </Typography>
               </Button>
             ))}
+            {userAdmin !== null && userAdmin !== 'null' && userAdmin !== undefined && userAdmin !== 'undefined' && (userAdmin === 'true' || userAdmin === true) && adminPages.map((page) => (
+              <Button
+                href={page.href}
+                key={page.name}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                <Typography
+                  variant="p"
+                  noWrap
+                  component="div"
+                  sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+                >
+                  {page.name}
+                </Typography>
+              </Button>
+            ))}
           </Box>
-          {(userToken !== '') && (
+          {userToken !== null && userToken !== 'null' && userToken !== undefined && userToken !== 'undefined' && userToken !== '' && (
             <Typography
               variant="p"
               noWrap
@@ -95,14 +132,14 @@ function Navbar(props) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {(userToken === '') && settings.map((setting) => (
+              {userToken !== null && userToken !== 'null' && userToken !== undefined && userToken !== 'undefined' && userToken === '' && settings.map((setting) => (
                 <a href={setting.href}>
                   <MenuItem href={setting.href} key={setting.name} onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting.name}</Typography>
                   </MenuItem>
                 </a>
               ))}
-              {(userToken !== '') && (
+              {userToken !== null && userToken !== 'null' && userToken !== undefined && userToken !== 'undefined' && userToken !== '' && (
                 <a href="/logout">
                   <MenuItem href="/logout" key="Logout" onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">Logout</Typography>

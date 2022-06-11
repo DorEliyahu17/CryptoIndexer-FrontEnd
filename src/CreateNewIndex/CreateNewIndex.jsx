@@ -53,7 +53,7 @@ function CreateNewIndex(props) {
 
   useEffect(async () => {
     setShowLoading(true);
-    if (window.localStorage.getItem('accessToken') === '') {
+    if (window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
     const response = await fetch('/api/supported-symbols-list', { method: 'get' });
@@ -253,10 +253,6 @@ function CreateNewIndex(props) {
     </Box>
   );
 
-  // const sleep = (milliseconds) => {
-  //   return new Promise(resolve => setTimeout(resolve, milliseconds))
-  // }
-
   //example of POST request
   const createNewIndexRequest = () => {
     setShowCreatingLoading(true);
@@ -285,7 +281,6 @@ function CreateNewIndex(props) {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: dataToPass
-        // }).then(async (response) => {
       }).then((response) => {
         setShowCreatingLoading(false);
         if (!response.ok) {
@@ -293,10 +288,6 @@ function CreateNewIndex(props) {
         } else {
           toast('The index created successfully!');
           navigate("/");
-          // await sleep(2000).then(response => {
-          //   console.log("sleep res: " + response);
-          //   navigate("/");
-          // });
         }
       }).catch((response) => {
         toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);

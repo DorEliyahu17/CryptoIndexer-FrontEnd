@@ -3,10 +3,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import BuyOrSellModal from "../ModalComponent/BuyOrSellModal";
-//MUIDataTable
 import MUIDataTable from "mui-datatables";
-//mu-icons
-// import { Delete } from "@material-ui/icons";
 import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Loading from '../Components/Loading';
@@ -46,7 +43,7 @@ function HomePage(props) {
 
   useEffect(async () => {
     setShowLoading(true);
-    if (window.localStorage.getItem('accessToken') === '') {
+    if (window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
     await getSupportedSymbol();

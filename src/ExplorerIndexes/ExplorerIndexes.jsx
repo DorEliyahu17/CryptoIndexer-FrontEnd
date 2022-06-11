@@ -14,31 +14,10 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import CssBaseline from '@mui/material/CssBaseline';
 import StarIcon from '@mui/icons-material/StarBorder';
-// import Link from '@mui/material/Link';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
 import Loading from '../Components/Loading';
-
-// function Copyright(props) {
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         CryptoIndexer
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
-
-
-// const footers = [
-
-// ];
 
 function PricingContent(props) {
   const { search, tiers } = props;
@@ -193,7 +172,7 @@ function ExplorerIndexes(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(async () => {
-    if (window.localStorage.getItem('accessToken') === '') {
+    if (window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
     const response = await fetch('/api/content', { method: 'get' });

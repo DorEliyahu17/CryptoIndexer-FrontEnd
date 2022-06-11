@@ -38,7 +38,7 @@ function Content(props) {
   const [backtestDates, setBacktestDates] = useState([]);
 
   useEffect(() => {
-    if (window.localStorage.getItem('accessToken') === '') {
+    if (window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
   }, [])
