@@ -2,7 +2,7 @@ import Navbar from "./Components/Navbar";
 import React, { useState, useEffect } from "react";
 import { Route } from "react-router";
 import { BrowserRouter, Routes } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import HomePage from "./HomePage/HomePage";
 import CreateNewIndex from "./CreateNewIndex/CreateNewIndex";
 import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes";
@@ -10,6 +10,10 @@ import Login from "./Login/Login";
 import Logout from "./Logout/Logout";
 import Register from "./Register/Register";
 import IndexPopUp from "./IndexPopUp/IndexPopUp";
+import ReportBug from "./ReportBug/ReportBug";
+import BugsList from "./BugsList/BugsList";
+import Statistics from "./Statistics/Statistics";
+
 
 import "./App.css";
 
@@ -38,7 +42,6 @@ function App() {
       setLoggedUserAdmin(false);
     }
   };
-
 
   useEffect(() => {
     setLoggedUserToken(window.localStorage.getItem('authorization'));
@@ -84,7 +87,10 @@ function App() {
           <Route path='/login' element={<Login setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} /> } />
           <Route path='/register' element={<Register setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} /> } />
           <Route path='/logout' element={<Logout setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} />} />
-          <Route path='/IndexPopUp' element={<IndexPopUp userToken={loggedUserToken} />} />
+          <Route path='/index-pop-up' element={<IndexPopUp userToken={loggedUserToken} />} />
+          <Route path='/report-bug' element={<ReportBug userToken={loggedUserToken} />} />
+          <Route path='/bugs-list' element={<BugsList />} />
+          <Route path='/statistics' element={<Statistics />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer />

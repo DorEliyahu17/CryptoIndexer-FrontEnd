@@ -1,12 +1,13 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Line } from "react-chartjs-2";
+import { Line, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
@@ -20,6 +21,8 @@ const propTypes = {
   labels: PropTypes.array,
   isMultiAxios: PropTypes.bool,
   otherSymbolsColors: PropTypes.object,
+  doughnutDataToShow: PropTypes.array,
+  doughnutColors: PropTypes.array,
 };
 
 const defaultProps = {
@@ -30,15 +33,18 @@ const defaultProps = {
   labels: [],
   isMultiAxios: false,
   otherSymbolsColors: {},
+  doughnutDataToShow: [],
+  doughnutColors: []
 };
 
 function Charts(props) {
-  const { type, firstIndexName, firstIndexPrices, otherSymbols, labels, isMultiAxios, otherSymbolsColors } = props;
+  const { type, firstIndexName, firstIndexPrices, otherSymbols, labels, isMultiAxios, otherSymbolsColors, doughnutDataToShow, doughnutColors } = props;
   ChartJS.register(
     CategoryScale,
     LinearScale,
     PointElement,
     LineElement,
+    ArcElement,
     Title,
     Tooltip,
     Legend
@@ -61,7 +67,7 @@ function Charts(props) {
     }
   ];
 
-  const options = {
+  const lineOptions = {
     responsive: true,
     interaction: {
       mode: 'index',
@@ -71,9 +77,34 @@ function Charts(props) {
     scales: scales,
   };
 
-  const data = {
+  const lineData = {
     labels,
     datasets: datasets,
+  };
+
+  const doughnutOptions = {
+    legend: {
+      display: true,
+      position: "bottom"
+    },
+    elements: {
+      arc: {
+        borderWidth: 0
+      }
+    }
+  };
+
+  const doughnutData = {
+    maintainAspectRatio: false,
+    responsive: false,
+    labels: labels,
+    datasets: [
+      {
+        data: doughnutDataToShow,
+        backgroundColor: doughnutColors,
+        hoverBackgroundColor: doughnutColors
+      }
+    ]
   };
 
   const renderChartByType = () => {
@@ -89,10 +120,15 @@ function Charts(props) {
     }
 
     switch (type) {
+      case 'doughnut':
+        return <Doughnut
+          options={doughnutOptions}
+          data={doughnutData}
+        />
       case 'line':
         return <Line
-          options={options}
-          data={data}
+          options={lineOptions}
+          data={lineData}
         />
     }
   }

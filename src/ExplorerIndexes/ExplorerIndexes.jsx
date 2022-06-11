@@ -112,7 +112,7 @@ function PricingContent(props) {
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button fullWidth variant={tier.buttonVariant} href="/IndexPopUp">
+                  <Button fullWidth variant={tier.buttonVariant} href="/index-pop-up">
                     {tier.buttonText}
                   </Button>
                 </CardActions>

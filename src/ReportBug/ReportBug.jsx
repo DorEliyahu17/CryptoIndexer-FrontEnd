@@ -1,55 +1,57 @@
-import React, { useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+// import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+// import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { validateEmail } from '../utils/utils';
+// import { validateEmail } from '../utils/utils';
 import Loading from '../Components/Loading';
 
 const propTypes = {
-  setUserToken: PropTypes.func,
-  setUserName: PropTypes.func,
-  setUserAdmin: PropTypes.func,
+  userToken: PropTypes.string,
 };
 
 const defaultProps = {
-  setUserToken: () => { },
-  setUserName: () => { },
-  setUserAdmin: () => { },
+  userToken: '',
 };
 
-function Register(props) {
-  const { setUserToken, setUserName, setUserAdmin } = props;
+function ReportBug(props) {
+  const { userToken } = props;
   const navigate = useNavigate();
   const [showCreatingLoading, setShowCreatingLoading] = useState(false);
+  const current = new Date();
+
+  useEffect(() => {
+    if (window.localStorage.getItem('authorization') === '') {
+      navigate("/login");
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     setShowCreatingLoading(true);
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if ((data.get('username') !== '') && (data.get('email') !== '') &&
-      (data.get('password') !== '') && (data.get('passwordVal') !== '') &&
-      (data.get('apiKey') !== '') && (data.get('password') === data.get('passwordVal')) &&
-      (data.get('password').length >= 5) && (validateEmail(data.get('email')))) {
-      const newUserData = {
-        userName: data.get('username'),
-        email: data.get('email'),
-        password: data.get('password'),
-        apiKey: data.get('apiKey')
+    if ((data.get('title') !== '') && (data.get('description') !== '')) {
+      const newBugData = {
+        title: data.get('title'),
+        description: data.get('description'),
+        reporterToken: userToken,
+        insertDate: `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`,
       }
       let dataToPass = [];
       let encodedKey = encodeURIComponent('data');
-      let encodedValue = encodeURIComponent(JSON.stringify(newUserData));
+      let encodedValue = encodeURIComponent(JSON.stringify(newBugData));
       dataToPass.push(encodedKey + "=" + encodedValue);
       dataToPass = dataToPass.join("&");
-      fetch('/api/register', {
+      fetch('/api/insert-bug', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -57,13 +59,10 @@ function Register(props) {
         body: dataToPass
       }).then((response) => {
         setShowCreatingLoading(false);
-        setUserToken(response.headers.get('authorization'));
-        setUserName(response.headers.get('name'));
-        setUserAdmin(response.headers.get('admin'));
         if (!response.ok) {
           toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
         } else {
-          toast('The user created successfully!');
+          toast('The bug repported successfully!');
           navigate("/");
         }
       }).catch((response) => {
@@ -71,14 +70,14 @@ function Register(props) {
       })
     } else {
       setShowCreatingLoading(false);
-      toast('Please fill the form correctly or enter matching passwords!');
+      toast('Please fill the form correctly!');
     }
   };
 
   return (
     <Fragment>
-      <Container component="main" maxWidth="xs">
-        <Box id="register-box"
+      <Container component="main" maxWidth="l">
+        <Box id="bug-box"
           sx={{
             marginTop: 8,
             display: 'flex',
@@ -87,55 +86,30 @@ function Register(props) {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
+            <BugReportOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Create New Account
+            Report A Bug
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
+              id="title"
+              label="Title"
+              name="title"
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="email"
-              label="E-mail"
-              id="email"
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="passwordVal"
-              label="Re-Enter Password"
-              type="password"
-              id="passwordVal"
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="apiKey"
-              label="Binance API Key"
-              type="password"
-              id="apiKey"
+              name="description"
+              label="Description"
+              id="description"
+              multiline
+              rows={8}
             />
             <Button
               type="submit"
@@ -143,7 +117,7 @@ function Register(props) {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign UP
+              Submit
             </Button>
             <Grid container>
             </Grid>
@@ -152,12 +126,12 @@ function Register(props) {
       </Container >
       {showCreatingLoading &&
         <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
-          <Loading label="Creating user..." />
+          <Loading label="Reporting your bug..." />
         </div>}
     </Fragment>
   );
 }
 
-Register.defaultProps = defaultProps;
-Register.propTypes = propTypes;
-export default Register;
+ReportBug.defaultProps = defaultProps;
+ReportBug.propTypes = propTypes;
+export default ReportBug;
