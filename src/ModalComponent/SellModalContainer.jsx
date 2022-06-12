@@ -10,6 +10,10 @@ const propTypes = {
 };
 
 const defaultProps = {
+  setShowSellDialog: () => { },
+  sellIndexInput: {},
+  setSellIndexInput: () => { },
+  SellIndex: () => { },
 };
 
 function SellModalContainer(props) {

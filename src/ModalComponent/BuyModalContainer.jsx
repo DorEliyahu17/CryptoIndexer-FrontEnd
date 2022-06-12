@@ -10,6 +10,10 @@ const propTypes = {
 };
 
 const defaultProps = {
+  setShowBuyDialog: () => { },
+  buyIndexInput: {},
+  setBuyIndexInput: () => { },
+  BuyIndex: () => { },
 };
 
 function BuyModalContainer(props) {
@@ -22,8 +26,9 @@ function BuyModalContainer(props) {
     setShowBuyDialog(false);
   }
 
-  function submit() {
+  const submit = () => {
     BuyIndex(countToBuyModal).then((res) => {
+      debugger
       setBuyIndexInput({
         initIndexName, initCountToBuy
       });
@@ -32,7 +37,7 @@ function BuyModalContainer(props) {
   }
   const content = new Array(1).fill(
     <p>
-      How many do you want to buy from {buyIndexInput.indexName} ?
+      How much money ($) do you want to invest in {buyIndexInput.indexName} index?
     </p>,
   );
 
@@ -40,11 +45,11 @@ function BuyModalContainer(props) {
     <div>
       <ModalShadow style={{ zIndex: 100 }} onClick={close} />
       <Modal style={{ zIndex: 150 }}>
-        <ModalBanner>Edit countToBuy</ModalBanner>
+        <ModalBanner>Amount To Invest in {buyIndexInput.indexName}</ModalBanner>
         <ModalContent>
           {content}
           <label>
-            countToBuy
+            <span style={{ marginRight: '4px' }}>Amount To Invest:</span>
             <input
               value={countToBuyModal}
               type="number"
@@ -53,11 +58,10 @@ function BuyModalContainer(props) {
           </label>
         </ModalContent>
         <ModalFooter>
-          <ConfirmButton onClick={submit}> Submit </ConfirmButton>
+          <ConfirmButton onClick={submit}>Submit</ConfirmButton>
         </ModalFooter>
       </Modal>
     </div>
-    //document.getElementById('app-modal'),
   );
 }
 

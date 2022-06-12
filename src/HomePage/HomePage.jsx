@@ -7,6 +7,7 @@ import MUIDataTable from "mui-datatables";
 import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Loading from '../Components/Loading';
+import { getDate } from '../utils/utils';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './HomePage.less';
@@ -33,13 +34,80 @@ function HomePage(props) {
   const [sellIndexInput, setSellIndexInput] = useState({ indexName: "", countToSell: 0 });
 
   //const classes = useStyles();  
-  const [page, setPage] = useState(0);
-  const [data, setData] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
+  // const [page, setPage] = useState(0);
+  // const [data, setData] = useState([]);
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
+  const symbolColumns = ['Symbol', 'Price', 'Weekly gain(%)', 'Week Low', 'Week High'];
+  const mostSuccessfulUsers = [
+    {
+      name: "Payment", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandlePaymentRow(tableMeta, false) }}>
+              <Payment color="primary" />
+            </button>
+          );
+        }
+      }
+    },
+    {
+      name: "Sell", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandleSellRow(tableMeta, false) }}>
+              <HighlightOffIcon color="secondary" />
+            </button>
+          );
+        }
+      }
+    },
+    'Creator Name',
+    'Index Name',
+    'Weekly gain(%)',
+    'Users Count'
+  ];
+  const ownIndexColumns = [
+    {
+      name: "Payment", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandlePaymentRow(tableMeta, true) }}>
+              <Payment color="primary" />
+            </button>
+          );
+        }
+      }
+    },
+    {
+      name: "Sell", options: {
+        customBodyRender: (value, tableMeta, updateValue) => {
+          return (
+            <button onClick={() => { HandleSellRow(tableMeta, true) }}>
+              <HighlightOffIcon color="secondary" />
+            </button>
+          );
+        }
+      }
+    },
+    'Index Name',
+    'Weekly gain(%)',
+    'Users Count',
+  ];
+  const symbolOptions = {
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
+    selectableRowsHideCheckboxes: true
+  };
+  const ownIndexesOptions = {
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
+    selectableRowsHideCheckboxes: true
+  };
+  const mostSuccessfulUsersOptions = {
+    rowsPerPage: [3],
+    rowsPerPageOptions: [3, 5, 10, 15],
+    selectableRowsHideCheckboxes: true
+  };
 
   useEffect(async () => {
     setShowLoading(true);
@@ -47,19 +115,14 @@ function HomePage(props) {
       navigate("/login");
     }
     await getSupportedSymbol();
-    await sleep(20);
-    await getMostSuccessfulUsersList();
-    await sleep(20);
-    await getOwnIndexes();
-    setShowLoading(false);
+    sleep(10).then(async () => {
+      await getMostSuccessfulUsersList();
+      sleep(10).then(async () => {
+        await getOwnIndexes();
+        setShowLoading(false);
+      });
+    })
   }, []);
-
-  useEffect(() => {
-    console.log('userToken=' + userToken);
-    //handleGetSymbolsData();
-    //console.log(SymbolsData);
-
-  }, [userToken]);
 
   useEffect(() => {
     console.log("aa");
@@ -68,7 +131,10 @@ function HomePage(props) {
 
   }, [showBuyDialog]);
 
-  //need to be fixed first in the api then here
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+
   const getSupportedSymbol = async () => {
     const response = await fetch('/api/home-page-supported-symbols-list', { method: 'get' });
     const responseData = await response.json();
@@ -98,7 +164,7 @@ function HomePage(props) {
       console.log(responseData.data)
       let tempSymbolsNameArr = [];
       responseData.data.map(successfulUser => {
-        tempSymbolsNameArr.push([, successfulUser.userName, successfulUser.indexName, successfulUser.weeklyGain, successfulUser.usersCount]);
+        tempSymbolsNameArr.push([, , successfulUser.userName, successfulUser.indexName, successfulUser.weeklyGain, successfulUser.usersCount]);
       });
       setMostSuccessfulUsersData(tempSymbolsNameArr);
     } else {
@@ -132,212 +198,57 @@ function HomePage(props) {
     }
   };
 
-  // const tableRef = React.createRef();
-
-
-
-
-  // const symbolData = (query) => (
-  //   new Promise((resolve,reject)=> {
-  //     let url = "https://server/api/get/symbols?";
-  //       //  url += "per_page=" + query.pageSize;
-  //        // url += "&page=" + (query.page + 1);
-  //        fetch(url)
-  //         .then((response) => response.json())
-  //         .then((result) => {
-  //           resolve({
-  //             data: result.data,
-  //             page: result.page - 1,
-  //             totalCount: result.total
-  //           });
-  //         });
-  //   }));
-
-
-  // const commonIndexData = (query) => (
-  //   new Promise((resolve,reject)=> {
-  //     let url = "https://server/api/get/index?";
-  //       //  url += "per_page=" + query.pageSize;
-  //        // url += "&page=" + (query.page + 1);
-  //        fetch(url)
-  //         .then((response) => response.json())
-  //         .then((result) => {
-  //           resolve({
-  //             data: result.data,
-  //             page: result.page - 1,
-  //             totalCount: result.total
-  //           });
-  //         });
-  //   }));
-
-
-  // const ownIndexData = (query) => (
-  //   new Promise((resolve,reject)=> {
-  //     let url = "https://server/api/get/index?";
-  //       //  url += "per_page=" + query.pageSize;
-  //        // url += "&page=" + (query.page + 1);
-  //        fetch(url)
-  //         .then((response) => response.json())
-  //         .then((result) => {
-  //           resolve({
-  //             data: result.data,
-  //             page: result.page - 1,
-  //             totalCount: result.total
-  //           });
-  //         });
-  //   }));
-
-  //COLUMNS
-
-  const symbolColumns = ['Symbol', 'Price', 'Weekly gain(%)', 'Week Low', 'Week High'];
-  /*
-    const commonIndexColumns = [
-      {
-        name: "Payment", options: {
-          customBodyRender: (value, tableMeta, updateValue) => {
-            return (
-              <button onClick={() => { HandlePaymentRow(tableMeta) }}>
-                <Payment color="primary" />
-              </button>
-            );
-          }
-        }
-      },
-      'Index Name', 'Recommended rating', 'Days gain(%)', 'Users Count'];
-  */
-
-  const mostSuccessfulUsers = [
-    {
-      name: "Payment", options: {
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <button onClick={() => { HandlePaymentRow(tableMeta) }}>
-              <Payment color="primary" />
-            </button>
-          );
-        }
-      }
-    },
-    'Creator Name', 'Index Name', 'Weekly gain(%)', 'Users Count'];
-
-
-  const ownIndexColumns = [
-    {
-      name: "Payment", options: {
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <button onClick={() => { HandlePaymentRow(tableMeta) }}>
-              <Payment color="primary" />
-            </button>
-          );
-        }
-      }
-    },
-    {
-      name: "Sell", options: {
-        customBodyRender: (value, tableMeta, updateValue) => {
-          return (
-            <button onClick={() => { HandleSellRow(tableMeta) }}>
-              <HighlightOffIcon color="secondary" />
-            </button>
-          );
-        }
-      }
-    },
-    'Index Name', 'Weekly gain(%)', 'Users Count'];
-
-
-  //OPTIONS
-  const symbolOptions = {
-    rowsPerPage: [3],
-    rowsPerPageOptions: [3, 5, 10, 15],
-    selectableRowsHideCheckboxes: true
-  };
-
-  const ownIndexesOptions = {
-    rowsPerPage: [3],
-    rowsPerPageOptions: [3, 5, 10, 15],
-    selectableRowsHideCheckboxes: true
-  };
-
-  // const commonIndexesOptions = {
-  //   //filterType: "checkbox",        
-  //   //filterType: "checkbox",        
-  //   //filterType: "checkbox",        
-  //   rowsPerPage: [3],
-  //   rowsPerPageOptions: [3, 5, 10, 15],
-  //   selectableRowsHideCheckboxes: true,
-  //   onChangePage(currentPage) {
-  //     console.log({ currentPage });
-  //   },
-  //   onChangeRowsPerPage(numberOfRows) {
-  //     console.log({ numberOfRows });
-  //   }
-  // };
-
-  const mostSuccessfulUsersOptions = {
-    rowsPerPage: [3],
-    rowsPerPageOptions: [3, 5, 10, 15],
-    selectableRowsHideCheckboxes: true
-  };
-
-  //DATA
-
-  // const symbolsData = [
-  //   ["BTC", "$40,038.60", "2.28%", "$40,028.60", "$40,138.60", "$761,877,839,620", "$33,368,145,255"],
-  //   ["ETH", "$2,956.03", "2.97%", "$2,950.00", "$2,986.03", "$356,678,709,989", "$18,253,003,101"]
-  // ];
-
-
-  // const commonIndexesData = [
-  //   [, "index1", "High", "2.28%", "50"],
-  //   [, "index2", "Low", "2.97%", "2"]
-  // ];
-
-  // const mostSuccessfulUsersData = [
-  //   [, "Tal Gavriel", "The best", "2.28%", "50"],
-  //   [, "Matan kalili", "The second", "2.97%", "2"]
-  // ];
-
-  // const ownIndexesData = [
-  //   [, , "index1", "High", "2.28%", 50],
-  //   [, , "index2", "Low", "2.97%", 2]
-  // ];
-
-
-
-  const HandlePaymentRow = (rowData) => {
+  const HandlePaymentRow = (rowData, isOwn) => {
+    debugger
     console.log(rowData.indexName);
-    buyIndexInput.indexName = rowData.indexName;
+    buyIndexInput.indexName = isOwn ? rowData.rowData[2] : rowData.rowData[3];
+    buyIndexInput.isOwn = isOwn;
     setShowBuyDialog(true);
     console.log(buyIndexInput.countToBuy);
     //todo: send the rowData.indexName and buyIndexInput.countToBuy to BUY api
     //buyIndexInput.countToBuy = 0;
     //buyIndexInput.indexName = "";
-  }
+  };
 
   const BuyIndex = async (countToBuy) => {
     console.log(buyIndexInput.indexName);
     console.log(countToBuy);
+    let dataToEncode = {};
+    let dataToPass = [];
+    const curDate = getDate();
+    dataToEncode = {
+      userToken: (userToken || window.localStorage.getItem('authorization')),
+      indexName: buyIndexInput.indexName,
+      transactionData: { amount: countToBuy, date: curDate },
+      isOwnIndex: buyIndexInput.isOwn
+    }
+    let encodedKey = encodeURIComponent('data');
+    let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
+    dataToPass.push(encodedKey + "=" + encodedValue);
+    dataToPass = dataToPass.join("&");
     //todo: send the indexName and countToBuy to BUY api
-
-    fetch('/api//buy-or-sell-index', {
+    debugger
+    fetch('/api/buy-or-sell-index', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: { userToken: userToken, index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: -countToBuy, date: Date.now } }
-    }).then(response => {
-      console.log(response.json())
-    }).catch((e) => {
-      console.log(e);
+      body: dataToPass
+      // { userToken: userToken, index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: countToBuy, date: curDate } }
+    }).then((response) => {
+      if (!response.ok) {
+        toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
+      } else {
+        toast('The money invested successfully!');
+      }
+    }).catch((response) => {
+      toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
     })
 
     await getOwnIndexes();
 
     return Promise.resolve();
-  }
-
+  };
 
   const HandleSellRow = (rowData) => {
     console.log(rowData.rowData);
@@ -347,7 +258,7 @@ function HomePage(props) {
     //todo: send the rowData.indexName and sellIndexInput.countToBuy to SELL api
     //sellIndexInput.countToSell = 0;
     //sellIndexInput.indexName = "";
-  }
+  };
 
   const SellIndex = async (countToSell) => {
     console.log(sellIndexInput.indexName);
@@ -359,7 +270,7 @@ function HomePage(props) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: { userToken: userToken, index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: -countToSell, date: Date.now } }
+      body: { userToken: userToken, index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { amount: -countToSell, date: Date.now } }
     }).then(response => {
       console.log(response.json())
     }).catch((e) => {
@@ -369,7 +280,7 @@ function HomePage(props) {
     await getOwnIndexes();
 
     return Promise.resolve();
-  }
+  };
 
   // const handleGetSymbolsData = () => {
   //   //todo:

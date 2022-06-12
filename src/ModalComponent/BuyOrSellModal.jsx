@@ -21,6 +21,14 @@ const propTypes = {
 
 const defaultProps = {
   isBuyModal: true,
+  setShowBuyDialog: () => { },
+  buyIndexInput: {},
+  setBuyIndexInput: () => { },
+  BuyIndex: () => { },
+  setShowSellDialog: () => { },
+  sellIndexInput: {},
+  setSellIndexInput: () => { },
+  SellIndex: () => { },
 };
 
 function BuyOrSellModal(props) {
@@ -28,7 +36,6 @@ function BuyOrSellModal(props) {
   return (
     (isBuyModal) ?
       <BuyModalContainer
-        //        {...props}
         setShowBuyDialog={setShowBuyDialog}
         buyIndexInput={buyIndexInput}
         setBuyIndexInput={setBuyIndexInput}
@@ -36,13 +43,11 @@ function BuyOrSellModal(props) {
       />
       :
       <SellModalContainer
-        //        {...props}
         setShowSellDialog={setShowSellDialog}
         sellIndexInput={sellIndexInput}
         setSellIndexInput={setSellIndexInput}
         SellIndex={SellIndex}
       />
-    //document.getElementById('app-modal'),
   );
 }
 

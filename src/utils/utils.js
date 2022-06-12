@@ -4,3 +4,7 @@ export const validateEmail = (email) => {
   );
 };
 
+export const getDate = () => {
+  const current = new Date();
+  return `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`
+};

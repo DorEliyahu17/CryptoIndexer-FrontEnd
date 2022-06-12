@@ -4,15 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-// import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-// import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-// import { validateEmail } from '../utils/utils';
+import { getDate } from '../utils/utils';
 import Loading from '../Components/Loading';
 
 const propTypes = {
@@ -27,7 +25,6 @@ function ReportBug(props) {
   const { userToken } = props;
   const navigate = useNavigate();
   const [showCreatingLoading, setShowCreatingLoading] = useState(false);
-  const current = new Date();
 
   useEffect(() => {
     if (window.localStorage.getItem('authorization') === '') {
@@ -40,11 +37,12 @@ function ReportBug(props) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     if ((data.get('title') !== '') && (data.get('description') !== '')) {
+      const curDate = getDate();
       const newBugData = {
         title: data.get('title'),
         description: data.get('description'),
         reporterToken: userToken,
-        insertDate: `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`,
+        insertDate: curDate,
       }
       let dataToPass = [];
       let encodedKey = encodeURIComponent('data');
