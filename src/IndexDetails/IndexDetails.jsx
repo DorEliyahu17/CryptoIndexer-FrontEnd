@@ -2,14 +2,11 @@ import React, { useEffect, useState, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import GlobalStyles from '@mui/material/GlobalStyles';
 import MUIDataTable from "mui-datatables";
 import Loading from '../Components/Loading';
 import Charts from '../Components/Charts';
@@ -28,7 +25,7 @@ const defaultProps = {
   indexName: 'No Index Name',
 };
 function IndexDetails(props) {
-  const { userToken, indexHash, indexName } = props;
+  const { userToken, indexToSee, setIndexToSee } = props;
   const navigate = useNavigate();
   const [initialCash, setInitialCash] = useState(1000);
   const [showBacktestLoading, setShowBacktestLoading] = useState(false);
@@ -40,13 +37,17 @@ function IndexDetails(props) {
 
   useEffect(() => {
     if (window.localStorage.getItem('authorization') === '') {
+      setIndexToSee(null);
       navigate("/login");
+    }
+    if (window.localStorage.getItem('indexToSee')) {
+      setIndexToSee(window.localStorage.getItem('indexToSee'));
     }
   }, [])
 
   const backTestRequest = async () => {
     setShowBacktestLoading(true);
-    const response = await fetch('/api/backtest-exist-index?' + new URLSearchParams({ data: indexHash, initialCash }), { method: 'get' });
+    const response = await fetch('/api/backtest-exist-index?' + new URLSearchParams({ data: indexToSee.indexHash, initialCash }), { method: 'get' });
     const responseData = await response.json();
     if (responseData.success) {
       setBacktestPrices(responseData.data.index.balance_progress);
@@ -67,7 +68,8 @@ function IndexDetails(props) {
     const curDate = getDate();
     dataToEncode = {
       userToken: (userToken || window.localStorage.getItem('authorization')),
-      indexName: indexName,
+      indexName: indexToSee.indexName,
+      creatorId: indexToSee.creatorId,
       transactionData: { amount: initialCash, date: curDate },
       isOwnIndex: false
     }
@@ -92,7 +94,12 @@ function IndexDetails(props) {
     }).catch((response) => {
       toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
     })
-  }
+  };
+
+  const handleBackToExplorer = () => {
+    setIndexToSee(null);
+    navigate("/explorer-indexes");
+  };
 
   const renderTable = () => {
     const statisticsOptions = {
@@ -103,7 +110,7 @@ function IndexDetails(props) {
     const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharp Ratio', 'Weekly Returns Average', 'Weekly Returns Standard Deviation'];
     let statisticsData = [];
     statisticsData.push([
-      indexName,
+      indexToSee.indexName,
       backtestIndexData.roi.toFixed(5),
       backtestIndexData.max_drawdown.toFixed(5),
       backtestIndexData.sharpe_ratio.toFixed(5),
@@ -113,7 +120,7 @@ function IndexDetails(props) {
 
     return (
       <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column', flexWrap: 'nowrap', justifyContent: 'flex-end' }}>
-        <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />
+        <Charts type='line' labels={backtestDates} firstIndexName={indexToSee.indexName} firstIndexPrices={backtestPrices} />
         <div style={{ width: '100%', height: '100%', marginTop: '16px' }}>
           <MUIDataTable
             title={"Statistics"}
@@ -133,7 +140,7 @@ function IndexDetails(props) {
           <Toolbar>
             <Grid container spacing={2} alignItems="center">
               <Typography align='center'>
-                <h2>{indexName}</h2>
+                <h2>{indexToSee.indexName}</h2>
                 <TextField
                   margin="normal"
                   required
@@ -169,19 +176,19 @@ function IndexDetails(props) {
                   variant="contained"
                   fullWidth
                   sx={{ mt: 3, mb: 2 }}
-                  href="/explorer-indexes"
+                  onClick={handleBackToExplorer}
                 >
                   Back To Community
                 </Button>
               </Typography>
+              <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
+                {showBacktestLoading && <Loading label="Fetching data..." />}
+                {showCreatingLoading && <Loading label="Investing..." />}
+              </div>
             </Grid>
           </Toolbar>
         </div>
         <div style={{ marginRight: '8px', width: '70%' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
-            {showBacktestLoading && <Loading label="Fetching data..." />}
-            {showCreatingLoading && <Loading label="Investing..." />}
-          </div>
           {showBacktest && renderTable()}
         </div>
       </div>

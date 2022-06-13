@@ -14,24 +14,24 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import StarIcon from '@mui/icons-material/StarBorder';
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Container from '@mui/material/Container';
 import Loading from '../Components/Loading';
 
 function PricingContent(props) {
-  const { search, tiers } = props;
-  const [filterTiers, setFilterTiers] = useState(tiers);
+  const { search, indexes, handleMoreDetails } = props;
+  const [filterIndexes, setFilterIndexes] = useState(indexes);
 
   useEffect(() => {
-    const temp = tiers.filter((tier) => tier.title.toLocaleLowerCase().includes(search))
-    setFilterTiers(temp)
+    if (indexes) {
+      const temp = indexes.filter((indexObject) => indexObject.indexName.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+      setFilterIndexes(temp);
+    }
   }, [search]);
 
   return (
     <Fragment>
       <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
-      {/* <CssBaseline /> */}
       <AppBar
         position="static"
         color="default"
@@ -39,10 +39,8 @@ function PricingContent(props) {
         sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
       >
       </AppBar>
-      {/* Hero unit */}
       <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 1, pb: 4 }}>
         <Typography
-          // component="h1"
           variant="h2"
           align="center"
           color="text.primary"
@@ -54,24 +52,19 @@ function PricingContent(props) {
           Take a look at the community indexes
         </Typography>
       </Container>
-      {/* End hero unit */}
       <Container maxWidth="md" component="main">
         <Grid container spacing={5} alignItems="flex-end">
-          {(filterTiers || []).map((tier) => (
-            // Enterprise card is full width at sm breakpoint
+          {(filterIndexes || []).map((indexObject, i) => (
             <Grid
               item
-              key={tier.title}
+              key={indexObject.indexName}
               xs={12}
-              sm={tier.title === 'Enterprise' ? 12 : 6}
               md={4}
             >
               <Card>
                 <CardHeader
-                  title={tier.title}
-                  subheader={tier.subheader}
+                  title={indexObject.indexName}
                   titleTypographyProps={{ align: 'center' }}
-                  action={tier.title === '1 st' ? <StarIcon /> : null}
                   subheaderTypographyProps={{
                     align: 'center',
                   }}
@@ -91,29 +84,36 @@ function PricingContent(props) {
                       mb: 2,
                     }}
                   >
-                    <Typography component="h2" variant="h3" color="text.primary">
-                      ${tier.price}
-                    </Typography>
-                    <Typography variant="h6" color="text.secondary">
-                      /mo
+                    <Typography variant="h5" color="text.primary">
+                      Weekly Gain: {indexObject.weeklyGain.toFixed(5)}%
                     </Typography>
                   </Box>
                   <ul>
-                    {(tier.description || []).map((line) => (
-                      <Typography
-                        component="li"
-                        variant="subtitle1"
-                        align="center"
-                        key={line}
-                      >
-                        {line}
-                      </Typography>
-                    ))}
+                    <Typography
+                      component="li"
+                      variant="subtitle1"
+                      align="center"
+                      key={indexObject.creatorName}
+                    >
+                      Created By: {indexObject.creatorName}
+                    </Typography>
+                    <Typography
+                      component="li"
+                      variant="subtitle1"
+                      align="center"
+                      key={indexObject.investingCount}
+                    >
+                      {indexObject.investingCount} users investing this index
+                    </Typography>
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button fullWidth variant={tier.buttonVariant} href="/index-details">
-                    {tier.buttonText}
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    onClick={() => handleMoreDetails(indexObject)}
+                  >
+                    See More Details
                   </Button>
                 </CardActions>
               </Card>
@@ -121,53 +121,26 @@ function PricingContent(props) {
           ))}
         </Grid>
       </Container>
-      {/* Footer */}
-      {/* <Container
-        maxWidth="md"
-        component="footer"
-        sx={{
-          borderTop: (theme) => `1px solid ${theme.palette.divider}`,
-          mt: 8,
-          py: [3, 6],
-        }}
-      >
-        <Grid container spacing={4} justifyContent="space-evenly">
-          {(footers || []).map((footer) => (
-            <Grid item xs={6} sm={3} key={footer.title}>
-              <Typography variant="h6" color="text.primary" gutterBottom>
-                {footer.title}
-              </Typography>
-              <ul>
-                {footer.description.map((item) => (
-                  <li key={item}>
-                    <Link href="#" variant="subtitle1" color="text.secondary">
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </Grid>
-          ))}
-        </Grid>
-        <Copyright sx={{ mt: 5 }} />
-      </Container> */}
-      {/* End footer */}
     </Fragment>
   );
 }
 
 const propTypes = {
   userToken: PropTypes.String,
+  userName: PropTypes.String,
+  setIndexToSee: PropTypes.func,
 };
 
 const defaultProps = {
   userToken: '',
+  userName: '',
+  setIndexToSee: () => { },
 };
 
 function ExplorerIndexes(props) {
-  const { userToken } = props;
+  const { userToken, userName, setIndexToSee } = props;
   const navigate = useNavigate();
-  const [tiers, setTiers] = useState();
+  const [indexes, setIndexes] = useState([]);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -175,11 +148,24 @@ function ExplorerIndexes(props) {
     if (window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
-    const response = await fetch('/api/all-indexes-list', { method: 'get' });
+    setIndexToSee(null);
+    const response = await fetch('/api/all-indexes-list?' + new URLSearchParams({
+      data: JSON.stringify({
+        userToken: (userToken || window.localStorage.getItem('authorization')),
+        userName: (userName || window.localStorage.getItem('userName')),
+        includeSelf: false
+      })
+    }), { method: 'get' });
     const responseData = await response.json();
-    setTiers(responseData)
+    setIndexes(responseData.data.result);
     setIsLoading(false);
   }, []);
+
+  const handleMoreDetails = (indexObject) => {
+    let jsonObject = JSON.stringify({ indexHash: indexObject.indexHash, indexName: indexObject.indexName, creatorId: indexObject.creatorId });
+    setIndexToSee(jsonObject);
+    navigate("/index-details");
+  }
 
   return (
     <Paper sx={{ maxWidth: 1300, margin: 'auto', overflow: 'hidden' }}>
@@ -213,7 +199,11 @@ function ExplorerIndexes(props) {
                   />
                 </Grid>
               </div>
-              <PricingContent search={search} tiers={tiers} />
+              <PricingContent
+                search={search}
+                indexes={indexes}
+                handleMoreDetails={handleMoreDetails}
+              />
             </Grid>
           </Toolbar>
         }

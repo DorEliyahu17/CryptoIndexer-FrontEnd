@@ -21,6 +21,7 @@ function App() {
   const [loggedUserToken, setLoggedUserToken] = useState("");
   const [loggedUserName, setLoggedUserName] = useState("");
   const [loggedUserAdmin, setLoggedUserAdmin] = useState(false);
+  const [indexToSee, setIndexToSee] = useState({});
 
   const setLoggedUserTokenToLocalStorage = (token) => {
     // window.localStorage.setItem('accessToken', token);
@@ -41,6 +42,11 @@ function App() {
       window.localStorage.setItem('admin', false);
       setLoggedUserAdmin(false);
     }
+  };
+
+  const setIndexObjectToLocalStorage = (indexObject) => {
+    window.localStorage.setItem('indexToSee', indexObject);
+    setIndexToSee(JSON.parse(indexObject));
   };
 
   useEffect(() => {
@@ -83,11 +89,11 @@ function App() {
         <Routes>
           <Route index element={<HomePage userToken={loggedUserToken} />} />
           <Route path='/create-new-index' element={<CreateNewIndex userToken={loggedUserToken} />} />
-          <Route path='/explorer-indexes' element={<ExplorerIndexes userToken={loggedUserToken} />} />
+          <Route path='/explorer-indexes' element={<ExplorerIndexes userToken={loggedUserToken} userName={loggedUserName} setIndexToSee={setIndexObjectToLocalStorage} />} />
           <Route path='/login' element={<Login setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} /> } />
           <Route path='/register' element={<Register setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} /> } />
           <Route path='/logout' element={<Logout setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} />} />
-          <Route path='/index-details' element={<IndexDetails userToken={loggedUserToken} />} />
+          <Route path='/index-details' element={<IndexDetails userToken={loggedUserToken} indexToSee={indexToSee} setIndexToSee={setIndexObjectToLocalStorage} />} />
           <Route path='/report-bug' element={<ReportBug userToken={loggedUserToken} />} />
           <Route path='/bugs-list' element={<BugsList />} />
           <Route path='/statistics' element={<Statistics />} />
