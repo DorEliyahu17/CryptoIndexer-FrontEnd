@@ -29,7 +29,7 @@ const defaultProps = {
   indexHash: '',
   indexName: '',
 };
-function Content(props) {
+function IndexDetails(props) {
   const { userToken, indexHash, indexName } = props;
   const navigate = useNavigate();
   const [showBacktestLoading, setShowBacktestLoading] = useState(false);
@@ -194,6 +194,6 @@ function Content(props) {
   );
 }
 
-Content.defaultProps = defaultProps;
-Content.propTypes = propTypes;
-export default Content;
+IndexDetails.defaultProps = defaultProps;
+IndexDetails.propTypes = propTypes;
+export default IndexDetails;

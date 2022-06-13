@@ -120,7 +120,6 @@ function HomePage(props) {
       console.log('in 1');
       // await getMostSuccessfulUsersList();
       await sleep(10).then(async () => {
-        console.log('in 2');
         await getOwnIndexes();
         setShowLoading(false);
       });
@@ -198,8 +197,7 @@ function HomePage(props) {
             investingUsersCount = "You can't share your index with the community :(";
           }
         }
-        debugger
-        tempSymbolsNameArr.push([, , indexObject.indexName, /*responseData.data.weeklyGains[indexNumber]*/'Change Me', indexObject.investedAmount, investingUsersCount]);
+        tempSymbolsNameArr.push([, , indexObject.indexName, responseData.data.weeklyGains[indexNumber].toFixed(5), indexObject.investedAmount, investingUsersCount]);
       });
       setOwnIndexesData(tempSymbolsNameArr);
     } else {

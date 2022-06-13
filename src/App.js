@@ -9,7 +9,7 @@ import ExplorerIndexes from "./ExplorerIndexes/ExplorerIndexes";
 import Login from "./Login/Login";
 import Logout from "./Logout/Logout";
 import Register from "./Register/Register";
-import IndexPopUp from "./IndexPopUp/IndexPopUp";
+import IndexDetails from "./IndexDetails/IndexDetails";
 import ReportBug from "./ReportBug/ReportBug";
 import BugsList from "./BugsList/BugsList";
 import Statistics from "./Statistics/Statistics";
@@ -87,7 +87,7 @@ function App() {
           <Route path='/login' element={<Login setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} /> } />
           <Route path='/register' element={<Register setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} /> } />
           <Route path='/logout' element={<Logout setUserToken={setLoggedUserTokenToLocalStorage} setUserName={setLoggedUserNameToLocalStorage} setUserAdmin={setLoggedUserAdminToLocalStorage} />} />
-          <Route path='/index-pop-up' element={<IndexPopUp userToken={loggedUserToken} />} />
+          <Route path='/index-details' element={<IndexDetails userToken={loggedUserToken} />} />
           <Route path='/report-bug' element={<ReportBug userToken={loggedUserToken} />} />
           <Route path='/bugs-list' element={<BugsList />} />
           <Route path='/statistics' element={<Statistics />} />

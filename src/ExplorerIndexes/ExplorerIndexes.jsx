@@ -112,7 +112,7 @@ function PricingContent(props) {
                   </ul>
                 </CardContent>
                 <CardActions>
-                  <Button fullWidth variant={tier.buttonVariant} href="/index-pop-up">
+                  <Button fullWidth variant={tier.buttonVariant} href="/index-details">
                     {tier.buttonText}
                   </Button>
                 </CardActions>
@@ -175,7 +175,7 @@ function ExplorerIndexes(props) {
     if (window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
-    const response = await fetch('/api/content', { method: 'get' });
+    const response = await fetch('/api/all-indexes-list', { method: 'get' });
     const responseData = await response.json();
     setTiers(responseData)
     setIsLoading(false);
