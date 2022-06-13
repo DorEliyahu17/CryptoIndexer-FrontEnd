@@ -25,7 +25,7 @@ function SellModalContainer(props) {
     setShowSellDialog(false);
   }
   function submit() {
-    SellIndex(countToSellModal).then((res) => {
+    SellIndex(countToSellModal, false).then((res) => {
       setSellIndexInput({
         initIndexName, initCountToSell
       });
@@ -34,7 +34,7 @@ function SellModalContainer(props) {
   }
   const content = new Array(1).fill(
     <p>
-      How many do you want to sell from {sellIndexInput.indexName} ?
+      How much money ($) do you want to sell in {sellIndexInput.indexName} index?
     </p>,
   );
 
@@ -42,11 +42,11 @@ function SellModalContainer(props) {
     <div>
       <ModalShadow style={{ zIndex: 100 }} onClick={close} />
       <Modal style={{ zIndex: 150 }}>
-        <ModalBanner>Edit countToSell</ModalBanner>
+        <ModalBanner>Amount To sell in {sellIndexInput.indexName}</ModalBanner>
         <ModalContent>
           {content}
           <label>
-            countToSell
+            <span style={{ marginRight: '4px' }}>Amount To Sell:</span>
             <input
               value={countToSellModal}
               type="number"
@@ -55,11 +55,10 @@ function SellModalContainer(props) {
           </label>
         </ModalContent>
         <ModalFooter>
-          <ConfirmButton onClick={submit}> Submit </ConfirmButton>
+          <ConfirmButton onClick={submit}>Submit</ConfirmButton>
         </ModalFooter>
       </Modal>
     </div>
-    //document.getElementById('app-modal'),
   );
 }
 

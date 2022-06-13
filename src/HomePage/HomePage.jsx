@@ -91,6 +91,7 @@ function HomePage(props) {
     },
     'Index Name',
     'Weekly gain(%)',
+    'invested Amount',
     'Users Count',
   ];
   const symbolOptions = {
@@ -115,21 +116,28 @@ function HomePage(props) {
       navigate("/login");
     }
     await getSupportedSymbol();
-    sleep(10).then(async () => {
-      await getMostSuccessfulUsersList();
-      sleep(10).then(async () => {
+    await sleep(10).then(async () => {
+      console.log('in 1');
+      // await getMostSuccessfulUsersList();
+      await sleep(10).then(async () => {
+        console.log('in 2');
         await getOwnIndexes();
         setShowLoading(false);
       });
-    })
+    });
+    // await sleep(10);
+    // // await getMostSuccessfulUsersList();
+    // await sleep(10);
+    // await getOwnIndexes();
+    // setShowLoading(false);
   }, []);
 
-  useEffect(() => {
-    console.log("aa");
-    //handleGetSymbolsData();
-    //console.log(SymbolsData);
+  // useEffect(() => {
+  //   console.log("aa");
+  //   //handleGetSymbolsData();
+  //   //console.log(SymbolsData);
 
-  }, [showBuyDialog]);
+  // }, [showBuyDialog]);
 
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -182,7 +190,7 @@ function HomePage(props) {
         let investingUsersCount = 0;
         if (!indexObject.isPrivate) {
           //public index
-          investingUsersCount = indexObject.inventingUsers;
+          investingUsersCount = indexObject.investingUsers;
         } else {
           if (indexObject.canBePublic) {
             investingUsersCount = "You can share your index with the community :)";
@@ -190,7 +198,8 @@ function HomePage(props) {
             investingUsersCount = "You can't share your index with the community :(";
           }
         }
-        tempSymbolsNameArr.push([, , indexObject.indexName, /*responseData.data.weeklyGains[indexNumber]*/'Change Me', investingUsersCount]);
+        debugger
+        tempSymbolsNameArr.push([, , indexObject.indexName, /*responseData.data.weeklyGains[indexNumber]*/'Change Me', indexObject.investedAmount, investingUsersCount]);
       });
       setOwnIndexesData(tempSymbolsNameArr);
     } else {
@@ -199,65 +208,54 @@ function HomePage(props) {
   };
 
   const HandlePaymentRow = (rowData, isOwn) => {
-    debugger
-    console.log(rowData.indexName);
     buyIndexInput.indexName = isOwn ? rowData.rowData[2] : rowData.rowData[3];
     buyIndexInput.isOwn = isOwn;
     setShowBuyDialog(true);
-    console.log(buyIndexInput.countToBuy);
-    //todo: send the rowData.indexName and buyIndexInput.countToBuy to BUY api
-    //buyIndexInput.countToBuy = 0;
-    //buyIndexInput.indexName = "";
   };
 
-  const BuyIndex = async (countToBuy) => {
-    console.log(buyIndexInput.indexName);
-    console.log(countToBuy);
+  // const BuyIndex = async (countToBuy, isBuy) => {
+  const buyOrSellIndex = async (countToInvest, isBuy) => {
     let dataToEncode = {};
     let dataToPass = [];
     const curDate = getDate();
-    dataToEncode = {
+    dataToEncode = isBuy ? {
       userToken: (userToken || window.localStorage.getItem('authorization')),
       indexName: buyIndexInput.indexName,
-      transactionData: { amount: countToBuy, date: curDate },
+      transactionData: { amount: countToInvest, date: curDate },
       isOwnIndex: buyIndexInput.isOwn
+    } : {
+      userToken: (userToken || window.localStorage.getItem('authorization')),
+      indexName: sellIndexInput.indexName,
+      transactionData: { amount: -countToInvest, date: curDate },
+      isOwnIndex: sellIndexInput.isOwn
     }
     let encodedKey = encodeURIComponent('data');
     let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
     dataToPass.push(encodedKey + "=" + encodedValue);
     dataToPass = dataToPass.join("&");
-    //todo: send the indexName and countToBuy to BUY api
-    debugger
     fetch('/api/buy-or-sell-index', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: dataToPass
-      // { userToken: userToken, index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { funding: countToBuy, date: curDate } }
-    }).then((response) => {
+    }).then(async (response) => {
       if (!response.ok) {
         toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
       } else {
         toast('The money invested successfully!');
+        await getOwnIndexes();
       }
     }).catch((response) => {
       toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
     })
-
-    await getOwnIndexes();
-
     return Promise.resolve();
   };
 
-  const HandleSellRow = (rowData) => {
-    console.log(rowData.rowData);
-    sellIndexInput.indexName = rowData[0];
+  const HandleSellRow = (rowData, isOwn) => {
+    sellIndexInput.indexName = isOwn ? rowData.rowData[2] : rowData.rowData[3];
+    sellIndexInput.isOwn = isOwn;
     setShowSellDialog(true);
-    console.log(sellIndexInput.countToSell);
-    //todo: send the rowData.indexName and sellIndexInput.countToBuy to SELL api
-    //sellIndexInput.countToSell = 0;
-    //sellIndexInput.indexName = "";
   };
 
   const SellIndex = async (countToSell) => {
@@ -359,7 +357,7 @@ function HomePage(props) {
               setShowBuyDialog={setShowBuyDialog}
               buyIndexInput={buyIndexInput}
               setBuyIndexInput={setBuyIndexInput}
-              BuyIndex={BuyIndex}
+              BuyIndex={buyOrSellIndex}
             />
           )}
           {showSellDialog && (
@@ -368,7 +366,7 @@ function HomePage(props) {
               setShowSellDialog={setShowSellDialog}
               sellIndexInput={sellIndexInput}
               setSellIndexInput={setSellIndexInput}
-              SellIndex={SellIndex}
+              SellIndex={buyOrSellIndex}
             />
           )}
         </div>

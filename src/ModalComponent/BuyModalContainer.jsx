@@ -27,7 +27,7 @@ function BuyModalContainer(props) {
   }
 
   const submit = () => {
-    BuyIndex(countToBuyModal).then((res) => {
+    BuyIndex(countToBuyModal, true).then((res) => {
       debugger
       setBuyIndexInput({
         initIndexName, initCountToBuy
