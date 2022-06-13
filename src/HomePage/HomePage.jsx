@@ -124,19 +124,7 @@ function HomePage(props) {
         setShowLoading(false);
       });
     });
-    // await sleep(10);
-    // // await getMostSuccessfulUsersList();
-    // await sleep(10);
-    // await getOwnIndexes();
-    // setShowLoading(false);
   }, []);
-
-  // useEffect(() => {
-  //   console.log("aa");
-  //   //handleGetSymbolsData();
-  //   //console.log(SymbolsData);
-
-  // }, [showBuyDialog]);
 
   const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -254,28 +242,6 @@ function HomePage(props) {
     sellIndexInput.indexName = isOwn ? rowData.rowData[2] : rowData.rowData[3];
     sellIndexInput.isOwn = isOwn;
     setShowSellDialog(true);
-  };
-
-  const SellIndex = async (countToSell) => {
-    console.log(sellIndexInput.indexName);
-    console.log(countToSell);
-    //todo: send the indexName and countToSell to SELL api
-
-    fetch('/api//buy-or-sell-index', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: { userToken: userToken, index_hash: "hash", indexName: sellIndexInput.indexName, transactionData: { amount: -countToSell, date: Date.now } }
-    }).then(response => {
-      console.log(response.json())
-    }).catch((e) => {
-      console.log(e);
-    })
-
-    await getOwnIndexes();
-
-    return Promise.resolve();
   };
 
   // const handleGetSymbolsData = () => {

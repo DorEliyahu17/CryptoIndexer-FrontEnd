@@ -9,14 +9,12 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-// import CssBaseline from '@mui/material/CssBaseline';
 import GlobalStyles from '@mui/material/GlobalStyles';
-// import Container from '@mui/material/Container';
-// import List from '@mui/material/List';
-// import ListItem from '@mui/material/ListItem';
-// import ListItemText from '@mui/material/ListItemText';
+import MUIDataTable from "mui-datatables";
 import Loading from '../Components/Loading';
 import Charts from '../Components/Charts';
+import { getDate } from '../utils/utils';
+
 
 const propTypes = {
   userToken: PropTypes.String,
@@ -27,15 +25,18 @@ const propTypes = {
 const defaultProps = {
   userToken: '',
   indexHash: '',
-  indexName: '',
+  indexName: 'No Index Name',
 };
 function IndexDetails(props) {
   const { userToken, indexHash, indexName } = props;
   const navigate = useNavigate();
+  const [initialCash, setInitialCash] = useState(1000);
   const [showBacktestLoading, setShowBacktestLoading] = useState(false);
+  const [showCreatingLoading, setShowCreatingLoading] = useState(false);
   const [showBacktest, setShowBacktest] = useState(false);
   const [backtestPrices, setBacktestPrices] = useState([]);
   const [backtestDates, setBacktestDates] = useState([]);
+  const [backtestIndexData, setBacktestIndexData] = useState({});
 
   useEffect(() => {
     if (window.localStorage.getItem('authorization') === '') {
@@ -43,33 +44,14 @@ function IndexDetails(props) {
     }
   }, [])
 
-  const products = [
-    {
-      name: 'Coin 1',
-      price: '50%',
-    },
-    {
-      name: 'Coin 2',
-      price: '5%',
-    },
-    {
-      name: 'Coin 3',
-      price: '20%',
-    },
-    {
-      name: 'Coin 4',
-      price: '25%',
-    },
-
-  ];
-
   const backTestRequest = async () => {
     setShowBacktestLoading(true);
-    const response = await fetch('/api/backtest-exist-index?' + new URLSearchParams({ data: indexHash, /* TODO - change this value to the actual amount (initialCash) */initialCash: 1000 }), { method: 'get' });
+    const response = await fetch('/api/backtest-exist-index?' + new URLSearchParams({ data: indexHash, initialCash }), { method: 'get' });
     const responseData = await response.json();
     if (responseData.success) {
       setBacktestPrices(responseData.data.index.balance_progress);
       setBacktestDates(responseData.data.index.dates);
+      setBacktestIndexData(responseData.data.index);
       setShowBacktestLoading(false);
       setShowBacktest(true);
     } else {
@@ -78,121 +60,131 @@ function IndexDetails(props) {
     }
   };
 
+  const handleInvestRequest = async () => {
+    setShowCreatingLoading(true);
+    let dataToEncode = {};
+    let dataToPass = [];
+    const curDate = getDate();
+    dataToEncode = {
+      userToken: (userToken || window.localStorage.getItem('authorization')),
+      indexName: indexName,
+      transactionData: { amount: initialCash, date: curDate },
+      isOwnIndex: false
+    }
+    let encodedKey = encodeURIComponent('data');
+    let encodedValue = encodeURIComponent(JSON.stringify(dataToEncode));
+    dataToPass.push(encodedKey + "=" + encodedValue);
+    dataToPass = dataToPass.join("&");
+    fetch('/api/buy-or-sell-index', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: dataToPass
+    }).then((response) => {
+      setShowCreatingLoading(false);
+      if (!response.ok) {
+        toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
+      } else {
+        toast('The money invested successfully!');
+        navigate("/");
+      }
+    }).catch((response) => {
+      toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
+    })
+  }
+
   const renderTable = () => {
+    const statisticsOptions = {
+      rowsPerPage: [3],
+      rowsPerPageOptions: [3, 5, 10, 15],
+      selectableRowsHideCheckboxes: true,
+    };
+    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharp Ratio', 'Weekly Returns Average', 'Weekly Returns Standard Deviation'];
+    let statisticsData = [];
+    statisticsData.push([
+      indexName,
+      backtestIndexData.roi.toFixed(5),
+      backtestIndexData.max_drawdown.toFixed(5),
+      backtestIndexData.sharpe_ratio.toFixed(5),
+      backtestIndexData.weekly_return_avg.toFixed(5),
+      backtestIndexData.weekly_return_std.toFixed(5)
+    ]);
+
     return (
-      <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />
+      <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column', flexWrap: 'nowrap', justifyContent: 'flex-end' }}>
+        <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} />
+        <div style={{ width: '100%', height: '100%', marginTop: '16px' }}>
+          <MUIDataTable
+            title={"Statistics"}
+            data={statisticsData}
+            columns={statisticsColumns}
+            options={statisticsOptions}
+          />
+        </div>
+      </div>
     );
   };
 
   return (
     <Fragment>
-      <Paper sx={{ height: '100%', width: '100%', marginTop: '16px', overflow: 'hidden' }}>
-        <AppBar
-          position="static"
-          color="inherit"
-          elevation={0}
-          sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
-        >
-          <div style={{ display: 'flex' }}>
-            <div style={{ marginRight: '8px', marginLeft: '8px', width: '30%' }}>
-              <Toolbar>
-                <Grid container spacing={2} alignItems="center">
-                  <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} />
-                  {/* <CssBaseline /> */}
-                  <AppBar
-                    position="static"
-                    color="default"
-                    elevation={0}
-                    sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
-                  >
-                  </AppBar>
-                  {/* Hero unit */}
-                  {/* <Container disableGutters fullwidth component="main" sx={{ pt: 8, pb: 6 }}>
-                    <Typography
-                      component="h1"
-                      variant="h2"
-                      align="center"
-                      color="text.primary"
-                      gutterBottom
-                    >
-                      {indexName}
-                    </Typography>
-
-                    <Typography variant="h5" align="center" color="text.secondary" component="p">
-                      Explanation of the index.
-                    </Typography>
-                    <Typography variant="h6" gutterBottom>
-                      Details of the composition of the currencies in the index
-                    </Typography>
-                    <List disablePadding>
-                      {products.map((product) => (
-                        <ListItem key={product.name} sx={{ py: 1, px: 0 }}>
-                          <ListItemText primary={product.name} secondary={product.desc} />
-                          <Typography variant="body2">{product.price}</Typography>
-                        </ListItem>
-                      ))}
-
-                      <ListItem sx={{ py: 1, px: 0 }}>
-                        <ListItemText primary="Profit in 1Y" />
-                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                          %34.06
-                        </Typography>
-                      </ListItem>
-                    </List>
-                    <Grid container spacing={2}>
-                      <Grid item container direction="column" xs={12} sm={6}>
-                      </Grid>
-                    </Grid>
-                  </Container> */}
-                  <Typography align='center'>
-                    <TextField
-                      margin="normal"
-                      required
-                      id="number"
-                      label="Invest cash to backtest"
-                      name="number"
-                      autoFocus
-                    />
-                    <Button
-                      type="submit"
-                      fullWidth
-                      color="primary"
-                      variant="contained"
-                      sx={{ mt: 3, mb: 2 }}
-                      onClick={backTestRequest}
-                    >
-                      Backtest
-                    </Button>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      color="secondary"
-                      variant="contained"
-                      sx={{ mt: 3, mb: 2 }}
-                      href="/explorer-indexes"
-                    >
-                      Invest this amount
-                    </Button>
-                  </Typography>
-                </Grid>
-              </Toolbar>
-            </div>
-            <div style={{ marginRight: '8px', marginLeft: '8px', width: '70%' }}>
-              {showBacktestLoading && <Loading label="Fetching data..." />}
-              {showBacktest && renderTable()}
-            </div>
+      <div style={{ display: 'flex', marginTop: '36px' }}>
+        <div style={{ marginRight: '8px', marginLeft: '8px', width: '30%' }}>
+          <Toolbar>
+            <Grid container spacing={2} alignItems="center">
+              <Typography align='center'>
+                <h2>{indexName}</h2>
+                <TextField
+                  margin="normal"
+                  required
+                  id="number"
+                  label="Invest cash to backtest and invest"
+                  name="number"
+                  autoFocus
+                  value={initialCash}
+                  onChange={(e) => setInitialCash(e.target.value)}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  color="primary"
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  onClick={backTestRequest}
+                >
+                  Backtest
+                </Button>
+                <Button
+                  type="submit"
+                  fullWidth
+                  color="secondary"
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  onClick={handleInvestRequest}
+                >
+                  Invest this amount
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  sx={{ mt: 3, mb: 2 }}
+                  href="/explorer-indexes"
+                >
+                  Back To Community
+                </Button>
+              </Typography>
+            </Grid>
+          </Toolbar>
+        </div>
+        <div style={{ marginRight: '8px', width: '70%' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
+            {showBacktestLoading && <Loading label="Fetching data..." />}
+            {showCreatingLoading && <Loading label="Investing..." />}
           </div>
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{ mt: 10, width: 300 }}
-            href="/explorer-indexes"
-          >
-            Back To Community
-
-          </Button>
-        </AppBar>
-      </Paper>
+          {showBacktest && renderTable()}
+        </div>
+      </div>
     </Fragment>
   );
 }
