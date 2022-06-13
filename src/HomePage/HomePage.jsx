@@ -112,7 +112,7 @@ function HomePage(props) {
 
   useEffect(async () => {
     setShowLoading(true);
-    if (window.localStorage.getItem('authorization') === '') {
+    if (!window.localStorage.getItem('authorization') && window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
     await getSupportedSymbol();

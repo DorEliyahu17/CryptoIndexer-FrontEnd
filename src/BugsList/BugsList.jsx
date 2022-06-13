@@ -29,7 +29,7 @@ function BugsList() {
 
   useEffect(async () => {
     setShowLoading(true);
-    if (window.localStorage.getItem('authorization') === '') {
+    if (!window.localStorage.getItem('authorization') && window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
     if (!window.localStorage.getItem('admin')) {

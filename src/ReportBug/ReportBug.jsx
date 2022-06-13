@@ -27,7 +27,7 @@ function ReportBug(props) {
   const [showCreatingLoading, setShowCreatingLoading] = useState(false);
 
   useEffect(() => {
-    if (window.localStorage.getItem('authorization') === '') {
+    if (!window.localStorage.getItem('authorization') && window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
   }, []);

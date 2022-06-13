@@ -48,12 +48,13 @@ function CreateNewIndex(props) {
   const [showBacktestLoading, setShowBacktestLoading] = useState(false);
   const [backtestColors, setBacktestColors] = useState([]);
   const [backtestPrices, setBacktestPrices] = useState([]);
+  const [backtestIndexData, setBacktestIndexData] = useState({});
   const [backtestDates, setBacktestDates] = useState([]);
   const [backtestOtherSymbols, setBacktestOtherSymbols] = useState([]);
 
   useEffect(async () => {
     setShowLoading(true);
-    if (window.localStorage.getItem('authorization') === '') {
+    if (!window.localStorage.getItem('authorization') && window.localStorage.getItem('authorization') === '') {
       navigate("/login");
     }
     const response = await fetch('/api/supported-symbols-list', { method: 'get' });
@@ -323,6 +324,7 @@ function CreateNewIndex(props) {
         setBacktestPrices(responseData.data.index.balance_progress);
         setBacktestDates(responseData.data.index.dates);
         setBacktestOtherSymbols(responseData.data.symbols);
+        setBacktestIndexData(responseData.data.index);
         setShowBacktest(true);
       } else {
         setShowBacktest(false);
@@ -340,16 +342,24 @@ function CreateNewIndex(props) {
       rowsPerPageOptions: [3, 5, 10, 15],
       selectableRowsHideCheckboxes: true,
     };
-    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharp Ratio', 'Standard Weekly Return', 'Average Weekly Return'];
+    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharp Ratio', 'Weekly Returns Average', 'Weekly Returns Standard Deviation'];
     let statisticsData = [];
+    statisticsData.push([
+      indexName,
+      backtestIndexData.roi.toFixed(5),
+      backtestIndexData.max_drawdown.toFixed(5),
+      backtestIndexData.sharpe_ratio.toFixed(5),
+      backtestIndexData.weekly_return_avg.toFixed(5),
+      backtestIndexData.weekly_return_std.toFixed(5)
+    ]);
     backtestOtherSymbols.map((symbolObject) => {
       statisticsData.push([
         symbolObject.symbol,
         symbolObject.roi.toFixed(5),
         symbolObject.max_drawdown.toFixed(5),
         symbolObject.sharpe_ratio.toFixed(5),
-        symbolObject.weekly_return_std.toFixed(5),
-        symbolObject.weekly_return_avg.toFixed(5)
+        symbolObject.weekly_return_avg.toFixed(5),
+        symbolObject.weekly_return_std.toFixed(5)
       ]);
     });
 
@@ -364,6 +374,14 @@ function CreateNewIndex(props) {
             options={statisticsOptions}
           />
         </div>
+        {/* <div style={{ width: '100%', height: '100%' }}>
+          <MUIDataTable
+            title={"Correlations Matrix"}
+            data={statisticsData}
+            columns={statisticsColumns}
+            options={statisticsOptions}
+          />
+        </div> */}
       </div>
     );
   };
