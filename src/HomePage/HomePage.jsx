@@ -8,10 +8,12 @@ import { Payment } from "@material-ui/icons";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Loading from '../Components/Loading';
 import { getDate } from '../utils/utils';
-
+import AppBar from '@mui/material/AppBar';
+import Paper from '@mui/material/Paper';
 import 'react-toastify/dist/ReactToastify.css';
 import './HomePage.less';
-
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 const propTypes = {
   userToken: PropTypes.String,
 };
@@ -318,6 +320,23 @@ function HomePage(props) {
   // };  
 
   return (
+    <Paper sx={{ maxWidth: 1300, margin: 'auto', overflow: 'hidden' }}>
+      <AppBar
+        position="static"
+        color="default"
+        elevation={0}
+        sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
+      >
+        <Box
+        component="img"
+        sx={{
+          height: 2330,
+          width: 1300,
+          maxHeight: { xs: 233, md: 167 },
+          maxWidth: { xs: 3500, md: 2500 },
+        }}
+        src='Crypto.jpg'
+       />
     <div>
       {showLoading ?
         <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
@@ -325,7 +344,7 @@ function HomePage(props) {
         </div>
         :
         <div>
-          <h1 style={{ marginBottom: '30px' }}>Home Page</h1>
+          <h1 style={{ marginBottom: '30px' }}></h1>
           <div style={{ marginBottom: '30px' }}>
             <MUIDataTable
               title={"Symbols Table"}
@@ -370,6 +389,8 @@ function HomePage(props) {
         </div>
       }
     </div>
+    </AppBar>
+      </Paper>
   );
 }
 
