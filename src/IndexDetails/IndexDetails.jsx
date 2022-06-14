@@ -70,7 +70,7 @@ function IndexDetails(props) {
       userToken: (userToken || window.localStorage.getItem('authorization')),
       indexName: indexToSee.indexName,
       creatorId: indexToSee.creatorId,
-      transactionData: { amount: initialCash, date: curDate },
+      transactionData: { amount: initialCash.toString(), date: curDate },
       isOwnIndex: false
     }
     let encodedKey = encodeURIComponent('data');

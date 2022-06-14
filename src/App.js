@@ -13,7 +13,7 @@ import IndexDetails from "./IndexDetails/IndexDetails";
 import ReportBug from "./ReportBug/ReportBug";
 import BugsList from "./BugsList/BugsList";
 import Statistics from "./Statistics/Statistics";
-
+import Top10SymbolsIndex from "./Top10SymbolsIndex/Top10SymbolsIndex";
 
 import "./App.css";
 
@@ -74,10 +74,11 @@ function App() {
         pages={[
           { name: "Create New Index", href: "/create-new-index" },
           { name: "Explorer Indexes", href: "/explorer-indexes" },
+          { name: "Top 10 Symbols Index", href: "/top-10-symbols-index" },
           { name: "Report A Bug", href: "/report-bug" },
         ]}
         adminPages={[
-          { name: "Statistics", href: "/statistics" },
+          // { name: "Statistics", href: "/statistics" },
           { name: "Bugs List", href: "/bugs-list" },
         ]}
         settings={[
@@ -97,6 +98,7 @@ function App() {
           <Route path='/report-bug' element={<ReportBug userToken={loggedUserToken} />} />
           <Route path='/bugs-list' element={<BugsList />} />
           <Route path='/statistics' element={<Statistics />} />
+          <Route path='/top-10-symbols-index' element={<Top10SymbolsIndex userToken={loggedUserToken} />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer />
