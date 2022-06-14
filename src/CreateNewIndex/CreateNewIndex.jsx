@@ -342,31 +342,31 @@ function CreateNewIndex(props) {
       rowsPerPageOptions: [3, 5, 10, 15],
       selectableRowsHideCheckboxes: true,
     };
-    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharp Ratio', 'Weekly Returns Average', 'Weekly Returns Standard Deviation'];
+    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharpe Ratio', 'Weekly Returns Average', 'Weekly Returns Standard Deviation'];
     let statisticsData = [];
     statisticsData.push([
       indexName,
-      backtestIndexData.roi.toFixed(5),
-      backtestIndexData.max_drawdown.toFixed(5),
+      `${(backtestIndexData.roi * 100).toFixed(2)}%`,
+      `${(backtestIndexData.max_drawdown * 100).toFixed(2)}%`,
       backtestIndexData.sharpe_ratio.toFixed(5),
-      backtestIndexData.weekly_return_avg.toFixed(5),
-      backtestIndexData.weekly_return_std.toFixed(5)
+      `${(backtestIndexData.weekly_return_avg * 100).toFixed(2)}%`,
+      `${(backtestIndexData.weekly_return_std * 100).toFixed(2)}%`
     ]);
     backtestOtherSymbols.map((symbolObject) => {
       statisticsData.push([
         symbolObject.symbol,
-        symbolObject.roi.toFixed(5),
-        symbolObject.max_drawdown.toFixed(5),
+        `${(symbolObject.roi * 100).toFixed(2)}%`,
+        `${(symbolObject.max_drawdown * 100).toFixed(2)}%`,
         symbolObject.sharpe_ratio.toFixed(5),
-        symbolObject.weekly_return_avg.toFixed(5),
-        symbolObject.weekly_return_std.toFixed(5)
+        `${(symbolObject.weekly_return_avg * 100).toFixed(2)}%`,
+        `${(symbolObject.weekly_return_std * 100).toFixed(2)}%`
       ]);
     });
 
     return (
       <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column', flexWrap: 'nowrap', justifyContent: 'flex-end' }}>
         <Charts type='line' labels={backtestDates} firstIndexName={indexName} firstIndexPrices={backtestPrices} otherSymbols={backtestOtherSymbols} otherSymbolsColors={backtestColors} isMultiAxios={true} />
-        <div style={{ width: '100%', height: '100%' }}>
+        <div style={{ marginTop: '16px', width: '100%', height: '100%' }}>
           <MUIDataTable
             title={"Statistics"}
             data={statisticsData}

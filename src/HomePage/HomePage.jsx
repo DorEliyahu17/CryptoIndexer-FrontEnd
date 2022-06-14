@@ -166,10 +166,10 @@ function HomePage(props) {
       responseData.data.map(symbolObject => {
         tempSymbolsNameArr.push([
           `${symbolObject.Symbol} - ${symbolObject.Name}`,
-          symbolObject.Price.toFixed(5),
-          symbolObject.Weekly_Prc_Change.toFixed(5),
-          symbolObject.Weekly_Low.toFixed(5),
-          symbolObject.Weekly_High.toFixed(5)
+          `${symbolObject.Price.toFixed(2)}$`,
+          `${(symbolObject.Weekly_Prc_Change * 100).toFixed(2)}%`,
+          `${symbolObject.Weekly_Low.toFixed(2)}$`,
+          `${symbolObject.Weekly_High.toFixed(2)}$`
         ]);
       });
       setSupportedSymbolsData(tempSymbolsNameArr);
@@ -191,8 +191,7 @@ function HomePage(props) {
 
       let tempSymbolsNameArr = [];
       responseData.data.result.map(successfulUser => {
-        // tempSymbolsNameArr.push([, , successfulUser.creatorName, successfulUser.indexName, successfulUser.weeklyGain.toFixed(5), successfulUser.investingCount]);
-        tempSymbolsNameArr.push([successfulUser.creatorName, successfulUser.indexName, successfulUser.weeklyGain.toFixed(5), successfulUser.investingCount]);
+        tempSymbolsNameArr.push([successfulUser.creatorName, successfulUser.indexName, `${(successfulUser.weeklyGain * 100).toFixed(2)}%`, successfulUser.investingCount]);
       });
       setMostSuccessfulUsersData(tempSymbolsNameArr);
     } else {
@@ -218,7 +217,7 @@ function HomePage(props) {
             investingUsersCount = "You can't share your index with the community :(";
           }
         }
-        tempSymbolsNameArr.push([, , indexObject.indexName, responseData.data.weeklyGains[indexNumber].toFixed(5), indexObject.investedAmount, investingUsersCount]);
+        tempSymbolsNameArr.push([, , indexObject.indexName, `${(responseData.data.weeklyGains[indexNumber] * 100).toFixed(2)}%`, `${indexObject.investedAmount}$`, investingUsersCount]);
       });
       setOwnIndexesData(tempSymbolsNameArr);
     } else {
@@ -243,7 +242,7 @@ function HomePage(props) {
             investingUsersCount = "You can't share your index with the community :(";
           }
         }
-        tempSymbolsNameArr.push([, , indexObject.creatorName, indexObject.indexName, responseData.data.weeklyGains[indexNumber].toFixed(5), indexObject.investedAmount, investingUsersCount]);
+        tempSymbolsNameArr.push([, , indexObject.creatorName, indexObject.indexName, `${(responseData.data.weeklyGains[indexNumber] * 100).toFixed(2)}%`, `${indexObject.investedAmount}$`, investingUsersCount]);
       });
       setInvestedIndexesData(tempSymbolsNameArr);
     } else {

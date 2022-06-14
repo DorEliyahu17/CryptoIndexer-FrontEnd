@@ -107,15 +107,15 @@ function IndexDetails(props) {
       rowsPerPageOptions: [3, 5, 10, 15],
       selectableRowsHideCheckboxes: true,
     };
-    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharp Ratio', 'Weekly Returns Average', 'Weekly Returns Standard Deviation'];
+    const statisticsColumns = ['Symbol', 'ROI', 'Max-DrawDown', 'Sharpe Ratio', 'Weekly Returns Average', 'Weekly Returns Standard Deviation'];
     let statisticsData = [];
     statisticsData.push([
       indexToSee.indexName,
-      backtestIndexData.roi.toFixed(5),
-      backtestIndexData.max_drawdown.toFixed(5),
+      `${(backtestIndexData.roi * 100).toFixed(2)}%`,
+      `${(backtestIndexData.max_drawdown * 100).toFixed(2)}%`,
       backtestIndexData.sharpe_ratio.toFixed(5),
-      backtestIndexData.weekly_return_avg.toFixed(5),
-      backtestIndexData.weekly_return_std.toFixed(5)
+      `${(backtestIndexData.weekly_return_avg * 100).toFixed(2)}%`,
+      `${(backtestIndexData.weekly_return_std * 100).toFixed(2)}%`
     ]);
 
     return (
