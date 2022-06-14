@@ -14,14 +14,16 @@ import './HomePage.less';
 
 const propTypes = {
   userToken: PropTypes.String,
+  userName: PropTypes.String,
 };
 
 const defaultProps = {
   userToken: '',
+  userName: '',
 };
 
 function HomePage(props) {
-  const { userToken } = props;
+  const { userToken, userName } = props;
   const navigate = useNavigate();
   const [example, setExample] = useState(false);
   const [supportedSymbolsData, setSupportedSymbolsData] = useState([]);
@@ -68,7 +70,7 @@ function HomePage(props) {
       name: "Payment", options: {
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <button onClick={() => { HandlePaymentRow(tableMeta, false) }}>
+            <button onClick={() => { HandlePaymentInvestedRow(tableMeta, (tableMeta.rowData[2] === (userName || window.localStorage.getItem('userName'))) ? true : false) }}>
               <Payment color="primary" />
             </button>
           );
@@ -79,7 +81,7 @@ function HomePage(props) {
       name: "Sell", options: {
         customBodyRender: (value, tableMeta, updateValue) => {
           return (
-            <button onClick={() => { HandleSellRow(tableMeta, false) }}>
+            <button onClick={() => { HandleSellInvestedRow(tableMeta, (tableMeta.rowData[2] === (userName || window.localStorage.getItem('userName'))) ? true : false) }}>
               <HighlightOffIcon color="secondary" />
             </button>
           );
@@ -256,6 +258,12 @@ function HomePage(props) {
     setShowBuyDialog(true);
   };
 
+  const HandlePaymentInvestedRow = (rowData, isOwn) => {
+    buyIndexInput.indexName = rowData.rowData[3];
+    buyIndexInput.isOwn = isOwn;
+    setShowBuyDialog(true);
+  };
+
   const buyOrSellIndex = async (countToInvest, isBuy) => {
     let dataToEncode = {};
     let dataToPass = [];
@@ -286,7 +294,14 @@ function HomePage(props) {
         toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
       } else {
         toast('The money invested successfully!');
-        await getOwnIndexes();
+        await getCommunityIndexes();
+        await sleep(10).then(async () => {
+          await getOwnIndexes();
+          await sleep(10).then(async () => {
+            await getInvestedIndexes();
+            setShowLoading(false);
+          });
+        });
       }
     }).catch((response) => {
       toast(`An error has occured: ${response.status} - ${response.statusText}${(response.status === 500) ? '. Please try again later.' : ''}`);
@@ -296,6 +311,12 @@ function HomePage(props) {
 
   const HandleSellRow = (rowData, isOwn) => {
     sellIndexInput.indexName = isOwn ? rowData.rowData[2] : rowData.rowData[3];
+    sellIndexInput.isOwn = isOwn;
+    setShowSellDialog(true);
+  };
+
+  const HandleSellInvestedRow = (rowData, isOwn) => {
+    sellIndexInput.indexName = rowData.rowData[3];
     sellIndexInput.isOwn = isOwn;
     setShowSellDialog(true);
   };
